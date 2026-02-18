@@ -1,6 +1,6 @@
 'use client';
 
-import { Client, Project, Invoice, Interaction, CalendarEvent } from './types';
+import { Client, Project, Invoice, Interaction, CalendarEvent, Charge } from './types';
 
 const STORAGE_KEYS = {
   clients: 'opexia_clients',
@@ -8,6 +8,7 @@ const STORAGE_KEYS = {
   invoices: 'opexia_invoices',
   interactions: 'opexia_interactions',
   events: 'opexia_events',
+  charges: 'opexia_charges',
 };
 
 function loadFromStorage<T>(key: string): T[] {
@@ -134,6 +135,26 @@ export function saveEvent(event: CalendarEvent): void {
 export function deleteEvent(id: string): void {
   const events = getEvents().filter(e => e.id !== id);
   saveToStorage(STORAGE_KEYS.events, events);
+}
+
+export function getCharges(): Charge[] {
+  return loadFromStorage<Charge>(STORAGE_KEYS.charges);
+}
+
+export function saveCharge(charge: Charge): void {
+  const charges = getCharges();
+  const idx = charges.findIndex(c => c.id === charge.id);
+  if (idx >= 0) {
+    charges[idx] = charge;
+  } else {
+    charges.push(charge);
+  }
+  saveToStorage(STORAGE_KEYS.charges, charges);
+}
+
+export function deleteCharge(id: string): void {
+  const charges = getCharges().filter(c => c.id !== id);
+  saveToStorage(STORAGE_KEYS.charges, charges);
 }
 
 export function generateId(): string {

@@ -6,7 +6,6 @@ import {
   UserCheck,
   TrendingUp,
   Receipt,
-  FolderKanban,
   AlertCircle,
   ArrowUpRight,
   ArrowDownRight,
@@ -17,10 +16,17 @@ import {
   Plus,
   UserPlus,
   GitBranch,
+  Wallet,
+  Trash2,
+  Edit3,
+  CreditCard,
+  TrendingDown,
+  X,
 } from 'lucide-react';
-import { getClients, getProjects, getInvoices, getInteractions, getEvents } from '@/lib/store';
-import { Client, Project, Invoice, Interaction, CalendarEvent, SERVICE_LABELS } from '@/lib/types';
+import { getClients, getInvoices, getInteractions, getEvents, getCharges, saveCharge, deleteCharge, generateId } from '@/lib/store';
+import { Client, Invoice, Interaction, CalendarEvent, Charge, ChargeCategory, ChargeFrequency, SERVICE_LABELS, CHARGE_CATEGORY_LABELS, CHARGE_FREQUENCY_LABELS } from '@/lib/types';
 import Link from 'next/link';
+import Modal from '@/components/Modal';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, BarChart, Bar,
@@ -28,20 +34,24 @@ import {
 
 export default function DashboardPage() {
   const [clients, setClients] = useState<Client[]>([]);
-  const [projects, setProjects] = useState<Project[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [interactions, setInteractions] = useState<Interaction[]>([]);
   const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [charges, setCharges] = useState<Charge[]>([]);
   const [mounted, setMounted] = useState(false);
+  const [chargeModalOpen, setChargeModalOpen] = useState(false);
+  const [editingCharge, setEditingCharge] = useState<Charge | null>(null);
 
   useEffect(() => {
     setClients(getClients());
-    setProjects(getProjects());
     setInvoices(getInvoices());
     setInteractions(getInteractions());
     setEvents(getEvents());
+    setCharges(getCharges());
     setMounted(true);
   }, []);
+
+  const refreshCharges = () => setCharges(getCharges());
 
   if (!mounted) return <DashboardSkeleton />;
 
@@ -51,12 +61,25 @@ export default function DashboardPage() {
   const totalProspects = clients.filter(c => c.status === 'prospect').length;
   const caMensuel = clients.filter(c => c.status === 'client').reduce((sum, c) => sum + c.montantMensuel, 0);
   const caAnnuel = caMensuel * 12;
-  const projetsEnCours = projects.filter(p => p.status === 'en-cours').length;
   const facturesEnRetard = invoices.filter(i => i.status === 'en-retard').length;
   const facturesEnAttente = invoices.filter(i => i.status === 'en-attente').length;
   const tauxConversion = clients.length > 0
     ? Math.round((totalClients / (totalClients + totalProspects + clients.filter(c => c.status === 'perdu').length)) * 100)
     : 0;
+
+  // Charges calculations
+  const activeCharges = charges.filter(c => c.actif);
+  const chargesMensuelles = activeCharges.reduce((sum, c) => {
+    switch (c.frequence) {
+      case 'mensuel': return sum + c.montant;
+      case 'annuel': return sum + c.montant / 12;
+      case 'trimestriel': return sum + c.montant / 3;
+      case 'ponctuel': return sum;
+      default: return sum;
+    }
+  }, 0);
+  const totalChargesCount = activeCharges.length;
+  const beneficeMensuel = caMensuel - chargesMensuelles;
 
   // Build revenue chart from actual invoices
   const monthlyRevenue: Record<string, number> = {};
@@ -86,6 +109,35 @@ export default function DashboardPage() {
     { stage: 'Signé', count: clients.filter(c => c.pipelineStage === 'signe').length },
   ];
 
+  // Charges by category for pie chart
+  const chargesByCategoryColors: Record<ChargeCategory, string> = {
+    'abonnement': '#6c5ce7',
+    'logiciel': '#00cec9',
+    'marketing': '#fdcb6e',
+    'hebergement': '#00b894',
+    'telephonie': '#e17055',
+    'freelance': '#0984e3',
+    'materiel': '#d63031',
+    'formation': '#a29bfe',
+    'autre': '#636e72',
+  };
+
+  const chargesByCategory = Object.entries(CHARGE_CATEGORY_LABELS)
+    .map(([key, label]) => {
+      const catCharges = activeCharges.filter(c => c.categorie === key);
+      const total = catCharges.reduce((sum, c) => {
+        switch (c.frequence) {
+          case 'mensuel': return sum + c.montant;
+          case 'annuel': return sum + c.montant / 12;
+          case 'trimestriel': return sum + c.montant / 3;
+          case 'ponctuel': return sum;
+          default: return sum;
+        }
+      }, 0);
+      return { name: label, value: Math.round(total * 100) / 100, color: chargesByCategoryColors[key as ChargeCategory] };
+    })
+    .filter(c => c.value > 0);
+
   const recentInteractions = [...interactions].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
   const upcomingEvents = [...events]
     .filter(e => e.date >= new Date().toISOString().split('T')[0])
@@ -99,6 +151,20 @@ export default function DashboardPage() {
       case 'rdv': return <CalIcon size={14} />;
       default: return <Clock size={14} />;
     }
+  };
+
+  const handleDeleteCharge = (id: string) => {
+    if (confirm('Supprimer cette charge ?')) {
+      deleteCharge(id);
+      refreshCharges();
+    }
+  };
+
+  const handleSaveCharge = (charge: Charge) => {
+    saveCharge(charge);
+    refreshCharges();
+    setChargeModalOpen(false);
+    setEditingCharge(null);
   };
 
   return (
@@ -163,20 +229,20 @@ export default function DashboardPage() {
           color="primary"
         />
         <KPICard
-          title="Clients actifs"
-          value={totalClients.toString()}
-          change={`${totalProspects} prospect${totalProspects > 1 ? 's' : ''}`}
-          positive={totalClients > 0}
-          icon={<UserCheck size={20} />}
-          color="success"
+          title="Charges /mois"
+          value={`${Math.round(chargesMensuelles).toLocaleString('fr-FR')} €`}
+          change={`${totalChargesCount} charge${totalChargesCount > 1 ? 's' : ''} active${totalChargesCount > 1 ? 's' : ''}`}
+          positive={chargesMensuelles === 0}
+          icon={<Wallet size={20} />}
+          color="warning"
         />
         <KPICard
-          title="Projets en cours"
-          value={projetsEnCours.toString()}
-          change={`${projects.filter(p => p.status === 'termine').length} terminé${projects.filter(p => p.status === 'termine').length > 1 ? 's' : ''}`}
-          positive={projetsEnCours > 0}
-          icon={<FolderKanban size={20} />}
-          color="info"
+          title="Bénéfice /mois"
+          value={`${Math.round(beneficeMensuel).toLocaleString('fr-FR')} €`}
+          change={beneficeMensuel > 0 ? 'Rentable' : beneficeMensuel === 0 ? 'Équilibre' : 'Déficitaire'}
+          positive={beneficeMensuel >= 0}
+          icon={<CreditCard size={20} />}
+          color={beneficeMensuel >= 0 ? 'success' : 'danger'}
         />
         <KPICard
           title="Factures en retard"
@@ -274,7 +340,7 @@ export default function DashboardPage() {
             ) : (
               <div className="flex items-center justify-center h-60 text-muted text-sm">
                 <div className="text-center">
-                  <FolderKanban size={32} className="mx-auto mb-2 opacity-40" />
+                  <Receipt size={32} className="mx-auto mb-2 opacity-40" />
                   <p>Aucun service souscrit</p>
                   <p className="text-xs mt-1 opacity-60">Assignez des services à vos clients</p>
                 </div>
@@ -283,6 +349,186 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
+
+      {/* Charges Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* Charges List */}
+        <div className="lg:col-span-2 bg-card border border-border rounded-2xl p-5">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="font-semibold text-foreground flex items-center gap-2">
+                <Wallet size={18} className="text-warning" />
+                Charges & Abonnements
+              </h3>
+              <p className="text-xs text-muted mt-0.5">Suivi de vos frais récurrents et ponctuels</p>
+            </div>
+            <button
+              onClick={() => { setEditingCharge(null); setChargeModalOpen(true); }}
+              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-medium transition-colors"
+            >
+              <Plus size={14} />
+              Ajouter
+            </button>
+          </div>
+
+          {activeCharges.length > 0 ? (
+            <div className="space-y-2 max-h-[400px] overflow-y-auto pr-1">
+              {charges
+                .sort((a, b) => {
+                  if (a.actif && !b.actif) return -1;
+                  if (!a.actif && b.actif) return 1;
+                  return b.montant - a.montant;
+                })
+                .map((charge) => {
+                  const montantMensuel = charge.frequence === 'mensuel' ? charge.montant
+                    : charge.frequence === 'annuel' ? charge.montant / 12
+                    : charge.frequence === 'trimestriel' ? charge.montant / 3
+                    : 0;
+                  return (
+                    <div
+                      key={charge.id}
+                      className={`flex items-center gap-3 p-3 rounded-xl border transition-colors ${
+                        charge.actif
+                          ? 'border-border hover:border-border-light bg-background'
+                          : 'border-border/50 bg-background/50 opacity-50'
+                      }`}
+                    >
+                      <div className={`p-2 rounded-lg ${charge.actif ? 'bg-warning/10' : 'bg-muted/10'}`}>
+                        <Wallet size={16} className={charge.actif ? 'text-warning' : 'text-muted'} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-medium text-foreground truncate">{charge.nom}</p>
+                          {!charge.actif && (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-muted/10 text-muted">Inactif</span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-medium">
+                            {CHARGE_CATEGORY_LABELS[charge.categorie]}
+                          </span>
+                          {charge.fournisseur && (
+                            <span className="text-xs text-muted truncate">{charge.fournisseur}</span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <p className="text-sm font-bold text-foreground">{charge.montant.toLocaleString('fr-FR')} €</p>
+                        <p className="text-[10px] text-muted">
+                          {CHARGE_FREQUENCY_LABELS[charge.frequence]}
+                          {charge.frequence !== 'ponctuel' && charge.frequence !== 'mensuel' && (
+                            <span className="text-muted"> · {Math.round(montantMensuel)} €/mois</span>
+                          )}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-1 flex-shrink-0">
+                        <button
+                          onClick={() => { setEditingCharge(charge); setChargeModalOpen(true); }}
+                          className="p-1.5 rounded-lg hover:bg-info/10 text-muted hover:text-info transition-colors"
+                        >
+                          <Edit3 size={13} />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteCharge(charge.id)}
+                          className="p-1.5 rounded-lg hover:bg-danger/10 text-muted hover:text-danger transition-colors"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-48 text-muted text-sm">
+              <div className="text-center">
+                <Wallet size={36} className="mx-auto mb-2 opacity-40" />
+                <p>Aucune charge enregistrée</p>
+                <p className="text-xs mt-1 opacity-60">Ajoutez vos abonnements, logiciels, frais récurrents...</p>
+                <button
+                  onClick={() => { setEditingCharge(null); setChargeModalOpen(true); }}
+                  className="inline-flex items-center gap-2 mt-3 px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-medium transition-colors"
+                >
+                  <Plus size={14} />
+                  Ajouter une charge
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Totals bar */}
+          {charges.length > 0 && (
+            <div className="mt-4 pt-4 border-t border-border flex flex-wrap items-center gap-4">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-warning" />
+                <span className="text-xs text-muted">Charges /mois:</span>
+                <span className="text-sm font-bold text-foreground">{Math.round(chargesMensuelles).toLocaleString('fr-FR')} €</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-primary" />
+                <span className="text-xs text-muted">CA /mois:</span>
+                <span className="text-sm font-bold text-foreground">{caMensuel.toLocaleString('fr-FR')} €</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className={`w-2 h-2 rounded-full ${beneficeMensuel >= 0 ? 'bg-success' : 'bg-danger'}`} />
+                <span className="text-xs text-muted">Bénéfice:</span>
+                <span className={`text-sm font-bold ${beneficeMensuel >= 0 ? 'text-success' : 'text-danger'}`}>
+                  {beneficeMensuel >= 0 ? '+' : ''}{Math.round(beneficeMensuel).toLocaleString('fr-FR')} €
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Charges by Category Pie */}
+        <div className="bg-card border border-border rounded-2xl p-5">
+          <h3 className="font-semibold text-foreground mb-4">Répartition des charges</h3>
+          {chargesByCategory.length > 0 ? (
+            <>
+              <ResponsiveContainer width="100%" height={180}>
+                <PieChart>
+                  <Pie
+                    data={chargesByCategory}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={75}
+                    paddingAngle={4}
+                    dataKey="value"
+                  >
+                    {chargesByCategory.map((entry, index) => (
+                      <Cell key={index} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{ background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '12px', color: '#1a1a2e', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                    formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €/mois`, '']}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="space-y-2 mt-2">
+                {chargesByCategory.map((item) => (
+                  <div key={item.name} className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full" style={{ background: item.color }} />
+                      <span className="text-muted text-xs">{item.name}</span>
+                    </div>
+                    <span className="font-medium text-foreground text-xs">{item.value} €/mois</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="flex items-center justify-center h-60 text-muted text-sm">
+              <div className="text-center">
+                <TrendingDown size={32} className="mx-auto mb-2 opacity-40" />
+                <p>Aucune charge</p>
+                <p className="text-xs mt-1 opacity-60">Les catégories apparaitront ici</p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Pipeline + Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -471,7 +717,181 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
+
+      {/* Charge Modal */}
+      <ChargeFormModal
+        isOpen={chargeModalOpen}
+        onClose={() => { setChargeModalOpen(false); setEditingCharge(null); }}
+        onSave={handleSaveCharge}
+        charge={editingCharge}
+      />
     </div>
+  );
+}
+
+function ChargeFormModal({ isOpen, onClose, onSave, charge }: {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (charge: Charge) => void;
+  charge: Charge | null;
+}) {
+  const [form, setForm] = useState<Partial<Charge>>({});
+
+  useEffect(() => {
+    if (charge) {
+      setForm(charge);
+    } else {
+      setForm({
+        id: generateId(),
+        nom: '',
+        categorie: 'abonnement',
+        montant: 0,
+        frequence: 'mensuel',
+        dateDebut: new Date().toISOString().split('T')[0],
+        actif: true,
+        notes: '',
+        fournisseur: '',
+      });
+    }
+  }, [charge, isOpen]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave(form as Charge);
+  };
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} title={charge ? 'Modifier la charge' : 'Nouvelle charge'} size="md">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-xs text-muted mb-1">Nom de la charge</label>
+          <input
+            type="text"
+            required
+            value={form.nom || ''}
+            onChange={(e) => setForm({ ...form, nom: e.target.value })}
+            placeholder="Ex: ChatGPT Plus, Vercel Pro, Google Ads..."
+            className="w-full px-3 py-2 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:border-primary"
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs text-muted mb-1">Catégorie</label>
+            <select
+              value={form.categorie || 'abonnement'}
+              onChange={(e) => setForm({ ...form, categorie: e.target.value as ChargeCategory })}
+              className="w-full px-3 py-2 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:border-primary"
+            >
+              {Object.entries(CHARGE_CATEGORY_LABELS).map(([key, label]) => (
+                <option key={key} value={key}>{label}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs text-muted mb-1">Fournisseur</label>
+            <input
+              type="text"
+              value={form.fournisseur || ''}
+              onChange={(e) => setForm({ ...form, fournisseur: e.target.value })}
+              placeholder="Ex: OpenAI, Vercel..."
+              className="w-full px-3 py-2 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:border-primary"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs text-muted mb-1">Montant (€)</label>
+            <input
+              type="number"
+              required
+              min={0}
+              step={0.01}
+              value={form.montant || ''}
+              onChange={(e) => setForm({ ...form, montant: Number(e.target.value) })}
+              className="w-full px-3 py-2 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:border-primary"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-muted mb-1">Fréquence</label>
+            <select
+              value={form.frequence || 'mensuel'}
+              onChange={(e) => setForm({ ...form, frequence: e.target.value as ChargeFrequency })}
+              className="w-full px-3 py-2 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:border-primary"
+            >
+              {Object.entries(CHARGE_FREQUENCY_LABELS).map(([key, label]) => (
+                <option key={key} value={key}>{label}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs text-muted mb-1">Date de début</label>
+            <input
+              type="date"
+              value={form.dateDebut || ''}
+              onChange={(e) => setForm({ ...form, dateDebut: e.target.value })}
+              className="w-full px-3 py-2 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:border-primary"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-muted mb-1">Date de fin (optionnel)</label>
+            <input
+              type="date"
+              value={form.dateFin || ''}
+              onChange={(e) => setForm({ ...form, dateFin: e.target.value })}
+              className="w-full px-3 py-2 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:border-primary"
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 p-3 rounded-xl bg-background border border-border">
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={form.actif ?? true}
+              onChange={(e) => setForm({ ...form, actif: e.target.checked })}
+              className="sr-only peer"
+            />
+            <div className="w-9 h-5 bg-border rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-success" />
+          </label>
+          <div>
+            <p className="text-sm font-medium text-foreground">Charge active</p>
+            <p className="text-xs text-muted">Les charges inactives ne sont pas comptabilisées</p>
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-xs text-muted mb-1">Notes</label>
+          <textarea
+            value={form.notes || ''}
+            onChange={(e) => setForm({ ...form, notes: e.target.value })}
+            rows={2}
+            placeholder="Informations complémentaires..."
+            className="w-full px-3 py-2 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:border-primary resize-none"
+          />
+        </div>
+
+        <div className="flex gap-3 pt-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex-1 px-4 py-2.5 rounded-xl border border-border text-muted hover:text-foreground text-sm transition-colors"
+          >
+            Annuler
+          </button>
+          <button
+            type="submit"
+            className="flex-1 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-white text-sm font-medium transition-colors"
+          >
+            {charge ? 'Mettre à jour' : 'Ajouter'}
+          </button>
+        </div>
+      </form>
+    </Modal>
   );
 }
 

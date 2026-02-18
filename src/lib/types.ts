@@ -85,6 +85,42 @@ export interface CalendarEvent {
   couleur?: string;
 }
 
+export type ChargeCategory = 'abonnement' | 'logiciel' | 'marketing' | 'hebergement' | 'telephonie' | 'freelance' | 'materiel' | 'formation' | 'autre';
+
+export type ChargeFrequency = 'mensuel' | 'annuel' | 'trimestriel' | 'ponctuel';
+
+export interface Charge {
+  id: string;
+  nom: string;
+  categorie: ChargeCategory;
+  montant: number;
+  frequence: ChargeFrequency;
+  dateDebut: string;
+  dateFin?: string;
+  actif: boolean;
+  notes?: string;
+  fournisseur?: string;
+}
+
+export const CHARGE_CATEGORY_LABELS: Record<ChargeCategory, string> = {
+  'abonnement': 'Abonnement',
+  'logiciel': 'Logiciel / SaaS',
+  'marketing': 'Marketing / Pub',
+  'hebergement': 'Hébergement',
+  'telephonie': 'Téléphonie',
+  'freelance': 'Freelance / Sous-traitance',
+  'materiel': 'Matériel',
+  'formation': 'Formation',
+  'autre': 'Autre',
+};
+
+export const CHARGE_FREQUENCY_LABELS: Record<ChargeFrequency, string> = {
+  'mensuel': 'Mensuel',
+  'annuel': 'Annuel',
+  'trimestriel': 'Trimestriel',
+  'ponctuel': 'Ponctuel',
+};
+
 export interface DashboardStats {
   totalClients: number;
   totalProspects: number;
