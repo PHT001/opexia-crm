@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #f8f9fb;
+  --color-foreground: #1a1a2e;
+  --color-card: #ffffff;
+  --color-card-hover: #f3f4f8;
+  --color-border: #e5e7eb;
+  --color-border-light: #d1d5db;
+  --color-primary: #6c5ce7;
+  --color-primary-hover: #5b4bd5;
+  --color-primary-light: rgba(108, 92, 231, 0.08);
+  --color-secondary: #00cec9;
+  --color-success: #00b894;
+  --color-warning: #f39c12;
+  --color-danger: #e74c3c;
+  --color-info: #3498db;
+  --color-muted: #8b95a5;
+  --color-sidebar: #ffffff;
+  --color-sidebar-hover: #f3f4f8;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 3px;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Smooth transitions globally */
+* {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(108, 92, 231, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(108, 92, 231, 0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.2s ease-out forwards;
+}
+
+/* Glass effect */
+.glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #6c5ce7, #00cec9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Status badges */
+.status-client {
+  background: rgba(0, 184, 148, 0.1);
+  color: #00997a;
+  border: 1px solid rgba(0, 184, 148, 0.25);
+}
+
+.status-prospect {
+  background: rgba(52, 152, 219, 0.1);
+  color: #2980b9;
+  border: 1px solid rgba(52, 152, 219, 0.25);
+}
+
+.status-perdu {
+  background: rgba(231, 76, 60, 0.1);
+  color: #c0392b;
+  border: 1px solid rgba(231, 76, 60, 0.25);
+}
+
+/* Kanban card drag */
+.kanban-card {
+  cursor: grab;
+}
+
+.kanban-card:active {
+  cursor: grabbing;
+}
+
+/* Inputs & selects light styling */
+input, select, textarea {
+  color-scheme: light;
+}
