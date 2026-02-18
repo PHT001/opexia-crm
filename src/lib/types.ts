@@ -10,6 +10,12 @@ export type PipelineStage = 'contact' | 'demo' | 'proposition' | 'negociation' |
 
 export type InteractionType = 'appel' | 'email' | 'rdv' | 'note';
 
+export interface ServicePricing {
+  service: ServiceType;
+  miseEnPlace: number;
+  recurrent: number;
+}
+
 export interface Client {
   id: string;
   nom: string;
@@ -20,6 +26,7 @@ export interface Client {
   status: ClientStatus;
   pipelineStage: PipelineStage;
   servicesSouscrits: ServiceType[];
+  servicePricing?: ServicePricing[];
   montantMensuel: number;
   dateCreation: string;
   dernierContact: string;

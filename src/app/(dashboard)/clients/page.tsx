@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Search, Plus, Filter, Users, UserCheck, UserX, Eye, Trash2, Edit3 } from 'lucide-react';
 import { getClients, saveClient, deleteClient, generateId } from '@/lib/store';
-import { Client, ClientStatus, SERVICE_LABELS, ServiceType, PipelineStage, PIPELINE_LABELS } from '@/lib/types';
+import { Client, ClientStatus, SERVICE_LABELS, ServiceType, ServicePricing, PipelineStage, PIPELINE_LABELS } from '@/lib/types';
 import Link from 'next/link';
 import Modal from '@/components/Modal';
 
@@ -134,7 +134,8 @@ export default function ClientsPage() {
                 <th className="px-4 py-3 font-medium">Contact</th>
                 <th className="px-4 py-3 font-medium hidden md:table-cell">Entreprise</th>
                 <th className="px-4 py-3 font-medium hidden lg:table-cell">Services</th>
-                <th className="px-4 py-3 font-medium hidden sm:table-cell">Mensuel</th>
+                <th className="px-4 py-3 font-medium hidden sm:table-cell">Setup</th>
+                <th className="px-4 py-3 font-medium hidden sm:table-cell">Récurrent</th>
                 <th className="px-4 py-3 font-medium">Statut</th>
                 <th className="px-4 py-3 font-medium hidden lg:table-cell">Pipeline</th>
                 <th className="px-4 py-3 font-medium text-right">Actions</th>
@@ -165,7 +166,12 @@ export default function ClientsPage() {
                     </div>
                   </td>
                   <td className="px-4 py-3 font-medium hidden sm:table-cell">
-                    {client.montantMensuel > 0 ? `${client.montantMensuel} €` : '—'}
+                    {(client.servicePricing?.reduce((sum, sp) => sum + sp.miseEnPlace, 0) || 0) > 0
+                      ? `${client.servicePricing!.reduce((sum, sp) => sum + sp.miseEnPlace, 0)} €`
+                      : '—'}
+                  </td>
+                  <td className="px-4 py-3 font-medium hidden sm:table-cell">
+                    {client.montantMensuel > 0 ? `${client.montantMensuel} €/mois` : '—'}
                   </td>
                   <td className="px-4 py-3">
                     <span className={`px-2.5 py-1 rounded-full text-xs font-medium status-${client.status}`}>
@@ -237,7 +243,7 @@ function ClientFormModal({ isOpen, onClose, onSave, client }: {
         id: generateId(),
         nom: '', prenom: '', entreprise: '', email: '', telephone: '',
         status: 'prospect', pipelineStage: 'contact',
-        servicesSouscrits: [], montantMensuel: 0,
+        servicesSouscrits: [], servicePricing: [], montantMensuel: 0,
         dateCreation: new Date().toISOString().split('T')[0],
         dernierContact: new Date().toISOString().split('T')[0],
         notes: '', secteur: '', source: '',
@@ -247,17 +253,35 @@ function ClientFormModal({ isOpen, onClose, onSave, client }: {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(form as Client);
+    // Auto-calculate montantMensuel from service pricing
+    const totalRecurrent = (form.servicePricing || []).reduce((sum, sp) => sum + sp.recurrent, 0);
+    onSave({ ...form, montantMensuel: totalRecurrent } as Client);
   };
 
   const toggleService = (service: ServiceType) => {
     const current = form.servicesSouscrits || [];
-    setForm({
-      ...form,
-      servicesSouscrits: current.includes(service)
-        ? current.filter(s => s !== service)
-        : [...current, service],
-    });
+    const currentPricing = form.servicePricing || [];
+    if (current.includes(service)) {
+      setForm({
+        ...form,
+        servicesSouscrits: current.filter(s => s !== service),
+        servicePricing: currentPricing.filter(sp => sp.service !== service),
+      });
+    } else {
+      setForm({
+        ...form,
+        servicesSouscrits: [...current, service],
+        servicePricing: [...currentPricing, { service, miseEnPlace: 0, recurrent: 0 }],
+      });
+    }
+  };
+
+  const updateServicePrice = (service: ServiceType, field: 'miseEnPlace' | 'recurrent', value: number) => {
+    const currentPricing = form.servicePricing || [];
+    const updated = currentPricing.map(sp =>
+      sp.service === service ? { ...sp, [field]: value } : sp
+    );
+    setForm({ ...form, servicePricing: updated });
   };
 
   return (
@@ -371,16 +395,6 @@ function ClientFormModal({ isOpen, onClose, onSave, client }: {
         </div>
 
         <div>
-          <label className="block text-xs text-muted mb-1">Montant mensuel (€)</label>
-          <input
-            type="number"
-            value={form.montantMensuel || 0}
-            onChange={(e) => setForm({ ...form, montantMensuel: Number(e.target.value) })}
-            className="w-full px-3 py-2 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:border-primary"
-          />
-        </div>
-
-        <div>
           <label className="block text-xs text-muted mb-2">Services</label>
           <div className="flex flex-wrap gap-2">
             {(Object.entries(SERVICE_LABELS) as [ServiceType, string][]).map(([key, label]) => (
@@ -399,6 +413,61 @@ function ClientFormModal({ isOpen, onClose, onSave, client }: {
             ))}
           </div>
         </div>
+
+        {/* Prix par service sélectionné */}
+        {(form.servicesSouscrits?.length || 0) > 0 && (
+          <div className="space-y-3">
+            <label className="block text-xs text-muted">Tarification par service</label>
+            {form.servicesSouscrits?.map(service => {
+              const pricing = (form.servicePricing || []).find(sp => sp.service === service);
+              return (
+                <div key={service} className="bg-background border border-border rounded-xl p-3 space-y-2">
+                  <p className="text-sm font-medium text-foreground flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-primary" />
+                    {SERVICE_LABELS[service]}
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs text-muted mb-1">Mise en place (€)</label>
+                      <input
+                        type="number"
+                        min={0}
+                        value={pricing?.miseEnPlace || 0}
+                        onChange={(e) => updateServicePrice(service, 'miseEnPlace', Number(e.target.value))}
+                        className="w-full px-3 py-1.5 rounded-lg bg-card border border-border text-foreground text-sm focus:outline-none focus:border-primary"
+                        placeholder="0"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-muted mb-1">Récurrent /mois (€)</label>
+                      <input
+                        type="number"
+                        min={0}
+                        value={pricing?.recurrent || 0}
+                        onChange={(e) => updateServicePrice(service, 'recurrent', Number(e.target.value))}
+                        className="w-full px-3 py-1.5 rounded-lg bg-card border border-border text-foreground text-sm focus:outline-none focus:border-primary"
+                        placeholder="0"
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            {/* Totaux */}
+            <div className="flex items-center justify-between px-3 py-2.5 bg-primary/5 border border-primary/20 rounded-xl">
+              <span className="text-xs font-medium text-muted">Total mise en place</span>
+              <span className="text-sm font-bold text-foreground">
+                {(form.servicePricing || []).reduce((sum, sp) => sum + sp.miseEnPlace, 0)} €
+              </span>
+            </div>
+            <div className="flex items-center justify-between px-3 py-2.5 bg-success/5 border border-success/20 rounded-xl">
+              <span className="text-xs font-medium text-muted">Total récurrent /mois</span>
+              <span className="text-sm font-bold text-success">
+                {(form.servicePricing || []).reduce((sum, sp) => sum + sp.recurrent, 0)} €/mois
+              </span>
+            </div>
+          </div>
+        )}
 
         <div>
           <label className="block text-xs text-muted mb-1">Notes</label>
