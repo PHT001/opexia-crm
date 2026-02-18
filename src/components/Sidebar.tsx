@@ -10,7 +10,6 @@ import {
   GitBranch,
   FolderKanban,
   Calendar,
-  Video,
   Settings,
   ChevronLeft,
   ChevronRight,
@@ -25,8 +24,7 @@ const navItems = [
   { href: '/facturation', label: 'Facturation', icon: Receipt },
   { href: '/pipeline', label: 'Pipeline', icon: GitBranch },
   { href: '/projets', label: 'Projets', icon: FolderKanban },
-  { href: '/calendrier', label: 'Calendrier', icon: Calendar },
-  { href: '/calendly', label: 'Calendly', icon: Video },
+  { href: '/calendly', label: 'Calendrier', icon: Calendar },
   { href: '/parametres', label: 'Paramètres', icon: Settings },
 ];
 
