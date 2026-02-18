@@ -24,11 +24,14 @@ export default function PipelinePage() {
   const [dragOverStage, setDragOverStage] = useState<PipelineStage | null>(null);
 
   useEffect(() => {
-    setClients(getClients());
-    setMounted(true);
+    const loadData = async () => {
+      setClients(await getClients());
+      setMounted(true);
+    };
+    loadData();
   }, []);
 
-  const refresh = () => setClients(getClients());
+  const refresh = async () => setClients(await getClients());
 
   const getClientsByStage = (stage: PipelineStage) =>
     clients.filter(c => c.pipelineStage === stage);
@@ -49,7 +52,7 @@ export default function PipelinePage() {
     setDragOverStage(null);
   };
 
-  const handleDrop = (stage: PipelineStage) => {
+  const handleDrop = async (stage: PipelineStage) => {
     if (draggedClient) {
       const client = clients.find(c => c.id === draggedClient);
       if (client && client.pipelineStage !== stage) {
@@ -58,8 +61,8 @@ export default function PipelinePage() {
           pipelineStage: stage,
           status: stage === 'signe' ? 'client' as const : stage === 'perdu' ? 'perdu' as const : client.status,
         };
-        saveClient(updated);
-        refresh();
+        await saveClient(updated);
+        await refresh();
       }
     }
     setDraggedClient(null);

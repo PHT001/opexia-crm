@@ -30,22 +30,30 @@ export default function ClientDetailPage() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const id = params.id as string;
-    const c = getClient(id);
-    if (!c) {
-      router.push('/clients');
-      return;
-    }
-    setClient(c);
-    setProjects(getProjectsByClient(id));
-    setInvoices(getInvoicesByClient(id));
-    setInteractions(getInteractionsByClient(id));
-    setMounted(true);
+    const loadData = async () => {
+      const id = params.id as string;
+      const c = await getClient(id);
+      if (!c) {
+        router.push('/clients');
+        return;
+      }
+      setClient(c);
+      const [proj, inv, inter] = await Promise.all([
+        getProjectsByClient(id),
+        getInvoicesByClient(id),
+        getInteractionsByClient(id),
+      ]);
+      setProjects(proj);
+      setInvoices(inv);
+      setInteractions(inter);
+      setMounted(true);
+    };
+    loadData();
   }, [params.id, router]);
 
-  const refresh = () => {
+  const refresh = async () => {
     const id = params.id as string;
-    setInteractions(getInteractionsByClient(id));
+    setInteractions(await getInteractionsByClient(id));
   };
 
   if (!mounted || !client) {
@@ -366,9 +374,9 @@ function AddInteractionModal({ isOpen, onClose, clientId, onSave }: {
     date: new Date().toISOString().split('T')[0],
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    saveInteraction({
+    await saveInteraction({
       id: generateId(),
       clientId,
       ...form,

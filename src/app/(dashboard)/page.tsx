@@ -43,15 +43,25 @@ export default function DashboardPage() {
   const [editingCharge, setEditingCharge] = useState<Charge | null>(null);
 
   useEffect(() => {
-    setClients(getClients());
-    setInvoices(getInvoices());
-    setInteractions(getInteractions());
-    setEvents(getEvents());
-    setCharges(getCharges());
-    setMounted(true);
+    const loadData = async () => {
+      const [c, inv, inter, ev, ch] = await Promise.all([
+        getClients(),
+        getInvoices(),
+        getInteractions(),
+        getEvents(),
+        getCharges(),
+      ]);
+      setClients(c);
+      setInvoices(inv);
+      setInteractions(inter);
+      setEvents(ev);
+      setCharges(ch);
+      setMounted(true);
+    };
+    loadData();
   }, []);
 
-  const refreshCharges = () => setCharges(getCharges());
+  const refreshCharges = async () => setCharges(await getCharges());
 
   if (!mounted) return <DashboardSkeleton />;
 
@@ -153,16 +163,16 @@ export default function DashboardPage() {
     }
   };
 
-  const handleDeleteCharge = (id: string) => {
+  const handleDeleteCharge = async (id: string) => {
     if (confirm('Supprimer cette charge ?')) {
-      deleteCharge(id);
-      refreshCharges();
+      await deleteCharge(id);
+      await refreshCharges();
     }
   };
 
-  const handleSaveCharge = (charge: Charge) => {
-    saveCharge(charge);
-    refreshCharges();
+  const handleSaveCharge = async (charge: Charge) => {
+    await saveCharge(charge);
+    await refreshCharges();
     setChargeModalOpen(false);
     setEditingCharge(null);
   };

@@ -21,12 +21,16 @@ export default function FacturationPage() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setInvoices(getInvoices());
-    setClients(getClients());
-    setMounted(true);
+    const loadData = async () => {
+      const [inv, cl] = await Promise.all([getInvoices(), getClients()]);
+      setInvoices(inv);
+      setClients(cl);
+      setMounted(true);
+    };
+    loadData();
   }, []);
 
-  const refresh = () => setInvoices(getInvoices());
+  const refresh = async () => setInvoices(await getInvoices());
 
   const getClientName = (clientId: string) => {
     const c = clients.find(cl => cl.id === clientId);
@@ -232,11 +236,11 @@ function NewInvoiceModal({ isOpen, onClose, clients, onSave }: {
     status: 'en-attente' as InvoiceStatus,
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const now = new Date();
     const numero = `OPEX-${now.getFullYear()}-${String(Math.floor(Math.random() * 999)).padStart(3, '0')}`;
-    saveInvoice({
+    await saveInvoice({
       id: generateId(),
       numero,
       clientId: form.clientId,

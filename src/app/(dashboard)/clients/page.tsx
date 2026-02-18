@@ -16,11 +16,14 @@ export default function ClientsPage() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setClients(getClients());
-    setMounted(true);
+    const loadData = async () => {
+      setClients(await getClients());
+      setMounted(true);
+    };
+    loadData();
   }, []);
 
-  const refresh = () => setClients(getClients());
+  const refresh = async () => setClients(await getClients());
 
   const filtered = clients.filter(c => {
     const matchSearch = search === '' ||
@@ -29,16 +32,16 @@ export default function ClientsPage() {
     return matchSearch && matchStatus;
   });
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Supprimer ce client ?')) {
-      deleteClient(id);
-      refresh();
+      await deleteClient(id);
+      await refresh();
     }
   };
 
-  const handleSave = (client: Client) => {
-    saveClient(client);
-    refresh();
+  const handleSave = async (client: Client) => {
+    await saveClient(client);
+    await refresh();
     setModalOpen(false);
     setEditingClient(null);
   };

@@ -1,161 +1,285 @@
-'use client';
-
 import { Client, Project, Invoice, Interaction, CalendarEvent, Charge } from './types';
+import { supabase } from './supabase';
 
-const STORAGE_KEYS = {
-  clients: 'opexia_clients',
-  projects: 'opexia_projects',
-  invoices: 'opexia_invoices',
-  interactions: 'opexia_interactions',
-  events: 'opexia_events',
-  charges: 'opexia_charges',
-};
+// ============ HELPERS ============
 
-function loadFromStorage<T>(key: string): T[] {
-  if (typeof window === 'undefined') return [];
-  try {
-    const data = localStorage.getItem(key);
-    return data ? JSON.parse(data) : [];
-  } catch {
-    return [];
-  }
+// Convert camelCase Client to snake_case DB row
+function clientToRow(client: Client) {
+  return {
+    id: client.id,
+    nom: client.nom,
+    prenom: client.prenom,
+    entreprise: client.entreprise,
+    email: client.email,
+    telephone: client.telephone,
+    status: client.status,
+    pipeline_stage: client.pipelineStage,
+    services_souscrits: client.servicesSouscrits,
+    service_pricing: client.servicePricing || [],
+    montant_mensuel: client.montantMensuel,
+    date_creation: client.dateCreation,
+    dernier_contact: client.dernierContact,
+    notes: client.notes,
+    adresse: client.adresse,
+    site_web: client.siteWeb,
+    secteur: client.secteur,
+    source: client.source,
+    avatar: client.avatar,
+  };
 }
 
-function saveToStorage<T>(key: string, data: T[]) {
-  if (typeof window === 'undefined') return;
-  localStorage.setItem(key, JSON.stringify(data));
+// Convert snake_case DB row to camelCase Client
+function rowToClient(row: Record<string, unknown>): Client {
+  return {
+    id: row.id as string,
+    nom: row.nom as string,
+    prenom: row.prenom as string,
+    entreprise: row.entreprise as string,
+    email: row.email as string || '',
+    telephone: row.telephone as string || '',
+    status: row.status as Client['status'],
+    pipelineStage: row.pipeline_stage as Client['pipelineStage'],
+    servicesSouscrits: (row.services_souscrits as Client['servicesSouscrits']) || [],
+    servicePricing: (row.service_pricing as Client['servicePricing']) || [],
+    montantMensuel: Number(row.montant_mensuel) || 0,
+    dateCreation: row.date_creation as string || '',
+    dernierContact: row.dernier_contact as string || '',
+    notes: row.notes as string || '',
+    adresse: row.adresse as string,
+    siteWeb: row.site_web as string,
+    secteur: row.secteur as string,
+    source: row.source as string,
+    avatar: row.avatar as string,
+  };
 }
 
-export function getClients(): Client[] {
-  return loadFromStorage<Client>(STORAGE_KEYS.clients);
+function invoiceToRow(invoice: Invoice) {
+  return {
+    id: invoice.id,
+    client_id: invoice.clientId,
+    numero: invoice.numero,
+    montant: invoice.montant,
+    status: invoice.status,
+    date_emission: invoice.dateEmission,
+    date_echeance: invoice.dateEcheance,
+    description: invoice.description,
+    mois: invoice.mois,
+  };
 }
 
-export function getClient(id: string): Client | undefined {
-  return getClients().find(c => c.id === id);
+function rowToInvoice(row: Record<string, unknown>): Invoice {
+  return {
+    id: row.id as string,
+    clientId: row.client_id as string,
+    numero: row.numero as string || '',
+    montant: Number(row.montant) || 0,
+    status: row.status as Invoice['status'],
+    dateEmission: row.date_emission as string || '',
+    dateEcheance: row.date_echeance as string || '',
+    description: row.description as string || '',
+    mois: row.mois as string || '',
+  };
 }
 
-export function saveClient(client: Client): void {
-  const clients = getClients();
-  const idx = clients.findIndex(c => c.id === client.id);
-  if (idx >= 0) {
-    clients[idx] = client;
-  } else {
-    clients.push(client);
-  }
-  saveToStorage(STORAGE_KEYS.clients, clients);
+function interactionToRow(interaction: Interaction) {
+  return {
+    id: interaction.id,
+    client_id: interaction.clientId,
+    type: interaction.type,
+    date: interaction.date,
+    sujet: interaction.sujet,
+    contenu: interaction.contenu,
+  };
 }
 
-export function deleteClient(id: string): void {
-  const clients = getClients().filter(c => c.id !== id);
-  saveToStorage(STORAGE_KEYS.clients, clients);
+function rowToInteraction(row: Record<string, unknown>): Interaction {
+  return {
+    id: row.id as string,
+    clientId: row.client_id as string,
+    type: row.type as Interaction['type'],
+    date: row.date as string || '',
+    sujet: row.sujet as string || '',
+    contenu: row.contenu as string || '',
+  };
 }
 
-export function getProjects(): Project[] {
-  return loadFromStorage<Project>(STORAGE_KEYS.projects);
+function eventToRow(event: CalendarEvent) {
+  return {
+    id: event.id,
+    client_id: event.clientId,
+    titre: event.titre,
+    date: event.date,
+    heure: event.heure,
+    duree: event.duree,
+    type: event.type,
+    description: event.description,
+    couleur: event.couleur,
+  };
 }
 
-export function getProjectsByClient(clientId: string): Project[] {
-  return getProjects().filter(p => p.clientId === clientId);
+function rowToEvent(row: Record<string, unknown>): CalendarEvent {
+  return {
+    id: row.id as string,
+    clientId: row.client_id as string,
+    titre: row.titre as string || '',
+    date: row.date as string || '',
+    heure: row.heure as string || '',
+    duree: Number(row.duree) || 30,
+    type: row.type as CalendarEvent['type'] || 'autre',
+    description: row.description as string,
+    couleur: row.couleur as string,
+  };
 }
 
-export function saveProject(project: Project): void {
-  const projects = getProjects();
-  const idx = projects.findIndex(p => p.id === project.id);
-  if (idx >= 0) {
-    projects[idx] = project;
-  } else {
-    projects.push(project);
-  }
-  saveToStorage(STORAGE_KEYS.projects, projects);
+function chargeToRow(charge: Charge) {
+  return {
+    id: charge.id,
+    nom: charge.nom,
+    categorie: charge.categorie,
+    montant: charge.montant,
+    frequence: charge.frequence,
+    date_debut: charge.dateDebut,
+    date_fin: charge.dateFin,
+    actif: charge.actif,
+    notes: charge.notes,
+    fournisseur: charge.fournisseur,
+  };
 }
 
-export function deleteProject(id: string): void {
-  const projects = getProjects().filter(p => p.id !== id);
-  saveToStorage(STORAGE_KEYS.projects, projects);
+function rowToCharge(row: Record<string, unknown>): Charge {
+  return {
+    id: row.id as string,
+    nom: row.nom as string || '',
+    categorie: row.categorie as Charge['categorie'] || 'autre',
+    montant: Number(row.montant) || 0,
+    frequence: row.frequence as Charge['frequence'] || 'mensuel',
+    dateDebut: row.date_debut as string || '',
+    dateFin: row.date_fin as string,
+    actif: row.actif as boolean ?? true,
+    notes: row.notes as string,
+    fournisseur: row.fournisseur as string,
+  };
 }
 
-export function getInvoices(): Invoice[] {
-  return loadFromStorage<Invoice>(STORAGE_KEYS.invoices);
+// ============ CLIENTS ============
+
+export async function getClients(): Promise<Client[]> {
+  const { data, error } = await supabase.from('clients').select('*').order('created_at', { ascending: false });
+  if (error) { console.error('getClients error:', error); return []; }
+  return (data || []).map(rowToClient);
 }
 
-export function getInvoicesByClient(clientId: string): Invoice[] {
-  return getInvoices().filter(i => i.clientId === clientId);
+export async function getClient(id: string): Promise<Client | undefined> {
+  const { data, error } = await supabase.from('clients').select('*').eq('id', id).single();
+  if (error || !data) return undefined;
+  return rowToClient(data);
 }
 
-export function saveInvoice(invoice: Invoice): void {
-  const invoices = getInvoices();
-  const idx = invoices.findIndex(i => i.id === invoice.id);
-  if (idx >= 0) {
-    invoices[idx] = invoice;
-  } else {
-    invoices.push(invoice);
-  }
-  saveToStorage(STORAGE_KEYS.invoices, invoices);
+export async function saveClient(client: Client): Promise<void> {
+  const row = clientToRow(client);
+  const { error } = await supabase.from('clients').upsert(row, { onConflict: 'id' });
+  if (error) console.error('saveClient error:', error);
 }
 
-export function deleteInvoice(id: string): void {
-  const invoices = getInvoices().filter(i => i.id !== id);
-  saveToStorage(STORAGE_KEYS.invoices, invoices);
+export async function deleteClient(id: string): Promise<void> {
+  const { error } = await supabase.from('clients').delete().eq('id', id);
+  if (error) console.error('deleteClient error:', error);
 }
 
-export function getInteractions(): Interaction[] {
-  return loadFromStorage<Interaction>(STORAGE_KEYS.interactions);
+// ============ INVOICES ============
+
+export async function getInvoices(): Promise<Invoice[]> {
+  const { data, error } = await supabase.from('invoices').select('*').order('created_at', { ascending: false });
+  if (error) { console.error('getInvoices error:', error); return []; }
+  return (data || []).map(rowToInvoice);
 }
 
-export function getInteractionsByClient(clientId: string): Interaction[] {
-  return getInteractions().filter(i => i.clientId === clientId);
+export async function getInvoicesByClient(clientId: string): Promise<Invoice[]> {
+  const { data, error } = await supabase.from('invoices').select('*').eq('client_id', clientId);
+  if (error) return [];
+  return (data || []).map(rowToInvoice);
 }
 
-export function saveInteraction(interaction: Interaction): void {
-  const interactions = getInteractions();
-  const idx = interactions.findIndex(i => i.id === interaction.id);
-  if (idx >= 0) {
-    interactions[idx] = interaction;
-  } else {
-    interactions.push(interaction);
-  }
-  saveToStorage(STORAGE_KEYS.interactions, interactions);
+export async function saveInvoice(invoice: Invoice): Promise<void> {
+  const row = invoiceToRow(invoice);
+  const { error } = await supabase.from('invoices').upsert(row, { onConflict: 'id' });
+  if (error) console.error('saveInvoice error:', error);
 }
 
-export function getEvents(): CalendarEvent[] {
-  return loadFromStorage<CalendarEvent>(STORAGE_KEYS.events);
+export async function deleteInvoice(id: string): Promise<void> {
+  const { error } = await supabase.from('invoices').delete().eq('id', id);
+  if (error) console.error('deleteInvoice error:', error);
 }
 
-export function saveEvent(event: CalendarEvent): void {
-  const events = getEvents();
-  const idx = events.findIndex(e => e.id === event.id);
-  if (idx >= 0) {
-    events[idx] = event;
-  } else {
-    events.push(event);
-  }
-  saveToStorage(STORAGE_KEYS.events, events);
+// ============ INTERACTIONS ============
+
+export async function getInteractions(): Promise<Interaction[]> {
+  const { data, error } = await supabase.from('interactions').select('*').order('created_at', { ascending: false });
+  if (error) { console.error('getInteractions error:', error); return []; }
+  return (data || []).map(rowToInteraction);
 }
 
-export function deleteEvent(id: string): void {
-  const events = getEvents().filter(e => e.id !== id);
-  saveToStorage(STORAGE_KEYS.events, events);
+export async function getInteractionsByClient(clientId: string): Promise<Interaction[]> {
+  const { data, error } = await supabase.from('interactions').select('*').eq('client_id', clientId);
+  if (error) return [];
+  return (data || []).map(rowToInteraction);
 }
 
-export function getCharges(): Charge[] {
-  return loadFromStorage<Charge>(STORAGE_KEYS.charges);
+export async function saveInteraction(interaction: Interaction): Promise<void> {
+  const row = interactionToRow(interaction);
+  const { error } = await supabase.from('interactions').upsert(row, { onConflict: 'id' });
+  if (error) console.error('saveInteraction error:', error);
 }
 
-export function saveCharge(charge: Charge): void {
-  const charges = getCharges();
-  const idx = charges.findIndex(c => c.id === charge.id);
-  if (idx >= 0) {
-    charges[idx] = charge;
-  } else {
-    charges.push(charge);
-  }
-  saveToStorage(STORAGE_KEYS.charges, charges);
+// ============ EVENTS ============
+
+export async function getEvents(): Promise<CalendarEvent[]> {
+  const { data, error } = await supabase.from('events').select('*').order('date', { ascending: true });
+  if (error) { console.error('getEvents error:', error); return []; }
+  return (data || []).map(rowToEvent);
 }
 
-export function deleteCharge(id: string): void {
-  const charges = getCharges().filter(c => c.id !== id);
-  saveToStorage(STORAGE_KEYS.charges, charges);
+export async function saveEvent(event: CalendarEvent): Promise<void> {
+  const row = eventToRow(event);
+  const { error } = await supabase.from('events').upsert(row, { onConflict: 'id' });
+  if (error) console.error('saveEvent error:', error);
 }
+
+export async function deleteEvent(id: string): Promise<void> {
+  const { error } = await supabase.from('events').delete().eq('id', id);
+  if (error) console.error('deleteEvent error:', error);
+}
+
+// ============ CHARGES ============
+
+export async function getCharges(): Promise<Charge[]> {
+  const { data, error } = await supabase.from('charges').select('*').order('created_at', { ascending: false });
+  if (error) { console.error('getCharges error:', error); return []; }
+  return (data || []).map(rowToCharge);
+}
+
+export async function saveCharge(charge: Charge): Promise<void> {
+  const row = chargeToRow(charge);
+  const { error } = await supabase.from('charges').upsert(row, { onConflict: 'id' });
+  if (error) console.error('saveCharge error:', error);
+}
+
+export async function deleteCharge(id: string): Promise<void> {
+  const { error } = await supabase.from('charges').delete().eq('id', id);
+  if (error) console.error('deleteCharge error:', error);
+}
+
+// ============ PROJECTS (legacy, kept for compatibility) ============
+
+export async function getProjects(): Promise<Project[]> {
+  return [];
+}
+
+export async function getProjectsByClient(_clientId: string): Promise<Project[]> {
+  return [];
+}
+
+// ============ UTILS ============
 
 export function generateId(): string {
   return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);

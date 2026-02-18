@@ -44,14 +44,17 @@ export default function ChargesPage() {
   const [caMensuel, setCaMensuel] = useState(0);
 
   useEffect(() => {
-    setCharges(getCharges());
-    const clients = getClients();
-    const ca = clients.filter(c => c.status === 'client').reduce((sum, c) => sum + c.montantMensuel, 0);
-    setCaMensuel(ca);
-    setMounted(true);
+    const loadData = async () => {
+      const [ch, clients] = await Promise.all([getCharges(), getClients()]);
+      setCharges(ch);
+      const ca = clients.filter(c => c.status === 'client').reduce((sum, c) => sum + c.montantMensuel, 0);
+      setCaMensuel(ca);
+      setMounted(true);
+    };
+    loadData();
   }, []);
 
-  const refresh = () => setCharges(getCharges());
+  const refresh = async () => setCharges(await getCharges());
 
   const getMontantMensuel = (charge: Charge) => {
     switch (charge.frequence) {
@@ -94,21 +97,21 @@ export default function ChargesPage() {
     })
     .filter(c => c.count > 0);
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Supprimer cette charge ?')) {
-      deleteCharge(id);
-      refresh();
+      await deleteCharge(id);
+      await refresh();
     }
   };
 
-  const handleToggleActive = (charge: Charge) => {
-    saveCharge({ ...charge, actif: !charge.actif });
-    refresh();
+  const handleToggleActive = async (charge: Charge) => {
+    await saveCharge({ ...charge, actif: !charge.actif });
+    await refresh();
   };
 
-  const handleSave = (charge: Charge) => {
-    saveCharge(charge);
-    refresh();
+  const handleSave = async (charge: Charge) => {
+    await saveCharge(charge);
+    await refresh();
     setModalOpen(false);
     setEditingCharge(null);
   };
