@@ -8,6 +8,7 @@ import {
   Users,
   Receipt,
   GitBranch,
+  Wallet,
   Calendar,
   Settings,
   ChevronLeft,
@@ -22,6 +23,7 @@ const navItems = [
   { href: '/clients', label: 'Clients', icon: Users },
   { href: '/facturation', label: 'Facturation', icon: Receipt },
   { href: '/pipeline', label: 'Pipeline', icon: GitBranch },
+  { href: '/charges', label: 'Charges', icon: Wallet },
   { href: '/calendly', label: 'Calendrier', icon: Calendar },
   { href: '/parametres', label: 'Paramètres', icon: Settings },
 ];
