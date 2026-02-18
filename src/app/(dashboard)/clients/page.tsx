@@ -345,12 +345,33 @@ function ClientFormModal({ isOpen, onClose, onSave, client }: {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-xs text-muted mb-1">Secteur</label>
-            <input
-              type="text"
+            <select
               value={form.secteur || ''}
               onChange={(e) => setForm({ ...form, secteur: e.target.value })}
               className="w-full px-3 py-2 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:border-primary"
-            />
+            >
+              <option value="">Sélectionner un secteur</option>
+              <option value="Restauration">Restauration</option>
+              <option value="Immobilier">Immobilier</option>
+              <option value="E-commerce">E-commerce</option>
+              <option value="Santé">Santé</option>
+              <option value="Beauté & Bien-être">Beauté & Bien-être</option>
+              <option value="BTP & Construction">BTP & Construction</option>
+              <option value="Automobile">Automobile</option>
+              <option value="Finance & Assurance">Finance & Assurance</option>
+              <option value="Juridique">Juridique</option>
+              <option value="Éducation & Formation">Éducation & Formation</option>
+              <option value="Marketing & Communication">Marketing & Communication</option>
+              <option value="IT & Tech">IT & Tech</option>
+              <option value="Tourisme & Hôtellerie">Tourisme & Hôtellerie</option>
+              <option value="Sport & Fitness">Sport & Fitness</option>
+              <option value="Mode & Textile">Mode & Textile</option>
+              <option value="Artisanat">Artisanat</option>
+              <option value="Transport & Logistique">Transport & Logistique</option>
+              <option value="Industrie">Industrie</option>
+              <option value="Agriculture">Agriculture</option>
+              <option value="Autre">Autre</option>
+            </select>
           </div>
           <div>
             <label className="block text-xs text-muted mb-1">Source</label>
