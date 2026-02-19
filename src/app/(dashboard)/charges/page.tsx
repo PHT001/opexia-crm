@@ -22,7 +22,7 @@ import {
 } from 'recharts';
 
 const CATEGORY_COLORS: Record<ChargeCategory, string> = {
-  'abonnement': '#7c3aed',
+  'abonnement': '#7c6ff7',
   'logiciel': '#8b5cf6',
   'marketing': '#facc15',
   'hebergement': '#3b82f6',
@@ -204,7 +204,7 @@ export default function ChargesPage() {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ background: '#ffffff', border: '1px solid #e8e5f0', borderRadius: '8px', color: '#1a1625', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
+                    contentStyle={{ background: 'rgba(18,18,30,0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#eeeef2', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}
                     formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €/mois`, '']}
                   />
                 </PieChart>
@@ -237,14 +237,14 @@ export default function ChargesPage() {
           {chargesByFrequency.length > 0 ? (
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={chargesByFrequency}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e8e5f0" />
-                <XAxis dataKey="name" stroke="#9490a6" fontSize={12} />
-                <YAxis stroke="#9490a6" fontSize={12} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+                <XAxis dataKey="name" stroke="rgba(255,255,255,0.25)" fontSize={12} />
+                <YAxis stroke="rgba(255,255,255,0.25)" fontSize={12} />
                 <Tooltip
-                  contentStyle={{ background: '#ffffff', border: '1px solid #e8e5f0', borderRadius: '8px', color: '#1a1625', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
+                  contentStyle={{ background: 'rgba(18,18,30,0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#eeeef2', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}
                   formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €`, 'Total']}
                 />
-                <Bar dataKey="total" fill="#7c3aed" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="total" fill="#7c6ff7" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : (

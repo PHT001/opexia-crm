@@ -32,13 +32,16 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' }:
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className={`relative w-full ${sizeClasses[size]} bg-card border border-border rounded-xl shadow-2xl animate-scale-in max-h-[90vh] flex flex-col`}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className={`relative w-full ${sizeClasses[size]} bg-[rgba(18,18,30,0.85)] backdrop-blur-2xl border border-white/[0.08] rounded-2xl shadow-2xl animate-scale-in max-h-[90vh] flex flex-col`}>
+        {/* Top shine line */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent rounded-t-2xl" />
+
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
           <h2 className="text-lg font-semibold text-foreground">{title}</h2>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-card-hover text-muted hover:text-foreground transition-colors"
+            className="p-1.5 rounded-xl hover:bg-white/[0.06] text-white/40 hover:text-white/80 transition-colors"
           >
             <X size={18} />
           </button>
