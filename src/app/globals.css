@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* ===== APEXIFY DARK THEME ===== */
+  /* ===== APEXIFY DARK THEME — violet/bleu only ===== */
   --color-background: #0b0b0f;
   --color-background-secondary: #101016;
   --color-foreground: #e2e2ef;
@@ -15,8 +15,8 @@
   --color-primary-hover: #8e72ff;
   --color-primary-light: rgba(124, 92, 252, 0.1);
   --color-secondary: #5b8af5;
-  --color-success: #34d399;
-  --color-warning: #f59e0b;
+  --color-success: #5b8af5;
+  --color-warning: #a78bfa;
   --color-danger: #ef4444;
   --color-info: #818cf8;
   --color-muted: #50506b;
@@ -132,9 +132,9 @@ body {
 
 /* ===== STATUS BADGES ===== */
 .status-client {
-  background: rgba(52, 211, 153, 0.08);
-  color: #34d399;
-  border: 1px solid rgba(52, 211, 153, 0.15);
+  background: rgba(91, 138, 245, 0.08);
+  color: #5b8af5;
+  border: 1px solid rgba(91, 138, 245, 0.15);
 }
 
 .status-prospect {
@@ -175,10 +175,10 @@ tr:hover td {
   border: 1px solid rgba(124, 92, 252, 0.2);
 }
 
-/* Icon glow containers */
+/* Icon glow containers — violet/bleu/rouge only */
 .icon-glow-primary { background: rgba(124, 92, 252, 0.1); color: #7c5cfc; }
-.icon-glow-success { background: rgba(52, 211, 153, 0.1); color: #34d399; }
-.icon-glow-warning { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+.icon-glow-success { background: rgba(91, 138, 245, 0.1); color: #5b8af5; }
+.icon-glow-warning { background: rgba(167, 139, 250, 0.1); color: #a78bfa; }
 .icon-glow-danger { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
 .icon-glow-info { background: rgba(91, 138, 245, 0.1); color: #5b8af5; }
 

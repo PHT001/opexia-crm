@@ -11,8 +11,8 @@ const stages: PipelineStage[] = ['premier-contact', 'proposition', 'signe', 'ref
 const stageColors: Record<PipelineStage, string> = {
   'premier-contact': '#818cf8',
   'proposition': '#7c5cfc',
-  'signe': '#34d399',
-  'refuse': '#f59e0b',
+  'signe': '#5b8af5',
+  'refuse': '#a78bfa',
   'perdu': '#50506b',
 };
 

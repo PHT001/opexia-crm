@@ -24,12 +24,12 @@ import {
 const CATEGORY_COLORS: Record<ChargeCategory, string> = {
   'abonnement': '#7c5cfc',
   'logiciel': '#5b8af5',
-  'marketing': '#f59e0b',
+  'marketing': '#a78bfa',
   'hebergement': '#818cf8',
-  'telephonie': '#a78bfa',
-  'freelance': '#34d399',
+  'telephonie': '#6366f1',
+  'freelance': '#93a3f8',
   'materiel': '#ef4444',
-  'formation': '#6366f1',
+  'formation': '#c4b5fd',
   'autre': '#50506b',
 };
 
