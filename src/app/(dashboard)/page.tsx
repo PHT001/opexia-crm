@@ -283,20 +283,33 @@ export default function DashboardPage() {
                 <AreaChart data={revenueData}>
                   <defs>
                     <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#c850c0" stopOpacity={0.35} />
-                      <stop offset="50%" stopColor="#6c63ff" stopOpacity={0.12} />
-                      <stop offset="100%" stopColor="#6c63ff" stopOpacity={0.02} />
+                      <stop offset="0%" stopColor="#c850c0" stopOpacity={0.5} />
+                      <stop offset="30%" stopColor="#9b59b6" stopOpacity={0.25} />
+                      <stop offset="60%" stopColor="#6c63ff" stopOpacity={0.1} />
+                      <stop offset="100%" stopColor="#6c63ff" stopOpacity={0} />
                     </linearGradient>
+                    <linearGradient id="strokeGrad" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#c850c0" />
+                      <stop offset="50%" stopColor="#d96dd2" />
+                      <stop offset="100%" stopColor="#6c63ff" />
+                    </linearGradient>
+                    <filter id="glow">
+                      <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+                      <feMerge>
+                        <feMergeNode in="coloredBlur" />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
+                    </filter>
                   </defs>
-                  <CartesianGrid strokeDasharray="0" stroke="rgba(255,255,255,0.03)" vertical={false} />
-                  <XAxis dataKey="mois" stroke="rgba(255,255,255,0.18)" fontSize={11} tickLine={false} axisLine={false} dy={8} />
-                  <YAxis stroke="rgba(255,255,255,0.18)" fontSize={11} tickLine={false} axisLine={false} dx={-8} />
+                  <CartesianGrid strokeDasharray="0" stroke="rgba(255,255,255,0.025)" vertical={false} />
+                  <XAxis dataKey="mois" stroke="rgba(255,255,255,0.15)" fontSize={11} tickLine={false} axisLine={false} dy={8} />
+                  <YAxis stroke="rgba(255,255,255,0.15)" fontSize={11} tickLine={false} axisLine={false} dx={-8} />
                   <Tooltip
-                    contentStyle={{ background: 'rgba(17,17,30,0.95)', border: '1px solid rgba(200,80,192,0.15)', borderRadius: '12px', color: '#e8e8ef', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(200,80,192,0.08)', fontSize: '13px', padding: '10px 14px' }}
+                    contentStyle={{ background: '#111118', border: '1px solid rgba(200,80,192,0.2)', borderRadius: '10px', color: '#e4e4ed', boxShadow: '0 8px 24px rgba(0,0,0,0.6), 0 0 15px rgba(200,80,192,0.1)', fontSize: '13px', padding: '10px 14px' }}
                     formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €`, 'CA']}
-                    cursor={{ stroke: 'rgba(200,80,192,0.15)' }}
+                    cursor={{ stroke: 'rgba(200,80,192,0.12)' }}
                   />
-                  <Area type="monotone" dataKey="montant" stroke="#c850c0" fill="url(#colorRevenue)" strokeWidth={2.5} dot={false} activeDot={{ r: 5, fill: '#c850c0', stroke: '#0b0b14', strokeWidth: 2 }} />
+                  <Area type="monotone" dataKey="montant" stroke="url(#strokeGrad)" fill="url(#colorRevenue)" strokeWidth={3} dot={false} activeDot={{ r: 5, fill: '#c850c0', stroke: '#05050a', strokeWidth: 2.5 }} filter="url(#glow)" />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
@@ -336,8 +349,8 @@ export default function DashboardPage() {
                       ))}
                     </Pie>
                     <Tooltip
-                      contentStyle={{ background: 'rgba(17,17,30,0.95)', border: '1px solid rgba(200,80,192,0.15)', borderRadius: '12px', color: '#e8e8ef', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(200,80,192,0.08)', fontSize: '13px', padding: '10px 14px' }}
-                      itemStyle={{ color: '#e8e8ef' }}
+                      contentStyle={{ background: '#111118', border: '1px solid rgba(200,80,192,0.2)', borderRadius: '10px', color: '#e4e4ed', boxShadow: '0 8px 24px rgba(0,0,0,0.6), 0 0 15px rgba(200,80,192,0.1)', fontSize: '13px', padding: '10px 14px' }}
+                      itemStyle={{ color: '#e4e4ed' }}
                     />
                   </PieChart>
                 </ResponsiveContainer>
@@ -520,8 +533,8 @@ export default function DashboardPage() {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ background: 'rgba(17,17,30,0.95)', border: '1px solid rgba(200,80,192,0.15)', borderRadius: '12px', color: '#e8e8ef', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(200,80,192,0.08)', fontSize: '13px', padding: '10px 14px' }}
-                    itemStyle={{ color: '#e8e8ef' }}
+                    contentStyle={{ background: '#111118', border: '1px solid rgba(200,80,192,0.2)', borderRadius: '10px', color: '#e4e4ed', boxShadow: '0 8px 24px rgba(0,0,0,0.6), 0 0 15px rgba(200,80,192,0.1)', fontSize: '13px', padding: '10px 14px' }}
+                    itemStyle={{ color: '#e4e4ed' }}
                     formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €/mois`, '']}
                   />
                 </PieChart>
@@ -568,7 +581,7 @@ export default function DashboardPage() {
                   <XAxis type="number" stroke="rgba(255,255,255,0.2)" fontSize={11} tickLine={false} axisLine={false} />
                   <YAxis type="category" dataKey="stage" stroke="rgba(255,255,255,0.4)" fontSize={11} tickLine={false} axisLine={false} width={75} />
                   <Tooltip
-                    contentStyle={{ background: 'rgba(17,17,30,0.95)', border: '1px solid rgba(200,80,192,0.15)', borderRadius: '12px', color: '#e8e8ef', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(200,80,192,0.08)', fontSize: '13px', padding: '10px 14px' }}
+                    contentStyle={{ background: '#111118', border: '1px solid rgba(200,80,192,0.2)', borderRadius: '10px', color: '#e4e4ed', boxShadow: '0 8px 24px rgba(0,0,0,0.6), 0 0 15px rgba(200,80,192,0.1)', fontSize: '13px', padding: '10px 14px' }}
                     cursor={{ fill: 'rgba(255,255,255,0.03)' }}
                   />
                   <Bar dataKey="count" fill="#c850c0" radius={[0, 8, 8, 0]} />

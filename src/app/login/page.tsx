@@ -54,7 +54,7 @@ export default function LoginPage() {
         </div>
 
         {/* Login Card */}
-        <div className="relative bg-[rgba(17,17,30,0.7)] backdrop-blur-2xl border border-white/[0.06] rounded-2xl p-6 space-y-5 shadow-2xl">
+        <div className="relative bg-[#111118] border border-white/[0.06] rounded-2xl p-6 space-y-5 shadow-2xl">
           {/* Top shine — neon */}
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[rgba(200,80,192,0.3)] to-transparent rounded-t-2xl" />
 

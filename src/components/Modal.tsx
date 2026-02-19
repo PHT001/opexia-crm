@@ -33,7 +33,7 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' }:
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/65 backdrop-blur-sm" onClick={onClose} />
-      <div className={`relative w-full ${sizeClasses[size]} bg-[rgba(17,17,30,0.92)] backdrop-blur-2xl border border-white/[0.06] rounded-2xl shadow-2xl animate-scale-in max-h-[90vh] flex flex-col`}>
+      <div className={`relative w-full ${sizeClasses[size]} bg-[#111118] border border-white/[0.06] rounded-2xl shadow-2xl animate-scale-in max-h-[90vh] flex flex-col`}>
         {/* Top shine line — neon gradient */}
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[rgba(200,80,192,0.3)] to-transparent rounded-t-2xl" />
 

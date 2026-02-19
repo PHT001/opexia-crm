@@ -207,8 +207,8 @@ export default function ChargesPage() {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ background: 'rgba(17,17,30,0.95)', border: '1px solid rgba(200,80,192,0.15)', borderRadius: '12px', color: '#e8e8ef', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(200,80,192,0.08)', fontSize: '13px', padding: '10px 14px' }}
-                    itemStyle={{ color: '#e8e8ef' }}
+                    contentStyle={{ background: '#111118', border: '1px solid rgba(200,80,192,0.2)', borderRadius: '10px', color: '#e4e4ed', boxShadow: '0 8px 24px rgba(0,0,0,0.6), 0 0 15px rgba(200,80,192,0.1)', fontSize: '13px', padding: '10px 14px' }}
+                    itemStyle={{ color: '#e4e4ed' }}
                     formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €/mois`, '']}
                   />
                 </PieChart>
@@ -245,7 +245,7 @@ export default function ChargesPage() {
                 <XAxis dataKey="name" stroke="rgba(255,255,255,0.2)" fontSize={11} tickLine={false} axisLine={false} dy={8} />
                 <YAxis stroke="rgba(255,255,255,0.2)" fontSize={11} tickLine={false} axisLine={false} dx={-8} />
                 <Tooltip
-                  contentStyle={{ background: 'rgba(17,17,30,0.95)', border: '1px solid rgba(200,80,192,0.15)', borderRadius: '12px', color: '#e8e8ef', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(200,80,192,0.08)', fontSize: '13px', padding: '10px 14px' }}
+                  contentStyle={{ background: '#111118', border: '1px solid rgba(200,80,192,0.2)', borderRadius: '10px', color: '#e4e4ed', boxShadow: '0 8px 24px rgba(0,0,0,0.6), 0 0 15px rgba(200,80,192,0.1)', fontSize: '13px', padding: '10px 14px' }}
                   formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €`, 'Total']}
                   cursor={{ fill: 'rgba(255,255,255,0.03)' }}
                 />

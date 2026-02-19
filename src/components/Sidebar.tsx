@@ -63,7 +63,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
       <aside
         className={clsx(
           'fixed top-0 left-0 h-full z-50 flex flex-col transition-all duration-300',
-          'bg-[rgba(8,8,18,0.88)] backdrop-blur-2xl',
+          'bg-[#08080e]',
           'border-r border-white/[0.05]',
           collapsed ? 'w-[68px]' : 'w-[240px]',
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
