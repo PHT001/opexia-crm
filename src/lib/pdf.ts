@@ -138,14 +138,28 @@ function registerLato(pdf: jsPDF) {
 // Font name constant
 const F = 'Lato';
 
-// ===== DRAW WAVE IMAGE =====
-function drawWaveImage(pdf: jsPDF) {
+// ===== DRAW WAVE IMAGES =====
+function drawWaveTopRight(pdf: jsPDF) {
   try {
     const imgW = 130;
     const imgH = imgW * (382 / 900);
     const xPos = 210 - imgW + 10;
     const yPos = -5;
     pdf.addImage(VAGUE_BASE64, 'PNG', xPos, yPos, imgW, imgH);
+  } catch {
+    // silently skip
+  }
+}
+
+function drawWaveBottomLeft(pdf: jsPDF) {
+  try {
+    const imgW = 110;
+    const imgH = imgW * (382 / 900);
+    // Position: bottom-left, flipped horizontally and vertically
+    // We use negative width and negative height to flip the image
+    const xPos = -10 + imgW; // flip horizontally: draw from right edge leftward
+    const yPos = 297 + 5;    // flip vertically: draw from bottom upward
+    pdf.addImage(VAGUE_BASE64, 'PNG', xPos, yPos, -imgW, -imgH);
   } catch {
     // silently skip
   }
@@ -192,7 +206,8 @@ export function generatePDF(
   function newPage() {
     if (pageCount > 0) pdf.addPage();
     pageCount++;
-    drawWaveImage(pdf);
+    drawWaveTopRight(pdf);
+    drawWaveBottomLeft(pdf);
     y = 25;
   }
 
