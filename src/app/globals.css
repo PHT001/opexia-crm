@@ -14,7 +14,7 @@
   --color-primary-hover: #6d28d9;
   --color-primary-light: rgba(124, 58, 237, 0.06);
   --color-secondary: #a78bfa;
-  --color-success: #22c55e;
+  --color-success: #3b82f6;
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
   --color-info: #8b5cf6;
@@ -133,9 +133,9 @@ body {
 
 /* ===== STATUS BADGES ===== */
 .status-client {
-  background: rgba(34, 197, 94, 0.08);
-  color: #16a34a;
-  border: 1px solid rgba(34, 197, 94, 0.2);
+  background: rgba(59, 130, 246, 0.08);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
 .status-prospect {
@@ -182,7 +182,7 @@ tr:hover td {
 }
 
 .icon-glow-success {
-  background: rgba(34, 197, 94, 0.1);
+  background: rgba(59, 130, 246, 0.1);
 }
 
 .icon-glow-warning {

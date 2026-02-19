@@ -107,7 +107,7 @@ export default function DashboardPage() {
   const serviceDistribution = [
     { name: 'Site Web', value: clients.filter(c => c.servicesSouscrits.includes('site-web')).length, color: '#7c3aed' },
     { name: 'Chatbot', value: clients.filter(c => c.servicesSouscrits.includes('chatbot')).length, color: '#8b5cf6' },
-    { name: 'Réceptionniste', value: clients.filter(c => c.servicesSouscrits.includes('receptionniste-ia')).length, color: '#22c55e' },
+    { name: 'Réceptionniste', value: clients.filter(c => c.servicesSouscrits.includes('receptionniste-ia')).length, color: '#3b82f6' },
     { name: 'Automatisation', value: clients.filter(c => c.servicesSouscrits.includes('automatisation')).length, color: '#a78bfa' },
   ].filter(s => s.value > 0);
 
@@ -124,7 +124,7 @@ export default function DashboardPage() {
     'abonnement': '#7c3aed',
     'logiciel': '#8b5cf6',
     'marketing': '#facc15',
-    'hebergement': '#22c55e',
+    'hebergement': '#3b82f6',
     'telephonie': '#f97316',
     'freelance': '#38bdf8',
     'materiel': '#ef4444',

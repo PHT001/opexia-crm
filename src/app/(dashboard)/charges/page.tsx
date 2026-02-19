@@ -25,7 +25,7 @@ const CATEGORY_COLORS: Record<ChargeCategory, string> = {
   'abonnement': '#7c3aed',
   'logiciel': '#8b5cf6',
   'marketing': '#facc15',
-  'hebergement': '#22c55e',
+  'hebergement': '#3b82f6',
   'telephonie': '#f97316',
   'freelance': '#38bdf8',
   'materiel': '#ef4444',
