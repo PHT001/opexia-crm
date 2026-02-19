@@ -6,7 +6,7 @@ export type ProjectStatus = 'en-attente' | 'en-cours' | 'termine' | 'annule';
 
 export type InvoiceStatus = 'payee' | 'en-attente' | 'en-retard' | 'annulee';
 
-export type PipelineStage = 'contact' | 'demo' | 'proposition' | 'negociation' | 'signe' | 'perdu';
+export type PipelineStage = 'premier-contact' | 'proposition' | 'signe' | 'refuse' | 'perdu';
 
 export type InteractionType = 'appel' | 'email' | 'rdv' | 'note';
 
@@ -147,11 +147,10 @@ export const STATUS_LABELS: Record<ClientStatus, string> = {
 };
 
 export const PIPELINE_LABELS: Record<PipelineStage, string> = {
-  'contact': 'Premier Contact',
-  'demo': 'Démo',
+  'premier-contact': 'Premier Contact',
   'proposition': 'Proposition',
-  'negociation': 'Négociation',
   'signe': 'Signé',
+  'refuse': 'Refusé',
   'perdu': 'Perdu',
 };
 

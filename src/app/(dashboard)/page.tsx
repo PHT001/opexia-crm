@@ -112,11 +112,11 @@ export default function DashboardPage() {
   ].filter(s => s.value > 0);
 
   const pipelineData = [
-    { stage: 'Contact', count: clients.filter(c => c.pipelineStage === 'contact').length },
-    { stage: 'Démo', count: clients.filter(c => c.pipelineStage === 'demo').length },
+    { stage: '1er Contact', count: clients.filter(c => c.pipelineStage === 'premier-contact').length },
     { stage: 'Proposition', count: clients.filter(c => c.pipelineStage === 'proposition').length },
-    { stage: 'Négo', count: clients.filter(c => c.pipelineStage === 'negociation').length },
     { stage: 'Signé', count: clients.filter(c => c.pipelineStage === 'signe').length },
+    { stage: 'Refusé', count: clients.filter(c => c.pipelineStage === 'refuse').length },
+    { stage: 'Perdu', count: clients.filter(c => c.pipelineStage === 'perdu').length },
   ];
 
   // Charges by category for pie chart

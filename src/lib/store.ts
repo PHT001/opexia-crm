@@ -38,7 +38,7 @@ function rowToClient(row: Record<string, unknown>): Client {
     email: row.email as string || '',
     telephone: row.telephone as string || '',
     status: row.status as Client['status'],
-    pipelineStage: row.pipeline_stage as Client['pipelineStage'],
+    pipelineStage: (['premier-contact', 'proposition', 'signe', 'refuse', 'perdu'].includes(row.pipeline_stage as string) ? row.pipeline_stage : 'signe') as Client['pipelineStage'],
     servicesSouscrits: (row.services_souscrits as Client['servicesSouscrits']) || [],
     servicePricing: (row.service_pricing as Client['servicePricing']) || [],
     montantMensuel: Number(row.montant_mensuel) || 0,

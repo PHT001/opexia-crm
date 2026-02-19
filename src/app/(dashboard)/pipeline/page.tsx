@@ -6,15 +6,14 @@ import { Client, PipelineStage, PIPELINE_LABELS, SERVICE_LABELS } from '@/lib/ty
 import { Building2, DollarSign, GripVertical, Users } from 'lucide-react';
 import Link from 'next/link';
 
-const stages: PipelineStage[] = ['contact', 'demo', 'proposition', 'negociation', 'signe', 'perdu'];
+const stages: PipelineStage[] = ['premier-contact', 'proposition', 'signe', 'refuse', 'perdu'];
 
 const stageColors: Record<PipelineStage, string> = {
-  contact: '#8b5cf6',
-  demo: '#a78bfa',
-  proposition: '#7c3aed',
-  negociation: '#c084fc',
-  signe: '#7c3aed',
-  perdu: '#ef4444',
+  'premier-contact': '#8b5cf6',
+  'proposition': '#a78bfa',
+  'signe': '#3b82f6',
+  'refuse': '#f59e0b',
+  'perdu': '#ef4444',
 };
 
 export default function PipelinePage() {
@@ -59,7 +58,7 @@ export default function PipelinePage() {
         const updated = {
           ...client,
           pipelineStage: stage,
-          status: stage === 'signe' ? 'client' as const : stage === 'perdu' ? 'perdu' as const : client.status,
+          status: stage === 'signe' ? 'client' as const : (stage === 'perdu' || stage === 'refuse') ? 'perdu' as const : 'prospect' as const,
         };
         await saveClient(updated);
         await refresh();
@@ -71,7 +70,7 @@ export default function PipelinePage() {
 
   if (!mounted) return <div className="p-6 pt-16 lg:pt-6"><div className="h-8 w-48 bg-card rounded animate-pulse" /></div>;
 
-  const totalPipeline = clients.filter(c => c.pipelineStage !== 'perdu').reduce((s, c) => s + c.montantMensuel, 0);
+  const totalPipeline = clients.filter(c => c.pipelineStage !== 'perdu' && c.pipelineStage !== 'refuse').reduce((s, c) => s + c.montantMensuel, 0);
 
   return (
     <div className="p-4 lg:p-6 space-y-6 pt-16 lg:pt-6">

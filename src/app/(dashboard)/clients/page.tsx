@@ -245,7 +245,7 @@ function ClientFormModal({ isOpen, onClose, onSave, client }: {
       setForm({
         id: generateId(),
         nom: '', prenom: '', entreprise: '', email: '', telephone: '',
-        status: 'prospect', pipelineStage: 'contact',
+        status: 'prospect', pipelineStage: 'premier-contact',
         servicesSouscrits: [], servicePricing: [], montantMensuel: 0,
         dateCreation: new Date().toISOString().split('T')[0],
         dernierContact: new Date().toISOString().split('T')[0],
@@ -404,15 +404,14 @@ function ClientFormModal({ isOpen, onClose, onSave, client }: {
           <div>
             <label className="block text-xs text-muted mb-1">Pipeline</label>
             <select
-              value={form.pipelineStage || 'contact'}
+              value={form.pipelineStage || 'premier-contact'}
               onChange={(e) => setForm({ ...form, pipelineStage: e.target.value as PipelineStage })}
               className="w-full px-3 py-2 rounded-xl bg-background border border-border text-foreground text-sm focus:outline-none focus:border-primary"
             >
-              <option value="contact">Premier Contact</option>
-              <option value="demo">Démo</option>
+              <option value="premier-contact">Premier Contact</option>
               <option value="proposition">Proposition</option>
-              <option value="negociation">Négociation</option>
               <option value="signe">Signé</option>
+              <option value="refuse">Refusé</option>
               <option value="perdu">Perdu</option>
             </select>
           </div>
