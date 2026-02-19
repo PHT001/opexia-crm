@@ -9,11 +9,11 @@ import Link from 'next/link';
 const stages: PipelineStage[] = ['premier-contact', 'proposition', 'signe', 'refuse', 'perdu'];
 
 const stageColors: Record<PipelineStage, string> = {
-  'premier-contact': '#66bfff',
-  'proposition': '#0a84ff',
-  'signe': '#30d158',
-  'refuse': '#8e8e93',
-  'perdu': '#48484a',
+  'premier-contact': '#818cf8',
+  'proposition': '#c850c0',
+  'signe': '#4ade80',
+  'refuse': '#fbbf24',
+  'perdu': '#5b5b78',
 };
 
 export default function PipelinePage() {

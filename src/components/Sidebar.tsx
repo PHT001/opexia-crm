@@ -63,34 +63,34 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
       <aside
         className={clsx(
           'fixed top-0 left-0 h-full z-50 flex flex-col transition-all duration-300',
-          'bg-[rgba(10,10,18,0.75)] backdrop-blur-2xl',
-          'border-r border-white/[0.06]',
+          'bg-[rgba(8,8,18,0.88)] backdrop-blur-2xl',
+          'border-r border-white/[0.05]',
           collapsed ? 'w-[68px]' : 'w-[240px]',
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
         {/* Logo */}
         <div className={clsx(
-          'flex items-center border-b border-white/[0.06]',
+          'flex items-center border-b border-white/[0.05]',
           collapsed ? 'justify-center h-16' : 'justify-between h-16 px-5'
         )}>
           <Link href="/" className="flex items-center min-w-0">
             {collapsed ? (
               <span className="text-[20px] font-bold tracking-tight">
                 <span className="text-white/90">O</span>
-                <span className="bg-gradient-to-r from-[#2997FF] via-[#6366F1] to-[#818CF8] bg-clip-text text-transparent">IA</span>
+                <span className="bg-gradient-to-r from-[#c850c0] to-[#6c63ff] bg-clip-text text-transparent">IA</span>
               </span>
             ) : (
               <span className="text-[22px] font-bold tracking-tight">
                 <span className="text-white/90">Opex</span>
-                <span className="bg-gradient-to-r from-[#2997FF] via-[#6366F1] to-[#818CF8] bg-clip-text text-transparent">IA</span>
+                <span className="bg-gradient-to-r from-[#c850c0] to-[#6c63ff] bg-clip-text text-transparent">IA</span>
               </span>
             )}
           </Link>
 
           <button
             onClick={onMobileClose}
-            className="lg:hidden p-1.5 rounded-xl hover:bg-white/[0.08] text-white/40 hover:text-white/80 transition-colors"
+            className="lg:hidden p-1.5 rounded-xl hover:bg-white/[0.06] text-white/40 hover:text-white/80 transition-colors"
           >
             <X size={18} />
           </button>
@@ -110,12 +110,12 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
                   'flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200',
                   active
                     ? 'active-glow text-white/95'
-                    : 'text-white/40 hover:text-white/75 hover:bg-white/[0.04]',
+                    : 'text-white/35 hover:text-white/70 hover:bg-white/[0.03]',
                   collapsed && 'justify-center px-0'
                 )}
                 title={collapsed ? item.label : undefined}
               >
-                <Icon size={18} className={clsx('flex-shrink-0', active && 'text-[#0a84ff]')} />
+                <Icon size={18} className={clsx('flex-shrink-0', active && 'text-[#c850c0]')} />
                 {!collapsed && <span>{item.label}</span>}
               </Link>
             );
@@ -123,7 +123,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
         </nav>
 
         {/* Bottom */}
-        <div className="border-t border-white/[0.06] p-2.5 space-y-1">
+        <div className="border-t border-white/[0.05] p-2.5 space-y-1">
           <Link
             href="/parametres"
             onClick={onMobileClose}
@@ -131,18 +131,18 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
               'flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200',
               isActive('/parametres')
                 ? 'active-glow text-white/95'
-                : 'text-white/40 hover:text-white/75 hover:bg-white/[0.04]',
+                : 'text-white/35 hover:text-white/70 hover:bg-white/[0.03]',
               collapsed && 'justify-center px-0'
             )}
             title={collapsed ? 'Paramètres' : undefined}
           >
-            <Settings size={18} className={clsx('flex-shrink-0', isActive('/parametres') && 'text-[#0a84ff]')} />
+            <Settings size={18} className={clsx('flex-shrink-0', isActive('/parametres') && 'text-[#c850c0]')} />
             {!collapsed && <span>Param&egrave;tres</span>}
           </Link>
 
           <button
             onClick={onToggle}
-            className="hidden lg:flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-[13px] text-white/40 hover:text-white/75 hover:bg-white/[0.04] transition-all duration-200"
+            className="hidden lg:flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-[13px] text-white/35 hover:text-white/70 hover:bg-white/[0.03] transition-all duration-200"
           >
             {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
             {!collapsed && <span>R&eacute;duire</span>}
@@ -151,7 +151,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
           <button
             onClick={handleLogout}
             className={clsx(
-              'flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-[13px] text-white/40 hover:text-red-400 hover:bg-red-500/[0.08] transition-all duration-200',
+              'flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-[13px] text-white/35 hover:text-red-400 hover:bg-red-500/[0.06] transition-all duration-200',
               collapsed && 'justify-center px-0'
             )}
           >

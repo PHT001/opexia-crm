@@ -36,29 +36,29 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Ambient glow orbs */}
-      <div className="absolute top-1/4 left-1/3 w-[500px] h-[500px] bg-primary/[0.06] rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/3 w-[400px] h-[400px] bg-info/[0.04] rounded-full blur-[100px] pointer-events-none" />
+      {/* Ambient neon glow orbs */}
+      <div className="absolute top-1/4 left-1/3 w-[500px] h-[500px] bg-[rgba(200,80,192,0.08)] rounded-full blur-[130px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/3 w-[400px] h-[400px] bg-[rgba(108,99,255,0.06)] rounded-full blur-[110px] pointer-events-none" />
 
       <div className="w-full max-w-sm relative z-10">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] mb-4 shadow-lg">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white/[0.03] backdrop-blur-xl border border-white/[0.06] mb-4 shadow-lg shadow-[rgba(200,80,192,0.08)]">
             <span className="text-3xl font-bold tracking-tight">
               <span className="text-white/90">O</span>
-              <span className="bg-gradient-to-r from-[#2997FF] via-[#6366F1] to-[#818CF8] bg-clip-text text-transparent">IA</span>
+              <span className="bg-gradient-to-r from-[#c850c0] to-[#6c63ff] bg-clip-text text-transparent">IA</span>
             </span>
           </div>
           <h1 className="text-2xl font-bold text-foreground">OpexIA CRM</h1>
           <p className="text-sm text-muted mt-1">Acc&egrave;s s&eacute;curis&eacute;</p>
         </div>
 
-        {/* Login Card — LiquidGlass */}
-        <div className="relative bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] rounded-2xl p-6 space-y-5 shadow-2xl">
-          {/* Top shine */}
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent rounded-t-2xl" />
+        {/* Login Card */}
+        <div className="relative bg-[rgba(17,17,30,0.7)] backdrop-blur-2xl border border-white/[0.06] rounded-2xl p-6 space-y-5 shadow-2xl">
+          {/* Top shine — neon */}
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[rgba(200,80,192,0.3)] to-transparent rounded-t-2xl" />
 
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/[0.06] border border-primary/[0.1]">
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/[0.06] border border-primary/[0.12]">
             <Lock size={18} className="text-primary flex-shrink-0" />
             <p className="text-xs text-muted">
               Entrez votre mot de passe pour acc&eacute;der au CRM
@@ -75,12 +75,12 @@ export default function LoginPage() {
                   onChange={(e) => { setPassword(e.target.value); setError(''); }}
                   placeholder="Entrez votre mot de passe"
                   autoFocus
-                  className="w-full px-4 py-3 pr-10 rounded-xl bg-white/[0.03] border border-white/[0.08] text-foreground text-sm placeholder:text-white/20 focus:outline-none focus:border-primary/50"
+                  className="w-full px-4 py-3 pr-10 rounded-xl bg-white/[0.03] border border-white/[0.06] text-foreground text-sm placeholder:text-white/15 focus:outline-none focus:border-primary/50"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/70 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/65 transition-colors"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -114,7 +114,7 @@ export default function LoginPage() {
           </form>
         </div>
 
-        <p className="text-center text-xs text-white/20 mt-6">
+        <p className="text-center text-xs text-white/15 mt-6">
           OpexIA &mdash; Agence d&apos;automatisation IA
         </p>
       </div>

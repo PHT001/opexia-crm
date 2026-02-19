@@ -105,10 +105,10 @@ export default function DashboardPage() {
     }));
 
   const serviceDistribution = [
-    { name: 'Site Web', value: clients.filter(c => c.servicesSouscrits.includes('site-web')).length, color: '#0a84ff' },
-    { name: 'Chatbot', value: clients.filter(c => c.servicesSouscrits.includes('chatbot')).length, color: '#3a9aff' },
-    { name: 'Réceptionniste', value: clients.filter(c => c.servicesSouscrits.includes('receptionniste-ia')).length, color: '#6bb4ff' },
-    { name: 'Automatisation', value: clients.filter(c => c.servicesSouscrits.includes('automatisation')).length, color: '#9dcfff' },
+    { name: 'Site Web', value: clients.filter(c => c.servicesSouscrits.includes('site-web')).length, color: '#c850c0' },
+    { name: 'Chatbot', value: clients.filter(c => c.servicesSouscrits.includes('chatbot')).length, color: '#6c63ff' },
+    { name: 'Réceptionniste', value: clients.filter(c => c.servicesSouscrits.includes('receptionniste-ia')).length, color: '#818cf8' },
+    { name: 'Automatisation', value: clients.filter(c => c.servicesSouscrits.includes('automatisation')).length, color: '#d96dd2' },
   ].filter(s => s.value > 0);
 
   const pipelineData = [
@@ -119,17 +119,17 @@ export default function DashboardPage() {
     { stage: 'Perdu', count: clients.filter(c => c.pipelineStage === 'perdu').length },
   ];
 
-  // Charges by category for pie chart — Apple monochrome blue palette
+  // Charges by category — neon rose/violet palette
   const chargesByCategoryColors: Record<ChargeCategory, string> = {
-    'abonnement': '#0a84ff',
-    'logiciel': '#2898ff',
-    'marketing': '#47abff',
-    'hebergement': '#66bfff',
-    'telephonie': '#85d2ff',
-    'freelance': '#a3e0ff',
-    'materiel': '#48484a',
-    'formation': '#636366',
-    'autre': '#8e8e93',
+    'abonnement': '#c850c0',
+    'logiciel': '#6c63ff',
+    'marketing': '#fbbf24',
+    'hebergement': '#818cf8',
+    'telephonie': '#d96dd2',
+    'freelance': '#4ade80',
+    'materiel': '#f87171',
+    'formation': '#a78bfa',
+    'autre': '#5b5b78',
   };
 
   const chargesByCategory = Object.entries(CHARGE_CATEGORY_LABELS)
@@ -283,19 +283,20 @@ export default function DashboardPage() {
                 <AreaChart data={revenueData}>
                   <defs>
                     <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#0a84ff" stopOpacity={0.25} />
-                      <stop offset="100%" stopColor="#0a84ff" stopOpacity={0.02} />
+                      <stop offset="0%" stopColor="#c850c0" stopOpacity={0.35} />
+                      <stop offset="50%" stopColor="#6c63ff" stopOpacity={0.12} />
+                      <stop offset="100%" stopColor="#6c63ff" stopOpacity={0.02} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="0" stroke="rgba(255,255,255,0.04)" vertical={false} />
-                  <XAxis dataKey="mois" stroke="rgba(255,255,255,0.2)" fontSize={11} tickLine={false} axisLine={false} dy={8} />
-                  <YAxis stroke="rgba(255,255,255,0.2)" fontSize={11} tickLine={false} axisLine={false} dx={-8} />
+                  <CartesianGrid strokeDasharray="0" stroke="rgba(255,255,255,0.03)" vertical={false} />
+                  <XAxis dataKey="mois" stroke="rgba(255,255,255,0.18)" fontSize={11} tickLine={false} axisLine={false} dy={8} />
+                  <YAxis stroke="rgba(255,255,255,0.18)" fontSize={11} tickLine={false} axisLine={false} dx={-8} />
                   <Tooltip
-                    contentStyle={{ background: 'rgba(28,28,30,0.95)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', color: '#f5f5f7', boxShadow: '0 8px 32px rgba(0,0,0,0.5)', backdropFilter: 'blur(20px)', fontSize: '13px', padding: '10px 14px' }}
+                    contentStyle={{ background: 'rgba(17,17,30,0.95)', border: '1px solid rgba(200,80,192,0.15)', borderRadius: '12px', color: '#e8e8ef', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(200,80,192,0.08)', fontSize: '13px', padding: '10px 14px' }}
                     formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €`, 'CA']}
-                    cursor={{ stroke: 'rgba(255,255,255,0.1)' }}
+                    cursor={{ stroke: 'rgba(200,80,192,0.15)' }}
                   />
-                  <Area type="monotone" dataKey="montant" stroke="#0a84ff" fill="url(#colorRevenue)" strokeWidth={2.5} dot={false} activeDot={{ r: 5, fill: '#0a84ff', stroke: '#000', strokeWidth: 2 }} />
+                  <Area type="monotone" dataKey="montant" stroke="#c850c0" fill="url(#colorRevenue)" strokeWidth={2.5} dot={false} activeDot={{ r: 5, fill: '#c850c0', stroke: '#0b0b14', strokeWidth: 2 }} />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
@@ -326,7 +327,7 @@ export default function DashboardPage() {
                       outerRadius={78}
                       paddingAngle={2}
                       dataKey="value"
-                      stroke="rgba(0,0,0,0.3)"
+                      stroke="rgba(11,11,20,0.5)"
                       strokeWidth={1}
                       cornerRadius={4}
                     >
@@ -335,8 +336,8 @@ export default function DashboardPage() {
                       ))}
                     </Pie>
                     <Tooltip
-                      contentStyle={{ background: 'rgba(28,28,30,0.95)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', color: '#f5f5f7', boxShadow: '0 8px 32px rgba(0,0,0,0.5)', backdropFilter: 'blur(20px)', fontSize: '13px', padding: '10px 14px' }}
-                      itemStyle={{ color: '#f5f5f7' }}
+                      contentStyle={{ background: 'rgba(17,17,30,0.95)', border: '1px solid rgba(200,80,192,0.15)', borderRadius: '12px', color: '#e8e8ef', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(200,80,192,0.08)', fontSize: '13px', padding: '10px 14px' }}
+                      itemStyle={{ color: '#e8e8ef' }}
                     />
                   </PieChart>
                 </ResponsiveContainer>
@@ -510,7 +511,7 @@ export default function DashboardPage() {
                     outerRadius={78}
                     paddingAngle={2}
                     dataKey="value"
-                    stroke="rgba(0,0,0,0.3)"
+                    stroke="rgba(11,11,20,0.5)"
                     strokeWidth={1}
                     cornerRadius={4}
                   >
@@ -519,8 +520,8 @@ export default function DashboardPage() {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ background: 'rgba(28,28,30,0.95)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', color: '#f5f5f7', boxShadow: '0 8px 32px rgba(0,0,0,0.5)', backdropFilter: 'blur(20px)', fontSize: '13px', padding: '10px 14px' }}
-                    itemStyle={{ color: '#f5f5f7' }}
+                    contentStyle={{ background: 'rgba(17,17,30,0.95)', border: '1px solid rgba(200,80,192,0.15)', borderRadius: '12px', color: '#e8e8ef', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(200,80,192,0.08)', fontSize: '13px', padding: '10px 14px' }}
+                    itemStyle={{ color: '#e8e8ef' }}
                     formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €/mois`, '']}
                   />
                 </PieChart>
@@ -567,10 +568,10 @@ export default function DashboardPage() {
                   <XAxis type="number" stroke="rgba(255,255,255,0.2)" fontSize={11} tickLine={false} axisLine={false} />
                   <YAxis type="category" dataKey="stage" stroke="rgba(255,255,255,0.4)" fontSize={11} tickLine={false} axisLine={false} width={75} />
                   <Tooltip
-                    contentStyle={{ background: 'rgba(28,28,30,0.95)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', color: '#f5f5f7', boxShadow: '0 8px 32px rgba(0,0,0,0.5)', backdropFilter: 'blur(20px)', fontSize: '13px', padding: '10px 14px' }}
+                    contentStyle={{ background: 'rgba(17,17,30,0.95)', border: '1px solid rgba(200,80,192,0.15)', borderRadius: '12px', color: '#e8e8ef', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(200,80,192,0.08)', fontSize: '13px', padding: '10px 14px' }}
                     cursor={{ fill: 'rgba(255,255,255,0.03)' }}
                   />
-                  <Bar dataKey="count" fill="#0a84ff" radius={[0, 8, 8, 0]} />
+                  <Bar dataKey="count" fill="#c850c0" radius={[0, 8, 8, 0]} />
                 </BarChart>
               </ResponsiveContainer>
               <div className="mt-3 flex items-center justify-between text-sm">
