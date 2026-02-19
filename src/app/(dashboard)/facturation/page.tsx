@@ -82,28 +82,28 @@ export default function FacturationPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div className="bg-card border border-border rounded-xl p-4">
+        <div className="kpi-glow rounded-xl p-4 shine-top">
           <div className="flex items-center gap-2 mb-2">
             <div className="p-1.5 rounded-lg bg-success/10"><CheckCircle size={16} className="text-success" /></div>
             <span className="text-xs text-muted">Payées</span>
           </div>
           <p className="text-xl font-bold text-foreground">{totalPayees.toLocaleString('fr-FR')} €</p>
         </div>
-        <div className="bg-card border border-border rounded-xl p-4">
+        <div className="kpi-glow rounded-xl p-4 shine-top">
           <div className="flex items-center gap-2 mb-2">
             <div className="p-1.5 rounded-lg bg-warning/10"><Clock size={16} className="text-warning" /></div>
             <span className="text-xs text-muted">En attente</span>
           </div>
           <p className="text-xl font-bold text-foreground">{totalEnAttente.toLocaleString('fr-FR')} €</p>
         </div>
-        <div className="bg-card border border-border rounded-xl p-4">
+        <div className="kpi-glow rounded-xl p-4 shine-top">
           <div className="flex items-center gap-2 mb-2">
             <div className="p-1.5 rounded-lg bg-danger/10"><AlertTriangle size={16} className="text-danger" /></div>
             <span className="text-xs text-muted">En retard</span>
           </div>
           <p className="text-xl font-bold text-danger">{totalEnRetard.toLocaleString('fr-FR')} €</p>
         </div>
-        <div className="bg-card border border-border rounded-xl p-4">
+        <div className="kpi-glow rounded-xl p-4 shine-top">
           <div className="flex items-center gap-2 mb-2">
             <div className="p-1.5 rounded-lg bg-primary/10"><TrendingUp size={16} className="text-primary" /></div>
             <span className="text-xs text-muted">CA Total</span>
@@ -114,7 +114,7 @@ export default function FacturationPage() {
 
       {/* Chart */}
       {chartData.length > 0 && (
-        <div className="bg-card border border-border rounded-2xl p-5">
+        <div className="card-glow rounded-xl p-5">
           <h3 className="font-semibold text-foreground mb-4">Revenus mensuels (payés)</h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={chartData}>
@@ -157,7 +157,7 @@ export default function FacturationPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-card border border-border rounded-2xl overflow-hidden">
+      <div className="card-glow rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>

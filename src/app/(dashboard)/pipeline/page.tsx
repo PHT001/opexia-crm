@@ -94,8 +94,8 @@ export default function PipelinePage() {
           return (
             <div
               key={stage}
-              className={`flex-shrink-0 w-72 bg-card border rounded-2xl flex flex-col transition-colors ${
-                isOver ? 'border-primary bg-primary/5' : 'border-border'
+              className={`flex-shrink-0 w-72 card-glow rounded-xl flex flex-col transition-all ${
+                isOver ? '!border-primary/30' : ''
               }`}
               onDragOver={(e) => handleDragOver(e, stage)}
               onDragLeave={handleDragLeave}

@@ -194,7 +194,7 @@ export default function DashboardPage() {
 
       {/* Empty state - Welcome */}
       {isEmpty && (
-        <div className="bg-card border border-border rounded-2xl p-8 text-center animate-fade-in">
+        <div className="card-glow rounded-xl p-8 text-center animate-fade-in shine-top">
           <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center">
             <Users size={32} className="text-primary" />
           </div>
@@ -268,7 +268,7 @@ export default function DashboardPage() {
       {clients.length > 0 && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Revenue Chart */}
-          <div className="lg:col-span-2 bg-card border border-border rounded-2xl p-5">
+          <div className="lg:col-span-2 card-glow rounded-xl p-5">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="font-semibold text-foreground">Évolution du CA</h3>
@@ -311,7 +311,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Service Distribution */}
-          <div className="bg-card border border-border rounded-2xl p-5">
+          <div className="card-glow rounded-xl p-5">
             <h3 className="font-semibold text-foreground mb-4">Services souscrits</h3>
             {serviceDistribution.length > 0 ? (
               <>
@@ -363,7 +363,7 @@ export default function DashboardPage() {
       {/* Charges Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Charges List */}
-        <div className="lg:col-span-2 bg-card border border-border rounded-2xl p-5">
+        <div className="lg:col-span-2 card-glow rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="font-semibold text-foreground flex items-center gap-2">
@@ -374,7 +374,7 @@ export default function DashboardPage() {
             </div>
             <button
               onClick={() => { setEditingCharge(null); setChargeModalOpen(true); }}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-medium transition-colors"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary hover:bg-primary-hover text-white text-xs font-medium transition-colors btn-glow"
             >
               <Plus size={14} />
               Ajouter
@@ -491,7 +491,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Charges by Category Pie */}
-        <div className="bg-card border border-border rounded-2xl p-5">
+        <div className="card-glow rounded-xl p-5">
           <h3 className="font-semibold text-foreground mb-4">Répartition des charges</h3>
           {chargesByCategory.length > 0 ? (
             <>
@@ -543,7 +543,7 @@ export default function DashboardPage() {
       {/* Pipeline + Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Pipeline */}
-        <div className="bg-card border border-border rounded-2xl p-5">
+        <div className="card-glow rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-foreground">Pipeline</h3>
             <Link href="/pipeline" className="text-xs text-primary hover:text-primary-hover">
@@ -582,7 +582,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Recent Interactions */}
-        <div className="bg-card border border-border rounded-2xl p-5">
+        <div className="card-glow rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-foreground">Activité récente</h3>
           </div>
@@ -618,7 +618,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Upcoming Events */}
-        <div className="bg-card border border-border rounded-2xl p-5">
+        <div className="card-glow rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-foreground">Prochains RDV</h3>
             <Link href="/calendrier" className="text-xs text-primary hover:text-primary-hover">
@@ -660,7 +660,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent Clients */}
-      <div className="bg-card border border-border rounded-2xl p-5">
+      <div className="card-glow rounded-xl p-5">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-foreground">Derniers clients / prospects</h3>
           <Link href="/clients" className="text-xs text-primary hover:text-primary-hover">
@@ -922,10 +922,10 @@ function KPICard({ title, value, change, positive, icon, color }: {
   };
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-4 hover:border-border-light transition-colors animate-fade-in">
+    <div className="kpi-glow rounded-xl p-4 animate-fade-in shine-top">
       <div className="flex items-center justify-between mb-3">
         <span className="text-xs text-muted font-medium uppercase tracking-wide">{title}</span>
-        <div className={`p-2 rounded-xl ${colorMap[color]}`}>
+        <div className={`p-2 rounded-lg icon-glow-${color}`}>
           {icon}
         </div>
       </div>

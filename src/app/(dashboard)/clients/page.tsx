@@ -70,7 +70,7 @@ export default function ClientsPage() {
         </div>
         <button
           onClick={openNew}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-white text-sm font-medium transition-colors"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary hover:bg-primary-hover text-white text-sm font-medium transition-colors btn-glow"
         >
           <Plus size={16} />
           Nouveau contact
@@ -81,7 +81,7 @@ export default function ClientsPage() {
       <div className="grid grid-cols-3 gap-3">
         <button
           onClick={() => setFilterStatus(filterStatus === 'client' ? 'tous' : 'client')}
-          className={`p-3 rounded-xl border transition-colors ${filterStatus === 'client' ? 'bg-success/10 border-success/30' : 'bg-card border-border hover:border-border-light'}`}
+          className={`p-3 rounded-xl transition-all ${filterStatus === 'client' ? 'kpi-glow border-success/30' : 'kpi-glow'}`}
         >
           <UserCheck size={18} className="text-success mb-1" />
           <p className="text-xl font-bold text-foreground">{countByStatus('client')}</p>
@@ -89,7 +89,7 @@ export default function ClientsPage() {
         </button>
         <button
           onClick={() => setFilterStatus(filterStatus === 'prospect' ? 'tous' : 'prospect')}
-          className={`p-3 rounded-xl border transition-colors ${filterStatus === 'prospect' ? 'bg-info/10 border-info/30' : 'bg-card border-border hover:border-border-light'}`}
+          className={`p-3 rounded-xl transition-all ${filterStatus === 'prospect' ? 'kpi-glow border-info/30' : 'kpi-glow'}`}
         >
           <Users size={18} className="text-info mb-1" />
           <p className="text-xl font-bold text-foreground">{countByStatus('prospect')}</p>
@@ -97,7 +97,7 @@ export default function ClientsPage() {
         </button>
         <button
           onClick={() => setFilterStatus(filterStatus === 'perdu' ? 'tous' : 'perdu')}
-          className={`p-3 rounded-xl border transition-colors ${filterStatus === 'perdu' ? 'bg-danger/10 border-danger/30' : 'bg-card border-border hover:border-border-light'}`}
+          className={`p-3 rounded-xl transition-all ${filterStatus === 'perdu' ? 'kpi-glow border-danger/30' : 'kpi-glow'}`}
         >
           <UserX size={18} className="text-danger mb-1" />
           <p className="text-xl font-bold text-foreground">{countByStatus('perdu')}</p>
@@ -129,7 +129,7 @@ export default function ClientsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-card border border-border rounded-2xl overflow-hidden">
+      <div className="card-glow rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>

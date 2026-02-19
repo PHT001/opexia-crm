@@ -128,7 +128,7 @@ export default function ChargesPage() {
         </div>
         <button
           onClick={() => { setEditingCharge(null); setModalOpen(true); }}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-white text-sm font-medium transition-colors"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary hover:bg-primary-hover text-white text-sm font-medium transition-colors btn-glow"
         >
           <Plus size={16} />
           Nouvelle charge
@@ -137,40 +137,40 @@ export default function ChargesPage() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-card border border-border rounded-2xl p-4">
+        <div className="kpi-glow rounded-xl p-4 shine-top">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-muted font-medium uppercase tracking-wide">Total /mois</span>
-            <div className="p-2 rounded-xl bg-warning/10">
+            <div className="p-2 rounded-lg icon-glow-warning">
               <Wallet size={18} className="text-warning" />
             </div>
           </div>
           <p className="text-2xl font-bold text-foreground">{Math.round(totalMensuel).toLocaleString('fr-FR')} €</p>
           <p className="text-xs text-muted mt-1">{activeCharges.length} charge{activeCharges.length > 1 ? 's' : ''} active{activeCharges.length > 1 ? 's' : ''}</p>
         </div>
-        <div className="bg-card border border-border rounded-2xl p-4">
+        <div className="kpi-glow rounded-xl p-4 shine-top">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-muted font-medium uppercase tracking-wide">Total /an</span>
-            <div className="p-2 rounded-xl bg-danger/10">
+            <div className="p-2 rounded-lg icon-glow-danger">
               <TrendingDown size={18} className="text-danger" />
             </div>
           </div>
           <p className="text-2xl font-bold text-foreground">{Math.round(totalAnnuel).toLocaleString('fr-FR')} €</p>
           <p className="text-xs text-muted mt-1">Projection annuelle</p>
         </div>
-        <div className="bg-card border border-border rounded-2xl p-4">
+        <div className="kpi-glow rounded-xl p-4 shine-top">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-muted font-medium uppercase tracking-wide">CA /mois</span>
-            <div className="p-2 rounded-xl bg-primary/10">
+            <div className="p-2 rounded-lg icon-glow-primary">
               <BarChart3 size={18} className="text-primary" />
             </div>
           </div>
           <p className="text-2xl font-bold text-foreground">{caMensuel.toLocaleString('fr-FR')} €</p>
           <p className="text-xs text-muted mt-1">Revenus récurrents</p>
         </div>
-        <div className="bg-card border border-border rounded-2xl p-4">
+        <div className="kpi-glow rounded-xl p-4 shine-top">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-muted font-medium uppercase tracking-wide">Bénéfice /mois</span>
-            <div className={`p-2 rounded-xl ${beneficeMensuel >= 0 ? 'bg-success/10' : 'bg-danger/10'}`}>
+            <div className={`p-2 rounded-lg ${beneficeMensuel >= 0 ? 'icon-glow-success' : 'icon-glow-danger'}`}>
               <CreditCard size={18} className={beneficeMensuel >= 0 ? 'text-success' : 'text-danger'} />
             </div>
           </div>
@@ -184,7 +184,7 @@ export default function ChargesPage() {
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* By Category */}
-        <div className="bg-card border border-border rounded-2xl p-5">
+        <div className="card-glow rounded-xl p-5">
           <h3 className="font-semibold text-foreground mb-4">Répartition par catégorie</h3>
           {chargesByCategory.length > 0 ? (
             <div className="flex items-start gap-4">
@@ -232,7 +232,7 @@ export default function ChargesPage() {
         </div>
 
         {/* By Frequency */}
-        <div className="bg-card border border-border rounded-2xl p-5">
+        <div className="card-glow rounded-xl p-5">
           <h3 className="font-semibold text-foreground mb-4">Par fréquence de paiement</h3>
           {chargesByFrequency.length > 0 ? (
             <ResponsiveContainer width="100%" height={200}>
@@ -289,7 +289,7 @@ export default function ChargesPage() {
       </div>
 
       {/* Charges List */}
-      <div className="bg-card border border-border rounded-2xl overflow-hidden">
+      <div className="card-glow rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>

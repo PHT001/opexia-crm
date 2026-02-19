@@ -40,7 +40,7 @@ export default function CalendlyPage() {
 
       {/* Info cards */}
       <div className="grid grid-cols-3 gap-3 flex-shrink-0">
-        <div className="bg-card border border-border rounded-xl p-3 flex items-center gap-3">
+        <div className="kpi-glow rounded-xl p-3 flex items-center gap-3">
           <div className="p-2 rounded-lg bg-primary/10">
             <Link2 size={18} className="text-primary" />
           </div>
@@ -51,7 +51,7 @@ export default function CalendlyPage() {
             </a>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl p-3 flex items-center gap-3">
+        <div className="kpi-glow rounded-xl p-3 flex items-center gap-3">
           <div className="p-2 rounded-lg bg-success/10">
             <Clock size={18} className="text-success" />
           </div>
@@ -60,7 +60,7 @@ export default function CalendlyPage() {
             <p className="text-sm font-medium text-success">Google Agenda connecté</p>
           </div>
         </div>
-        <div className="bg-card border border-border rounded-xl p-3 flex items-center gap-3">
+        <div className="kpi-glow rounded-xl p-3 flex items-center gap-3">
           <div className="p-2 rounded-lg bg-info/10">
             <Calendar size={18} className="text-info" />
           </div>
@@ -72,7 +72,7 @@ export default function CalendlyPage() {
       </div>
 
       {/* Google Agenda Embed */}
-      <div className="flex-1 bg-card border border-border rounded-2xl overflow-hidden min-h-0">
+      <div className="flex-1 card-glow rounded-xl overflow-hidden min-h-0">
         <iframe
           key={key}
           src={GOOGLE_CALENDAR_EMBED}
