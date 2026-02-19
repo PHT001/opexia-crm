@@ -52,6 +52,13 @@ export interface Project {
   montant: number;
 }
 
+export interface DocumentLigne {
+  description: string;
+  quantite: number;
+  prixUnitaire: number;
+  tva: number; // percentage, e.g. 20
+}
+
 export interface Invoice {
   id: string;
   clientId: string;
@@ -62,7 +69,34 @@ export interface Invoice {
   dateEcheance: string;
   description: string;
   mois: string;
+  lignes?: DocumentLigne[];
+  montantHT?: number;
+  montantTTC?: number;
+  devisId?: string;
 }
+
+export type DevisStatus = 'brouillon' | 'envoye' | 'accepte' | 'refuse' | 'expire';
+
+export interface Devis {
+  id: string;
+  clientId: string;
+  numero: string;
+  lignes: DocumentLigne[];
+  status: DevisStatus;
+  dateCreation: string;
+  dateValidite: string;
+  notes: string;
+  montantHT: number;
+  montantTTC: number;
+}
+
+export const DEVIS_STATUS_LABELS: Record<DevisStatus, string> = {
+  'brouillon': 'Brouillon',
+  'envoye': 'Envoyé',
+  'accepte': 'Accepté',
+  'refuse': 'Refusé',
+  'expire': 'Expiré',
+};
 
 export interface Interaction {
   id: string;

@@ -1,4 +1,4 @@
-import { Client, Project, Invoice, Interaction, CalendarEvent, Charge } from './types';
+import { Client, Project, Invoice, Interaction, CalendarEvent, Charge, Devis } from './types';
 import { supabase } from './supabase';
 
 // ============ HELPERS ============
@@ -64,6 +64,10 @@ function invoiceToRow(invoice: Invoice) {
     date_echeance: invoice.dateEcheance,
     description: invoice.description,
     mois: invoice.mois,
+    lignes: invoice.lignes || [],
+    montant_ht: invoice.montantHT || 0,
+    montant_ttc: invoice.montantTTC || 0,
+    devis_id: invoice.devisId || null,
   };
 }
 
@@ -78,6 +82,42 @@ function rowToInvoice(row: Record<string, unknown>): Invoice {
     dateEcheance: row.date_echeance as string || '',
     description: row.description as string || '',
     mois: row.mois as string || '',
+    lignes: (row.lignes as Invoice['lignes']) || [],
+    montantHT: Number(row.montant_ht) || 0,
+    montantTTC: Number(row.montant_ttc) || 0,
+    devisId: row.devis_id as string,
+  };
+}
+
+// ============ DEVIS HELPERS ============
+
+function devisToRow(devis: Devis) {
+  return {
+    id: devis.id,
+    client_id: devis.clientId,
+    numero: devis.numero,
+    lignes: devis.lignes,
+    status: devis.status,
+    date_creation: devis.dateCreation,
+    date_validite: devis.dateValidite,
+    notes: devis.notes,
+    montant_ht: devis.montantHT,
+    montant_ttc: devis.montantTTC,
+  };
+}
+
+function rowToDevis(row: Record<string, unknown>): Devis {
+  return {
+    id: row.id as string,
+    clientId: row.client_id as string,
+    numero: row.numero as string || '',
+    lignes: (row.lignes as Devis['lignes']) || [],
+    status: row.status as Devis['status'] || 'brouillon',
+    dateCreation: row.date_creation as string || '',
+    dateValidite: row.date_validite as string || '',
+    notes: row.notes as string || '',
+    montantHT: Number(row.montant_ht) || 0,
+    montantTTC: Number(row.montant_ttc) || 0,
   };
 }
 
@@ -267,6 +307,31 @@ export async function saveCharge(charge: Charge): Promise<void> {
 export async function deleteCharge(id: string): Promise<void> {
   const { error } = await supabase.from('charges').delete().eq('id', id);
   if (error) console.error('deleteCharge error:', error);
+}
+
+// ============ DEVIS ============
+
+export async function getAllDevis(): Promise<Devis[]> {
+  const { data, error } = await supabase.from('devis').select('*').order('created_at', { ascending: false });
+  if (error) { console.error('getAllDevis error:', error); return []; }
+  return (data || []).map(rowToDevis);
+}
+
+export async function getDevisByClient(clientId: string): Promise<Devis[]> {
+  const { data, error } = await supabase.from('devis').select('*').eq('client_id', clientId);
+  if (error) return [];
+  return (data || []).map(rowToDevis);
+}
+
+export async function saveDevis(devis: Devis): Promise<void> {
+  const row = devisToRow(devis);
+  const { error } = await supabase.from('devis').upsert(row, { onConflict: 'id' });
+  if (error) console.error('saveDevis error:', error);
+}
+
+export async function deleteDevis(id: string): Promise<void> {
+  const { error } = await supabase.from('devis').delete().eq('id', id);
+  if (error) console.error('deleteDevis error:', error);
 }
 
 // ============ PROJECTS (legacy, kept for compatibility) ============
