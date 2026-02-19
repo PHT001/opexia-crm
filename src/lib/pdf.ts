@@ -33,7 +33,6 @@ const C = {
 interface PresetInfo {
   description: string;
   details: string[];
-  pricingNote?: string;
 }
 
 const PRESET_MAP: Record<string, PresetInfo> = {
@@ -47,7 +46,6 @@ const PRESET_MAP: Record<string, PresetInfo> = {
       'R\u00e9ponses aux questions fr\u00e9quentes (horaires, adresse, allerg\u00e8nes)',
       'Mises \u00e0 jour et am\u00e9liorations continues',
     ],
-    pricingNote: 'Mise en place : 400\u20ac HT (paiement unique)\nMaintenance mensuelle : 20\u20ac HT/mois',
   },
   'Maintenance Site Web': {
     description: 'Maintenance et h\u00e9bergement du site web vitrine :',
@@ -57,7 +55,6 @@ const PRESET_MAP: Record<string, PresetInfo> = {
       'Support technique',
       'Sauvegardes r\u00e9guli\u00e8res',
     ],
-    pricingNote: 'Tarif : 20\u20ac HT/mois',
   },
   'Chatbot IA': {
     description: 'Chatbot intelligent int\u00e9grable sur site web ou en standalone :',
@@ -68,7 +65,6 @@ const PRESET_MAP: Record<string, PresetInfo> = {
       'R\u00e9ponses aux questions fr\u00e9quentes (horaires, adresse, allerg\u00e8nes)',
       'Mises \u00e0 jour et am\u00e9liorations continues',
     ],
-    pricingNote: 'Tarif : 90\u20ac HT/mois',
   },
   'R\u00e9ceptionniste IA Vocale': {
     description: 'Standard t\u00e9l\u00e9phonique intelligent propuls\u00e9 par IA :',
@@ -79,7 +75,6 @@ const PRESET_MAP: Record<string, PresetInfo> = {
       'Envoi automatique de SMS de confirmation au client',
       'Gestion des horaires et informations restaurant',
     ],
-    pricingNote: '1er mois : p\u00e9riode de test \u2014 facturation \u00e0 l\'usage (selon le nombre d\'appels trait\u00e9s)\n\u00c0 partir du 2\u00e8me mois : 140\u20ac HT/mois (forfait illimit\u00e9)',
   },
   'Programme de Fid\u00e9lit\u00e9': {
     description: 'Syst\u00e8me de fid\u00e9lisation client int\u00e9gr\u00e9 au CRM :',
@@ -90,7 +85,6 @@ const PRESET_MAP: Record<string, PresetInfo> = {
       'Tableau de bord statistiques fid\u00e9lit\u00e9',
       'Notifications automatiques (seuils de r\u00e9compense atteints)',
     ],
-    pricingNote: 'Tarif : 80\u20ac HT/mois',
   },
   'Automatisation sur mesure': {
     description: 'Solution d\'automatisation personnalis\u00e9e selon vos besoins :',
@@ -419,14 +413,7 @@ export function generatePDF(
           const bLines = pdf.splitTextToSize(`\u2022  ${detail}`, detailTextW);
           h += bLines.length * 3.8;
         });
-        h += 3;
-        if (preset.pricingNote) {
-          preset.pricingNote.split('\n').forEach(note => {
-            const nLines = pdf.splitTextToSize(note, detailTextW);
-            h += nLines.length * 3.8;
-          });
-        }
-        h += 5;
+        h += 8;
       } else if (descParts.length > 1) {
         const subLines = pdf.splitTextToSize(descParts.slice(1).join('\n'), detailTextW);
         h += subLines.length * 3.8 + 5;
@@ -516,22 +503,6 @@ export function generatePDF(
         });
       });
 
-      y += 3;
-
-      // Pricing note — each line wrapped
-      if (preset.pricingNote) {
-        preset.pricingNote.split('\n').forEach(noteLine => {
-          if (y > H - 25) { newPage(); drawTableHeader(); }
-          pdf.setFont(F, 'bold');
-          pdf.setFontSize(8.5);
-          pdf.setTextColor(...C.text);
-          const nLines = pdf.splitTextToSize(noteLine, detailTextW);
-          nLines.forEach((line: string) => {
-            pdf.text(line, detailIndent, y);
-            y += 3.8;
-          });
-        });
-      }
       y += 5;
     } else {
       if (descParts.length > 1) {
