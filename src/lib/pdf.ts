@@ -1,5 +1,6 @@
 import { jsPDF } from 'jspdf';
 import { DocumentLigne, Client, Devis, Invoice } from './types';
+import { VAGUE_BASE64 } from './vague-base64';
 
 // ===== COMPANY INFO =====
 const COMPANY = {
@@ -127,63 +128,19 @@ function calcTotalTVA(lignes: DocumentLigne[]): number {
   return lignes.reduce((s, l) => s + calcTotal(l) * (l.tva / 100), 0);
 }
 
-// ===== DRAW DECORATIVE WAVES (top-right corner) =====
-// Realistic flowing curves matching the Facture.net D2600001 template
-// Uses cubic bezier approximation with many smooth segments
-function drawWaves(pdf: jsPDF) {
-  const W = 210;
-
-  // Each wave is defined by control points for a smooth flowing S-curve
-  // that enters from the right edge and curves down
-  const waveDefs = [
-    { color: [210, 200, 248] as RGB, width: 0.6, yOff: -8 },
-    { color: [200, 192, 245] as RGB, width: 0.7, yOff: -4 },
-    { color: [190, 180, 242] as RGB, width: 0.6, yOff: 0 },
-    { color: [178, 168, 238] as RGB, width: 0.8, yOff: 4 },
-    { color: [165, 152, 234] as RGB, width: 0.6, yOff: 8 },
-    { color: [152, 138, 230] as RGB, width: 0.7, yOff: 12 },
-    { color: [140, 125, 226] as RGB, width: 0.6, yOff: 16 },
-    { color: [128, 110, 222] as RGB, width: 0.8, yOff: 20 },
-    { color: [118, 98, 218] as RGB, width: 0.6, yOff: 24 },
-    { color: [110, 87, 224] as RGB, width: 0.5, yOff: 28 },
-  ];
-
-  waveDefs.forEach(wave => {
-    pdf.setDrawColor(...wave.color);
-    pdf.setLineWidth(wave.width);
-    drawSmoothWave(pdf, W, wave.yOff);
-  });
-}
-
-function drawSmoothWave(pdf: jsPDF, W: number, yOffset: number) {
-  // A smooth S-curve from beyond right edge, curving through top-right corner
-  // and flowing down the right side — matches the Facture.net aesthetic
-  const steps = 120;
-  const points: [number, number][] = [];
-
-  for (let i = 0; i <= steps; i++) {
-    const t = i / steps;
-    // Parametric curve: flows from upper-right off-page into the page
-    // then curves down along the right edge
-    const baseX = W + 30 - t * 85;
-    const baseY = -15 + yOffset + t * 75;
-
-    // Add flowing sine undulation for organic feel
-    const wave1 = Math.sin(t * Math.PI * 2.2) * 12;
-    const wave2 = Math.sin(t * Math.PI * 3.5 + 0.8) * 4;
-
-    const x = baseX + wave1 + wave2;
-    const y = baseY + Math.sin(t * Math.PI * 1.4) * 6;
-
-    // Only draw points that are within or near page bounds
-    if (x > W - 100 && x < W + 40 && y > -20 && y < 85) {
-      points.push([x, y]);
-    }
-  }
-
-  // Draw smooth path
-  for (let i = 0; i < points.length - 1; i++) {
-    pdf.line(points[i][0], points[i][1], points[i + 1][0], points[i + 1][1]);
+// ===== DRAW DECORATIVE WAVE IMAGE (top-right corner) =====
+// Uses the actual vague.png from the logo folder
+function drawWaveImage(pdf: jsPDF) {
+  try {
+    // Image is 900x382 px — place it top-right, spanning ~120mm wide
+    // The image has transparent/white background with wave lines flowing from right
+    const imgW = 130; // mm width on page
+    const imgH = imgW * (382 / 900); // keep aspect ratio ~55mm
+    const xPos = 210 - imgW + 10; // slight overshoot to the right edge
+    const yPos = -5; // start slightly above page top
+    pdf.addImage(VAGUE_BASE64, 'PNG', xPos, yPos, imgW, imgH);
+  } catch {
+    // silently skip if image fails
   }
 }
 
@@ -218,7 +175,7 @@ export function generatePDF(
   function newPage() {
     if (pageCount > 0) pdf.addPage();
     pageCount++;
-    drawWaves(pdf);
+    drawWaveImage(pdf);
     y = 25;
   }
 
