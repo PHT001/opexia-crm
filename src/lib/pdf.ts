@@ -346,12 +346,12 @@ export function generatePDF(
   y += 8;
 
   // =============== TABLE ===============
-  // Columns: Type 28 | Desc (all remaining) | Prix 27 | Qté 16 | Total 24 = 95 fixed + desc flexible
-  const colTypeW = 28;
-  const colPrixW = 27;
-  const colQteW = 16;
-  const colTotalW = 24;
-  const colDescW = cW - colTypeW - colPrixW - colQteW - colTotalW; // = 65mm
+  // Columns: Type 22 | Desc (flex) | Prix 30 | Qté 14 | Total 26 = 92 fixed + desc flexible
+  const colTypeW = 22;
+  const colPrixW = 30;
+  const colQteW = 14;
+  const colTotalW = 26;
+  const colDescW = cW - colTypeW - colPrixW - colQteW - colTotalW; // = 68mm
 
   const tType = { x: mL, w: colTypeW };
   const tDesc = { x: mL + colTypeW, w: colDescW };
@@ -359,10 +359,10 @@ export function generatePDF(
   const tQte  = { x: tPrix.x + colPrixW, w: colQteW };
   const tTotal = { x: tQte.x + colQteW, w: colTotalW };
 
-  // Max width for description text (with padding)
-  const descTextW = colDescW - 6;
-  // Max width for detail lines (indented further)
-  const detailTextW = colDescW - 10;
+  // Max width for description text (with padding on both sides)
+  const descTextW = colDescW - 5;
+  // Max width for detail lines (indented further, must NOT overflow into Prix column)
+  const detailTextW = colDescW - 9;
 
   function drawTableHeader() {
     // Rounded header row
@@ -370,12 +370,12 @@ export function generatePDF(
     roundRect(pdf, mL, y - 4.5, cW, 9, 2, 'F');
 
     pdf.setFont(F, 'bold');
-    pdf.setFontSize(8);
+    pdf.setFontSize(7.5);
     pdf.setTextColor(...C.white);
-    pdf.text('Type', tType.x + 4, y + 0.5);
-    pdf.text('Description', tDesc.x + 4, y + 0.5);
-    pdf.text('Prix unitaire HT', tPrix.x + tPrix.w / 2, y + 0.5, { align: 'center' });
-    pdf.text('Quantit\u00e9', tQte.x + tQte.w / 2, y + 0.5, { align: 'center' });
+    pdf.text('Type', tType.x + 2, y + 0.5);
+    pdf.text('Description', tDesc.x + 3, y + 0.5);
+    pdf.text('Prix unit. HT', tPrix.x + tPrix.w / 2, y + 0.5, { align: 'center' });
+    pdf.text('Qt\u00e9', tQte.x + tQte.w / 2, y + 0.5, { align: 'center' });
     pdf.text('Total HT', tTotal.x + tTotal.w - 2, y + 0.5, { align: 'right' });
 
     y += 8;
@@ -389,40 +389,39 @@ export function generatePDF(
     const displayName = descParts[0];
     const preset = PRESET_MAP[displayName];
 
-    // Pre-calculate row height
-    const rowStartY = y - 2;
-    let tempY = y;
-
     const moduleLabel = type === 'devis'
       ? `MODULE ${idx + 1} \u2014 ${displayName}`
       : displayName;
     const nameLines = pdf.splitTextToSize(moduleLabel, descTextW);
-    tempY += Math.max(nameLines.length * 4, 4) + 6;
 
-    if (preset) {
-      const dLines = pdf.splitTextToSize(preset.description, detailTextW);
-      tempY += dLines.length * 4 + 2;
-      // Each bullet point is wrapped
-      preset.details.forEach(detail => {
-        const bLines = pdf.splitTextToSize(`- ${detail}`, detailTextW);
-        tempY += bLines.length * 4;
-      });
-      tempY += 3;
-      if (preset.pricingNote) {
-        preset.pricingNote.split('\n').forEach(note => {
-          const nLines = pdf.splitTextToSize(note, detailTextW);
-          tempY += nLines.length * 4;
+    // ---- Pre-calculate total row height ----
+    function calcRowH(): number {
+      let h = Math.max(nameLines.length * 4, 4) + 6;
+      if (preset) {
+        const dLines = pdf.splitTextToSize(preset.description, detailTextW);
+        h += dLines.length * 3.8 + 2;
+        preset.details.forEach(detail => {
+          const bLines = pdf.splitTextToSize(`\u2022  ${detail}`, detailTextW);
+          h += bLines.length * 3.8;
         });
+        h += 3;
+        if (preset.pricingNote) {
+          preset.pricingNote.split('\n').forEach(note => {
+            const nLines = pdf.splitTextToSize(note, detailTextW);
+            h += nLines.length * 3.8;
+          });
+        }
+        h += 5;
+      } else if (descParts.length > 1) {
+        const subLines = pdf.splitTextToSize(descParts.slice(1).join('\n'), detailTextW);
+        h += subLines.length * 3.8 + 5;
+      } else {
+        h += 3;
       }
-      tempY += 5;
-    } else if (descParts.length > 1) {
-      const subLines = pdf.splitTextToSize(descParts.slice(1).join('\n'), detailTextW);
-      tempY += subLines.length * 4 + 5;
-    } else {
-      tempY += 3;
+      return h;
     }
 
-    const rowHeight = tempY - rowStartY;
+    const rowHeight = calcRowH();
 
     // New page check
     if (y + rowHeight > H - 25) {
@@ -433,7 +432,7 @@ export function generatePDF(
     // *** ALTERNATING ROW BACKGROUND ***
     const bgColor = idx % 2 === 0 ? C.rowEven : C.rowOdd;
     pdf.setFillColor(...bgColor);
-    pdf.rect(mL, y - 3, cW, rowHeight + 1, 'F');
+    pdf.rect(mL, y - 3, cW, rowHeight + 2, 'F');
 
     // Row separator
     if (idx > 0) {
@@ -442,49 +441,64 @@ export function generatePDF(
       pdf.line(mL, y - 3, mL + cW, y - 3);
     }
 
+    // Column separator lines (light)
+    pdf.setDrawColor(...C.border);
+    pdf.setLineWidth(0.15);
+    pdf.line(tDesc.x, y - 3, tDesc.x, y - 3 + rowHeight + 2);
+    pdf.line(tPrix.x, y - 3, tPrix.x, y - 3 + rowHeight + 2);
+    pdf.line(tQte.x, y - 3, tQte.x, y - 3 + rowHeight + 2);
+    pdf.line(tTotal.x, y - 3, tTotal.x, y - 3 + rowHeight + 2);
+
     // Type
     pdf.setFont(F, 'normal');
-    pdf.setFontSize(9);
-    pdf.setTextColor(...C.text);
-    pdf.text('Service', tType.x + 4, y + 1);
+    pdf.setFontSize(7.5);
+    pdf.setTextColor(...C.textLight);
+    pdf.text('Service', tType.x + 2, y + 1);
 
     // Module name — wrapped
     pdf.setFont(F, 'bold');
-    pdf.setFontSize(9);
+    pdf.setFontSize(8.5);
     pdf.setTextColor(...C.text);
     nameLines.forEach((line: string, li: number) => {
-      pdf.text(line, tDesc.x + 4, y + 1 + li * 4);
+      pdf.text(line, tDesc.x + 3, y + 1 + li * 4);
     });
 
     // Prices
     pdf.setFont(F, 'normal');
-    pdf.setFontSize(9);
+    pdf.setFontSize(8);
     pdf.setTextColor(...C.text);
     pdf.text(fmt(ligne.prixUnitaire), tPrix.x + tPrix.w / 2, y + 1, { align: 'center' });
     pdf.text(String(ligne.quantite), tQte.x + tQte.w / 2, y + 1, { align: 'center' });
+    pdf.setFont(F, 'bold');
     pdf.text(fmt(calcTotal(ligne)), tTotal.x + tTotal.w - 2, y + 1, { align: 'right' });
 
     y += Math.max(nameLines.length * 4, 4) + 6;
 
     // Detailed description
+    const detailIndent = tDesc.x + 6;
     if (preset) {
       // Intro — wrapped
       pdf.setFont(F, 'italic');
-      pdf.setFontSize(9);
+      pdf.setFontSize(8.5);
       pdf.setTextColor(...C.textLight);
       const dLines = pdf.splitTextToSize(preset.description, detailTextW);
-      pdf.text(dLines, tDesc.x + 8, y);
-      y += dLines.length * 4 + 2;
+      dLines.forEach((line: string) => {
+        pdf.text(line, detailIndent, y);
+        y += 3.8;
+      });
+      y += 2;
 
       // Bullet points — each one is wrapped with splitTextToSize
       preset.details.forEach(detail => {
         if (y > H - 25) { newPage(); drawTableHeader(); }
         pdf.setFont(F, 'normal');
-        pdf.setFontSize(9);
+        pdf.setFontSize(8.5);
         pdf.setTextColor(...C.textLight);
-        const bLines = pdf.splitTextToSize(`- ${detail}`, detailTextW);
-        pdf.text(bLines, tDesc.x + 8, y);
-        y += bLines.length * 4;
+        const bLines = pdf.splitTextToSize(`\u2022  ${detail}`, detailTextW);
+        bLines.forEach((line: string) => {
+          pdf.text(line, detailIndent, y);
+          y += 3.8;
+        });
       });
 
       y += 3;
@@ -493,23 +507,28 @@ export function generatePDF(
       if (preset.pricingNote) {
         preset.pricingNote.split('\n').forEach(noteLine => {
           if (y > H - 25) { newPage(); drawTableHeader(); }
-          pdf.setFont(F, 'normal');
-          pdf.setFontSize(9);
+          pdf.setFont(F, 'bold');
+          pdf.setFontSize(8.5);
           pdf.setTextColor(...C.text);
           const nLines = pdf.splitTextToSize(noteLine, detailTextW);
-          pdf.text(nLines, tDesc.x + 8, y);
-          y += nLines.length * 4;
+          nLines.forEach((line: string) => {
+            pdf.text(line, detailIndent, y);
+            y += 3.8;
+          });
         });
       }
       y += 5;
     } else {
       if (descParts.length > 1) {
         pdf.setFont(F, 'normal');
-        pdf.setFontSize(9);
+        pdf.setFontSize(8.5);
         pdf.setTextColor(...C.textLight);
         const subLines = pdf.splitTextToSize(descParts.slice(1).join('\n'), detailTextW);
-        pdf.text(subLines, tDesc.x + 8, y);
-        y += subLines.length * 4 + 5;
+        subLines.forEach((line: string) => {
+          pdf.text(line, detailIndent, y);
+          y += 3.8;
+        });
+        y += 5;
       } else {
         y += 3;
       }
