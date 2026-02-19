@@ -1,6 +1,7 @@
 import { jsPDF } from 'jspdf';
 import { DocumentLigne, Client, Devis, Invoice } from './types';
 import { VAGUE_BASE64 } from './vague-base64';
+import { LATO_REGULAR_BASE64, LATO_BOLD_BASE64, LATO_ITALIC_BASE64 } from './lato-font';
 
 // ===== COMPANY INFO =====
 const COMPANY = {
@@ -16,20 +17,16 @@ const COMPANY = {
 // ===== FACTURE.NET STYLE COLORS =====
 type RGB = [number, number, number];
 const C = {
-  primary: [110, 87, 224] as RGB,        // #6e57e0
-  primaryLight: [140, 120, 235] as RGB,
+  primary: [110, 87, 224] as RGB,
   primaryPale: [200, 190, 245] as RGB,
-  // Text
   text: [50, 50, 60] as RGB,
   textLight: [100, 100, 115] as RGB,
   label: [120, 120, 135] as RGB,
   muted: [150, 150, 165] as RGB,
-  // Structural
   border: [220, 220, 230] as RGB,
   white: [255, 255, 255] as RGB,
-  // Row backgrounds for alternating
-  rowEven: [248, 247, 253] as RGB,       // very light violet tint
-  rowOdd: [255, 255, 255] as RGB,        // white
+  rowEven: [248, 247, 253] as RGB,
+  rowOdd: [255, 255, 255] as RGB,
 };
 
 // ===== PRESET DETAILS MAP =====
@@ -128,27 +125,43 @@ function calcTotalTVA(lignes: DocumentLigne[]): number {
   return lignes.reduce((s, l) => s + calcTotal(l) * (l.tva / 100), 0);
 }
 
-// ===== DRAW DECORATIVE WAVE IMAGE (top-right corner) =====
-// Uses the actual vague.png from the logo folder
+// ===== REGISTER LATO FONTS =====
+function registerLato(pdf: jsPDF) {
+  pdf.addFileToVFS('Lato-Regular.ttf', LATO_REGULAR_BASE64);
+  pdf.addFont('Lato-Regular.ttf', 'Lato', 'normal');
+  pdf.addFileToVFS('Lato-Bold.ttf', LATO_BOLD_BASE64);
+  pdf.addFont('Lato-Bold.ttf', 'Lato', 'bold');
+  pdf.addFileToVFS('Lato-Italic.ttf', LATO_ITALIC_BASE64);
+  pdf.addFont('Lato-Italic.ttf', 'Lato', 'italic');
+}
+
+// Font name constant
+const F = 'Lato';
+
+// ===== DRAW WAVE IMAGE =====
 function drawWaveImage(pdf: jsPDF) {
   try {
-    // Image is 900x382 px — place it top-right, spanning ~120mm wide
-    // The image has transparent/white background with wave lines flowing from right
-    const imgW = 130; // mm width on page
-    const imgH = imgW * (382 / 900); // keep aspect ratio ~55mm
-    const xPos = 210 - imgW + 10; // slight overshoot to the right edge
-    const yPos = -5; // start slightly above page top
+    const imgW = 130;
+    const imgH = imgW * (382 / 900);
+    const xPos = 210 - imgW + 10;
+    const yPos = -5;
     pdf.addImage(VAGUE_BASE64, 'PNG', xPos, yPos, imgW, imgH);
   } catch {
-    // silently skip if image fails
+    // silently skip
   }
+}
+
+// ===== ROUNDED RECT HELPER =====
+// jsPDF has roundedRect but we need a helper for fill+stroke with rounded corners
+function roundRect(pdf: jsPDF, x: number, y: number, w: number, h: number, r: number, style: 'F' | 'S' | 'FD') {
+  pdf.roundedRect(x, y, w, h, r, r, style);
 }
 
 // ===== DRAW FOOTER =====
 function drawFooter(pdf: jsPDF, numero: string, type: string, page: number, totalPages: number) {
   const W = 210;
   const H = 297;
-  pdf.setFont('helvetica', 'normal');
+  pdf.setFont(F, 'normal');
   pdf.setFontSize(8);
   pdf.setTextColor(...C.muted);
   pdf.text(`${type === 'devis' ? 'Devis' : 'Facture'} ${numero}`, 25, H - 10);
@@ -163,6 +176,10 @@ export function generatePDF(
   lignes: DocumentLigne[]
 ): void {
   const pdf = new jsPDF('p', 'mm', 'a4');
+
+  // Register Lato fonts
+  registerLato(pdf);
+
   const W = 210;
   const H = 297;
   const mL = 25;
@@ -188,16 +205,16 @@ export function generatePDF(
   // =============== PAGE 1 ===============
   newPage();
 
-  // TITLE: "Devis DEV-2026-002" in blue-violet
+  // TITLE
   const titleText = type === 'devis' ? 'Devis' : 'Facture';
-  pdf.setFont('helvetica', 'bold');
+  pdf.setFont(F, 'bold');
   pdf.setFontSize(26);
   pdf.setTextColor(...C.primary);
   pdf.text(`${titleText} ${numero}`, mL, y);
 
   // Date
   y += 8;
-  pdf.setFont('helvetica', 'normal');
+  pdf.setFont(F, 'normal');
   pdf.setFontSize(11);
   pdf.setTextColor(...C.textLight);
   const dateStr = type === 'devis'
@@ -210,8 +227,7 @@ export function generatePDF(
   const halfW = (cW - 15) / 2;
   const rightColX = mL + halfW + 15;
 
-  // Titles
-  pdf.setFont('helvetica', 'bold');
+  pdf.setFont(F, 'bold');
   pdf.setFontSize(14);
   pdf.setTextColor(...C.primary);
   pdf.text('\u00c9metteur', mL, y);
@@ -226,21 +242,21 @@ export function generatePDF(
   y += 8;
   const fieldY = y;
   const fieldGap = 5.5;
-  const labelOffset = 30; // offset for values after labels
+  const labelOffset = 30;
 
   // --- Émetteur fields ---
   let eY = fieldY;
   pdf.setFontSize(9);
 
-  pdf.setFont('helvetica', 'normal');
+  pdf.setFont(F, 'normal');
   pdf.setTextColor(...C.label);
   pdf.text('Soci\u00e9t\u00e9 :', mL, eY);
-  pdf.setFont('helvetica', 'bold');
+  pdf.setFont(F, 'bold');
   pdf.setTextColor(...C.text);
   pdf.text(COMPANY.name, mL + labelOffset, eY);
 
   eY += fieldGap;
-  pdf.setFont('helvetica', 'normal');
+  pdf.setFont(F, 'normal');
   pdf.setTextColor(...C.label);
   pdf.text('Votre contact :', mL, eY);
   pdf.setTextColor(...C.text);
@@ -263,15 +279,15 @@ export function generatePDF(
   // --- Destinataire fields ---
   let dY = fieldY;
 
-  pdf.setFont('helvetica', 'normal');
+  pdf.setFont(F, 'normal');
   pdf.setTextColor(...C.label);
   pdf.text('Soci\u00e9t\u00e9 :', rightColX, dY);
-  pdf.setFont('helvetica', 'bold');
+  pdf.setFont(F, 'bold');
   pdf.setTextColor(...C.text);
   pdf.text(client.entreprise || `${client.prenom} ${client.nom}`.trim(), rightColX + labelOffset, dY);
 
   dY += fieldGap;
-  pdf.setFont('helvetica', 'normal');
+  pdf.setFont(F, 'normal');
   pdf.setTextColor(...C.label);
   pdf.text('Adresse :', rightColX, dY);
   pdf.setTextColor(...C.text);
@@ -292,10 +308,10 @@ export function generatePDF(
 
   y = Math.max(eY, dY) + 14;
 
-  // =============== INTRO TEXT (devis only) ===============
+  // =============== INTRO TEXT ===============
   if (type === 'devis') {
     needPage(22);
-    pdf.setFont('helvetica', 'normal');
+    pdf.setFont(F, 'normal');
     pdf.setFontSize(10);
     pdf.setTextColor(...C.text);
     pdf.text('Madame, Monsieur,', mL, y);
@@ -307,11 +323,13 @@ export function generatePDF(
     y += introLines.length * 4.5 + 3;
 
     if (lignes.length > 1) {
-      pdf.setFont('helvetica', 'bold');
+      pdf.setFont(F, 'bold');
       pdf.setFontSize(10);
-      pdf.text(`Ce devis comprend ${lignes.length} modules compl\u00e9mentaires, activables ind\u00e9pendamment selon vos besoins.`, mL, y);
-      pdf.setFont('helvetica', 'normal');
-      y += 8;
+      const moduleLine = `Ce devis comprend ${lignes.length} modules compl\u00e9mentaires, activables ind\u00e9pendamment selon vos besoins.`;
+      const moduleLines = pdf.splitTextToSize(moduleLine, cW);
+      pdf.text(moduleLines, mL, y);
+      pdf.setFont(F, 'normal');
+      y += moduleLines.length * 4.5 + 4;
     } else {
       y += 4;
     }
@@ -319,36 +337,39 @@ export function generatePDF(
     y += 4;
   }
 
-  // =============== "Détail" SECTION TITLE ===============
+  // =============== "Détail" ===============
   needPage(16);
-  pdf.setFont('helvetica', 'normal');
+  pdf.setFont(F, 'normal');
   pdf.setFontSize(20);
   pdf.setTextColor(...C.text);
   pdf.text('D\u00e9tail', mL, y);
   y += 8;
 
   // =============== TABLE ===============
-  // Column positions — proper spacing to avoid overlap
-  // Total width = 160mm
-  // Type: 30mm | Description: flexible | Prix: 28mm | Qté: 18mm | Total: 24mm
-  const colPrixW = 28;
-  const colQteW = 18;
+  // Columns: Type 28 | Desc (all remaining) | Prix 27 | Qté 16 | Total 24 = 95 fixed + desc flexible
+  const colTypeW = 28;
+  const colPrixW = 27;
+  const colQteW = 16;
   const colTotalW = 24;
-  const colTypeW = 30;
-  const colDescW = cW - colTypeW - colPrixW - colQteW - colTotalW;
+  const colDescW = cW - colTypeW - colPrixW - colQteW - colTotalW; // = 65mm
 
   const tType = { x: mL, w: colTypeW };
   const tDesc = { x: mL + colTypeW, w: colDescW };
-  const tPrix = { x: mL + colTypeW + colDescW, w: colPrixW };
-  const tQte  = { x: mL + colTypeW + colDescW + colPrixW, w: colQteW };
-  const tTotal = { x: mL + colTypeW + colDescW + colPrixW + colQteW, w: colTotalW };
+  const tPrix = { x: tDesc.x + colDescW, w: colPrixW };
+  const tQte  = { x: tPrix.x + colPrixW, w: colQteW };
+  const tTotal = { x: tQte.x + colQteW, w: colTotalW };
+
+  // Max width for description text (with padding)
+  const descTextW = colDescW - 6;
+  // Max width for detail lines (indented further)
+  const detailTextW = colDescW - 10;
 
   function drawTableHeader() {
-    // Blue-violet header row
+    // Rounded header row
     pdf.setFillColor(...C.primary);
-    pdf.rect(mL, y - 4.5, cW, 9, 'F');
+    roundRect(pdf, mL, y - 4.5, cW, 9, 2, 'F');
 
-    pdf.setFont('helvetica', 'bold');
+    pdf.setFont(F, 'bold');
     pdf.setFontSize(8);
     pdf.setTextColor(...C.white);
     pdf.text('Type', tType.x + 4, y + 0.5);
@@ -368,29 +389,34 @@ export function generatePDF(
     const displayName = descParts[0];
     const preset = PRESET_MAP[displayName];
 
-    // Pre-calculate the full height of this row to draw the background first
+    // Pre-calculate row height
     const rowStartY = y - 2;
     let tempY = y;
 
-    // MODULE name height
     const moduleLabel = type === 'devis'
       ? `MODULE ${idx + 1} \u2014 ${displayName}`
       : displayName;
-    const maxDescW = tDesc.w - 8;
-    const nameLines = pdf.splitTextToSize(moduleLabel, maxDescW);
+    const nameLines = pdf.splitTextToSize(moduleLabel, descTextW);
     tempY += Math.max(nameLines.length * 4, 4) + 6;
 
     if (preset) {
-      const descLines = pdf.splitTextToSize(preset.description, maxDescW);
-      tempY += descLines.length * 4 + 2;
-      tempY += preset.details.length * 4.2;
+      const dLines = pdf.splitTextToSize(preset.description, detailTextW);
+      tempY += dLines.length * 4 + 2;
+      // Each bullet point is wrapped
+      preset.details.forEach(detail => {
+        const bLines = pdf.splitTextToSize(`- ${detail}`, detailTextW);
+        tempY += bLines.length * 4;
+      });
       tempY += 3;
       if (preset.pricingNote) {
-        tempY += preset.pricingNote.split('\n').length * 4.5;
+        preset.pricingNote.split('\n').forEach(note => {
+          const nLines = pdf.splitTextToSize(note, detailTextW);
+          tempY += nLines.length * 4;
+        });
       }
       tempY += 5;
     } else if (descParts.length > 1) {
-      const subLines = pdf.splitTextToSize(descParts.slice(1).join('\n'), maxDescW);
+      const subLines = pdf.splitTextToSize(descParts.slice(1).join('\n'), detailTextW);
       tempY += subLines.length * 4 + 5;
     } else {
       tempY += 3;
@@ -398,7 +424,7 @@ export function generatePDF(
 
     const rowHeight = tempY - rowStartY;
 
-    // Check if we need a new page for this row
+    // New page check
     if (y + rowHeight > H - 25) {
       newPage();
       drawTableHeader();
@@ -409,29 +435,29 @@ export function generatePDF(
     pdf.setFillColor(...bgColor);
     pdf.rect(mL, y - 3, cW, rowHeight + 1, 'F');
 
-    // Row separator line
+    // Row separator
     if (idx > 0) {
       pdf.setDrawColor(...C.border);
       pdf.setLineWidth(0.3);
       pdf.line(mL, y - 3, mL + cW, y - 3);
     }
 
-    // === Type: "Service" ===
-    pdf.setFont('helvetica', 'normal');
+    // Type
+    pdf.setFont(F, 'normal');
     pdf.setFontSize(9);
     pdf.setTextColor(...C.text);
     pdf.text('Service', tType.x + 4, y + 1);
 
-    // === Description: MODULE name ===
-    pdf.setFont('helvetica', 'bold');
+    // Module name — wrapped
+    pdf.setFont(F, 'bold');
     pdf.setFontSize(9);
     pdf.setTextColor(...C.text);
     nameLines.forEach((line: string, li: number) => {
       pdf.text(line, tDesc.x + 4, y + 1 + li * 4);
     });
 
-    // === Price columns ===
-    pdf.setFont('helvetica', 'normal');
+    // Prices
+    pdf.setFont(F, 'normal');
     pdf.setFontSize(9);
     pdf.setTextColor(...C.text);
     pdf.text(fmt(ligne.prixUnitaire), tPrix.x + tPrix.w / 2, y + 1, { align: 'center' });
@@ -440,53 +466,48 @@ export function generatePDF(
 
     y += Math.max(nameLines.length * 4, 4) + 6;
 
-    // === Detailed description ===
+    // Detailed description
     if (preset) {
-      // Description intro
-      pdf.setFont('helvetica', 'italic');
+      // Intro — wrapped
+      pdf.setFont(F, 'italic');
       pdf.setFontSize(9);
       pdf.setTextColor(...C.textLight);
-      const descLines = pdf.splitTextToSize(preset.description, maxDescW);
-      pdf.text(descLines, tDesc.x + 8, y);
-      y += descLines.length * 4 + 2;
+      const dLines = pdf.splitTextToSize(preset.description, detailTextW);
+      pdf.text(dLines, tDesc.x + 8, y);
+      y += dLines.length * 4 + 2;
 
-      // Bullet points "- "
+      // Bullet points — each one is wrapped with splitTextToSize
       preset.details.forEach(detail => {
-        if (y > H - 25) {
-          newPage();
-          drawTableHeader();
-        }
-        pdf.setFont('helvetica', 'normal');
+        if (y > H - 25) { newPage(); drawTableHeader(); }
+        pdf.setFont(F, 'normal');
         pdf.setFontSize(9);
         pdf.setTextColor(...C.textLight);
-        pdf.text(`- ${detail}`, tDesc.x + 8, y);
-        y += 4.2;
+        const bLines = pdf.splitTextToSize(`- ${detail}`, detailTextW);
+        pdf.text(bLines, tDesc.x + 8, y);
+        y += bLines.length * 4;
       });
 
       y += 3;
 
-      // Pricing note
+      // Pricing note — each line wrapped
       if (preset.pricingNote) {
-        const noteLines = preset.pricingNote.split('\n');
-        noteLines.forEach(noteLine => {
-          if (y > H - 25) {
-            newPage();
-            drawTableHeader();
-          }
-          pdf.setFont('helvetica', 'normal');
+        preset.pricingNote.split('\n').forEach(noteLine => {
+          if (y > H - 25) { newPage(); drawTableHeader(); }
+          pdf.setFont(F, 'normal');
           pdf.setFontSize(9);
           pdf.setTextColor(...C.text);
-          pdf.text(noteLine, tDesc.x + 8, y);
-          y += 4.5;
+          const nLines = pdf.splitTextToSize(noteLine, detailTextW);
+          pdf.text(nLines, tDesc.x + 8, y);
+          y += nLines.length * 4;
         });
       }
       y += 5;
     } else {
       if (descParts.length > 1) {
-        pdf.setFont('helvetica', 'normal');
+        pdf.setFont(F, 'normal');
         pdf.setFontSize(9);
         pdf.setTextColor(...C.textLight);
-        const subLines = pdf.splitTextToSize(descParts.slice(1).join('\n'), maxDescW);
+        const subLines = pdf.splitTextToSize(descParts.slice(1).join('\n'), detailTextW);
         pdf.text(subLines, tDesc.x + 8, y);
         y += subLines.length * 4 + 5;
       } else {
@@ -510,7 +531,7 @@ export function generatePDF(
   const hasTVA = totalTVA > 0;
 
   if (!hasTVA) {
-    pdf.setFont('helvetica', 'italic');
+    pdf.setFont(F, 'italic');
     pdf.setFontSize(9);
     pdf.setTextColor(...C.textLight);
     pdf.text('TVA non applicable, art. 293 B du CGI', W - mR, y, { align: 'right' });
@@ -518,14 +539,13 @@ export function generatePDF(
   }
 
   if (hasTVA) {
-    pdf.setFont('helvetica', 'normal');
+    pdf.setFont(F, 'normal');
     pdf.setFontSize(10);
     pdf.setTextColor(...C.textLight);
     pdf.text('Sous-total HT', W - mR - 40, y, { align: 'right' });
     pdf.setTextColor(...C.text);
     pdf.text(fmt(totalHT), W - mR, y, { align: 'right' });
     y += 5;
-
     pdf.setTextColor(...C.textLight);
     pdf.text('TVA', W - mR - 40, y, { align: 'right' });
     pdf.setTextColor(...C.text);
@@ -533,8 +553,7 @@ export function generatePDF(
     y += 7;
   }
 
-  // Total line — bold blue-violet
-  pdf.setFont('helvetica', 'bold');
+  pdf.setFont(F, 'bold');
   pdf.setFontSize(11);
   pdf.setTextColor(...C.primary);
   pdf.text('Total', W - mR - 40, y, { align: 'right' });
@@ -550,8 +569,7 @@ export function generatePDF(
     const condX = mL;
     const bonX = W / 2 + 5;
 
-    // Titles
-    pdf.setFont('helvetica', 'normal');
+    pdf.setFont(F, 'normal');
     pdf.setFontSize(18);
     pdf.setTextColor(...C.text);
     pdf.text('Conditions', condX, y);
@@ -560,57 +578,56 @@ export function generatePDF(
     y += 8;
     const condStartY = y;
 
-    // Conditions details
     pdf.setFontSize(9);
-    pdf.setFont('helvetica', 'bold');
+    pdf.setFont(F, 'bold');
     pdf.setTextColor(...C.text);
     pdf.text('Conditions de r\u00e8glement :', condX, y);
-    pdf.setFont('helvetica', 'normal');
+    pdf.setFont(F, 'normal');
     pdf.text('\u00c0 r\u00e9ception', condX + 46, y);
 
     y += 5;
-    pdf.setFont('helvetica', 'bold');
+    pdf.setFont(F, 'bold');
     pdf.text('Mode de r\u00e8glement :', condX, y);
-    pdf.setFont('helvetica', 'normal');
+    pdf.setFont(F, 'normal');
     pdf.text('Virement bancaire', condX + 38, y);
 
     y += 5;
-    pdf.setFont('helvetica', 'bold');
+    pdf.setFont(F, 'bold');
     pdf.text('Validit\u00e9 du devis :', condX, y);
-    pdf.setFont('helvetica', 'normal');
+    pdf.setFont(F, 'normal');
     pdf.text('30 jours', condX + 34, y);
 
-    // Notes
     y += 6;
     const notes = (doc as Devis).notes;
     if (notes) {
-      pdf.setFont('helvetica', 'bold');
+      pdf.setFont(F, 'bold');
       pdf.setFontSize(9);
       pdf.text('Notes :', condX, y);
       y += 4;
-
-      pdf.setFont('helvetica', 'normal');
+      pdf.setFont(F, 'normal');
       const nLines = pdf.splitTextToSize(notes, W / 2 - mL - 10);
       pdf.text(nLines, condX, y);
       y += nLines.length * 4 + 4;
     }
 
-    // Closing
-    pdf.setFont('helvetica', 'normal');
+    pdf.setFont(F, 'normal');
     pdf.setFontSize(9);
     pdf.setTextColor(...C.text);
-    pdf.text('Ce devis est valable 30 jours \u00e0 compter de sa date d\'\u00e9mission.', condX, y);
-    y += 4;
-    pdf.text('Nous restons \u00e0 votre disposition pour toute question.', condX, y);
-    y += 7;
+    const closingW = W / 2 - mL - 10;
+    const cl1 = pdf.splitTextToSize('Ce devis est valable 30 jours \u00e0 compter de sa date d\'\u00e9mission.', closingW);
+    pdf.text(cl1, condX, y);
+    y += cl1.length * 4;
+    const cl2 = pdf.splitTextToSize('Nous restons \u00e0 votre disposition pour toute question.', closingW);
+    pdf.text(cl2, condX, y);
+    y += cl2.length * 4 + 3;
     pdf.text('Cordialement,', condX, y);
     y += 4;
-    pdf.setFont('helvetica', 'bold');
+    pdf.setFont(F, 'bold');
     pdf.text('L\'\u00e9quipe OpexIA Agency', condX, y);
 
     // === Bon pour accord ===
     let bonY = condStartY;
-    pdf.setFont('helvetica', 'normal');
+    pdf.setFont(F, 'normal');
     pdf.setFontSize(9);
     pdf.setTextColor(...C.text);
     pdf.text('\u00c0', bonX, bonY);
@@ -628,9 +645,10 @@ export function generatePDF(
     pdf.text('Signature et cachet', bonX, bonY);
 
     bonY += 3;
+    // Rounded signature box
     pdf.setDrawColor(...C.border);
     pdf.setLineWidth(0.3);
-    pdf.rect(bonX, bonY, W - mR - bonX, 28, 'S');
+    roundRect(pdf, bonX, bonY, W - mR - bonX, 28, 3, 'S');
 
     bonY += 33;
     pdf.text('Qualit\u00e9 de signataire', bonX, bonY);
@@ -641,38 +659,38 @@ export function generatePDF(
     // ===== FACTURE CONDITIONS =====
     needPage(45);
 
-    pdf.setFont('helvetica', 'normal');
+    pdf.setFont(F, 'normal');
     pdf.setFontSize(18);
     pdf.setTextColor(...C.text);
     pdf.text('Conditions de paiement', mL, y);
 
     y += 8;
     pdf.setFontSize(9);
-    pdf.setFont('helvetica', 'bold');
+    pdf.setFont(F, 'bold');
     pdf.setTextColor(...C.text);
     pdf.text('Conditions de r\u00e8glement :', mL, y);
-    pdf.setFont('helvetica', 'normal');
+    pdf.setFont(F, 'normal');
     pdf.text('\u00c0 r\u00e9ception', mL + 46, y);
 
     y += 5;
-    pdf.setFont('helvetica', 'bold');
+    pdf.setFont(F, 'bold');
     pdf.text('Mode de r\u00e8glement :', mL, y);
-    pdf.setFont('helvetica', 'normal');
+    pdf.setFont(F, 'normal');
     pdf.text('Virement bancaire', mL + 38, y);
 
     y += 5;
-    pdf.setFont('helvetica', 'bold');
+    pdf.setFont(F, 'bold');
     pdf.text('\u00c9ch\u00e9ance :', mL, y);
-    pdf.setFont('helvetica', 'normal');
+    pdf.setFont(F, 'normal');
     pdf.text(fmtDate((doc as Invoice).dateEcheance), mL + 22, y);
 
     y += 8;
     const invNotes = (doc as Invoice).description;
     if (invNotes) {
-      pdf.setFont('helvetica', 'bold');
+      pdf.setFont(F, 'bold');
       pdf.text('Notes :', mL, y);
       y += 4;
-      pdf.setFont('helvetica', 'normal');
+      pdf.setFont(F, 'normal');
       pdf.setFontSize(9);
       const nLines = pdf.splitTextToSize(invNotes, cW);
       pdf.text(nLines, mL, y);
@@ -680,17 +698,18 @@ export function generatePDF(
     }
 
     y += 4;
-    pdf.setFont('helvetica', 'normal');
+    pdf.setFont(F, 'normal');
     pdf.setFontSize(9);
-    pdf.text('En cas de retard de paiement, des p\u00e9nalit\u00e9s seront appliqu\u00e9es conform\u00e9ment \u00e0 la loi.', mL, y);
-    y += 6;
+    const penaltyLines = pdf.splitTextToSize('En cas de retard de paiement, des p\u00e9nalit\u00e9s seront appliqu\u00e9es conform\u00e9ment \u00e0 la loi.', cW);
+    pdf.text(penaltyLines, mL, y);
+    y += penaltyLines.length * 4 + 2;
     pdf.text('Cordialement,', mL, y);
     y += 4;
-    pdf.setFont('helvetica', 'bold');
+    pdf.setFont(F, 'bold');
     pdf.text('L\'\u00e9quipe OpexIA Agency', mL, y);
   }
 
-  // =============== FOOTERS ON ALL PAGES ===============
+  // =============== FOOTERS ===============
   const numPages = pdf.getNumberOfPages();
   for (let p = 1; p <= numPages; p++) {
     pdf.setPage(p);
