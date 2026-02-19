@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import Image from 'next/image';
 import {
   LayoutDashboard,
   Users,
@@ -74,14 +73,18 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
           'flex items-center border-b border-white/5',
           collapsed ? 'justify-center h-16' : 'justify-between h-16 px-4'
         )}>
-          <Link href="/" className="flex items-center gap-3 min-w-0">
-            <Image
-              src="/logo.png"
-              alt="OpexIA"
-              width={36}
-              height={36}
-              className="rounded-lg flex-shrink-0"
-            />
+          <Link href="/" className="flex items-center min-w-0">
+            {collapsed ? (
+              <span className="text-[20px] font-bold tracking-tight">
+                <span className="text-white">O</span>
+                <span className="bg-gradient-to-r from-[#2997FF] via-[#6366F1] to-[#818CF8] bg-clip-text text-transparent">IA</span>
+              </span>
+            ) : (
+              <span className="text-[22px] font-bold tracking-tight">
+                <span className="text-white">Opex</span>
+                <span className="bg-gradient-to-r from-[#2997FF] via-[#6366F1] to-[#818CF8] bg-clip-text text-transparent">IA</span>
+              </span>
+            )}
           </Link>
 
           <button
