@@ -63,24 +63,36 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
       <aside
         className={clsx(
           'fixed top-0 left-0 h-full z-50 flex flex-col transition-all duration-200',
-          'bg-[#050505] border-r border-white/[0.06]',
-          collapsed ? 'w-[60px]' : 'w-[220px]',
+          'bg-[#0C0C14] border-r border-white/[0.06]',
+          collapsed ? 'w-[60px]' : 'w-[260px]',
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
         {/* Logo */}
         <div className={clsx(
-          'flex items-center h-14 border-b border-white/[0.06]',
-          collapsed ? 'justify-center' : 'justify-between px-4'
+          'flex items-center h-16 px-5',
+          collapsed ? 'justify-center px-0' : 'justify-between'
         )}>
-          <Link href="/" className="flex items-center min-w-0">
+          <Link href="/" className="flex items-center gap-3 min-w-0">
             {collapsed ? (
-              <span className="text-[17px] font-bold tracking-tight text-white/80">O</span>
+              <div className="w-[34px] h-[34px] rounded-xl bg-[#5e9eff]/20 flex items-center justify-center">
+                <span className="text-[13px] font-bold text-[#5e9eff]">O</span>
+              </div>
             ) : (
-              <span className="text-[17px] font-semibold tracking-tight">
-                <span className="text-white/80">Opex</span>
-                <span className="text-[#a78bfa]">IA</span>
-              </span>
+              <>
+                <div className="w-[34px] h-[34px] rounded-xl bg-[#5e9eff]/20 flex items-center justify-center flex-shrink-0">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5e9eff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                  </svg>
+                </div>
+                <div>
+                  <span className="text-[14px] font-bold tracking-tight">
+                    <span className="text-white">OPEX</span>
+                    <span className="text-[#5e9eff]">IA</span>
+                  </span>
+                  <p className="text-[9px] text-white/30 font-medium tracking-[0.5px] uppercase">Business Manager</p>
+                </div>
+              </>
             )}
           </Link>
 
@@ -93,7 +105,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 py-3 px-2 space-y-0.5 overflow-y-auto">
+        <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.href);
@@ -103,15 +115,15 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
                 href={item.href}
                 onClick={onMobileClose}
                 className={clsx(
-                  'flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-medium transition-colors duration-150',
+                  'flex items-center gap-3 px-[14px] py-[9px] rounded-xl text-[13px] font-medium transition-colors duration-150',
                   active
-                    ? 'bg-white/[0.06] text-white'
-                    : 'text-white/35 hover:text-white/60 hover:bg-white/[0.03]',
+                    ? 'bg-white/[0.08] text-[#F5F5F7]'
+                    : 'text-white/[0.55] hover:text-white/80 hover:bg-white/[0.04]',
                   collapsed && 'justify-center px-0'
                 )}
                 title={collapsed ? item.label : undefined}
               >
-                <Icon size={16} className="flex-shrink-0" />
+                <Icon size={18} className="flex-shrink-0" />
                 {!collapsed && <span>{item.label}</span>}
               </Link>
             );
@@ -119,39 +131,39 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
         </nav>
 
         {/* Bottom */}
-        <div className="border-t border-white/[0.06] p-2 space-y-0.5">
+        <div className="border-t border-white/[0.06] p-3 space-y-1">
           <Link
             href="/parametres"
             onClick={onMobileClose}
             className={clsx(
-              'flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-medium transition-colors duration-150',
+              'flex items-center gap-3 px-[14px] py-[9px] rounded-xl text-[13px] font-medium transition-colors duration-150',
               isActive('/parametres')
-                ? 'bg-white/[0.06] text-white'
-                : 'text-white/35 hover:text-white/60 hover:bg-white/[0.03]',
+                ? 'bg-white/[0.08] text-[#F5F5F7]'
+                : 'text-white/[0.55] hover:text-white/80 hover:bg-white/[0.04]',
               collapsed && 'justify-center px-0'
             )}
             title={collapsed ? 'Paramètres' : undefined}
           >
-            <Settings size={16} className="flex-shrink-0" />
+            <Settings size={18} className="flex-shrink-0" />
             {!collapsed && <span>Paramètres</span>}
           </Link>
 
           <button
             onClick={onToggle}
-            className="hidden lg:flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-[13px] text-white/25 hover:text-white/50 hover:bg-white/[0.03] transition-colors duration-150"
+            className="hidden lg:flex items-center gap-3 w-full px-[14px] py-[9px] rounded-xl text-[13px] text-white/25 hover:text-white/50 hover:bg-white/[0.04] transition-colors duration-150"
           >
-            {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+            {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
             {!collapsed && <span>Réduire</span>}
           </button>
 
           <button
             onClick={handleLogout}
             className={clsx(
-              'flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-[13px] text-white/25 hover:text-[#f87171] hover:bg-[rgba(248,113,113,0.06)] transition-colors duration-150',
+              'flex items-center gap-3 w-full px-[14px] py-[9px] rounded-xl text-[13px] text-white/25 hover:text-[#f87171] hover:bg-[rgba(248,113,113,0.06)] transition-colors duration-150',
               collapsed && 'justify-center px-0'
             )}
           >
-            <LogOut size={16} className="flex-shrink-0" />
+            <LogOut size={18} className="flex-shrink-0" />
             {!collapsed && <span>Déconnexion</span>}
           </button>
         </div>

@@ -33,12 +33,12 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' }:
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/70" onClick={onClose} />
-      <div className={`relative w-full ${sizeClasses[size]} bg-[#0a0a0a] border border-white/[0.08] rounded-xl shadow-2xl animate-scale-in max-h-[90vh] flex flex-col`}>
+      <div className={`relative w-full ${sizeClasses[size]} bg-[#0C0C14] border border-white/[0.08] rounded-2xl shadow-2xl animate-scale-in max-h-[90vh] flex flex-col`}>
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.06]">
-          <h2 className="text-sm font-semibold text-white/90">{title}</h2>
+          <h2 className="text-sm font-semibold text-[#F5F5F7]">{title}</h2>
           <button
             onClick={onClose}
-            className="p-1 rounded-md hover:bg-white/[0.06] text-white/30 hover:text-white/60 transition-colors"
+            className="p-1 rounded-lg hover:bg-white/[0.06] text-white/30 hover:text-white/60 transition-colors"
           >
             <X size={16} />
           </button>

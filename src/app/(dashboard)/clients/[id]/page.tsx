@@ -58,8 +58,8 @@ export default function ClientDetailPage() {
 
   if (!mounted || !client) {
     return (
-      <div className="p-6 pt-16 lg:pt-6">
-        <div className="h-8 w-48 bg-white/[0.02] rounded animate-pulse" />
+      <div className="p-5 lg:p-8 pt-16 lg:pt-8">
+        <div className="h-8 w-48 bg-black/20 rounded animate-pulse" />
       </div>
     );
   }
@@ -75,12 +75,12 @@ export default function ClientDetailPage() {
   ] as const;
 
   return (
-    <div className="p-4 lg:p-6 space-y-6 pt-16 lg:pt-6">
+    <div className="p-5 lg:p-8 space-y-6 pt-16 lg:pt-8">
       {/* Back + Header */}
       <div>
         <Link
           href="/clients"
-          className="inline-flex items-center gap-2 text-sm text-white/30 hover:text-white/90 mb-4 transition-colors"
+          className="inline-flex items-center gap-2 text-[13px] text-white/[0.3] hover:text-[#F5F5F7] mb-4 transition-colors"
         >
           <ArrowLeft size={16} />
           Retour aux clients
@@ -88,54 +88,58 @@ export default function ClientDetailPage() {
 
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-xl bg-[rgba(108,92,231,0.15)] flex items-center justify-center text-[#a78bfa] text-xl font-bold">
+            <div className="w-[42px] h-[42px] rounded-2xl bg-[rgba(94,158,255,0.10)] flex items-center justify-center text-[#a78bfa] text-xl font-bold">
               {client.prenom[0]}{client.nom[0]}
             </div>
             <div>
-              <h1 className="text-lg font-semibold text-white/90">{client.prenom} {client.nom}</h1>
-              <p className="text-white/30 flex items-center gap-2">
+              <h1 className="text-[30px] font-bold text-[#F5F5F7]">{client.prenom} {client.nom}</h1>
+              <p className="text-white/[0.3] flex items-center gap-2">
                 <Building2 size={14} />
                 {client.entreprise}
               </p>
             </div>
           </div>
-          <span className={`px-3 py-1.5 rounded-full text-sm font-medium status-${client.status} self-start`}>
+          <span className={`px-3 py-1.5 rounded-full text-sm font-medium self-start ${
+            client.status === 'client' ? 'bg-[#34d399]/15 text-[#34d399]' :
+            client.status === 'prospect' ? 'bg-[#5e9eff]/15 text-[#5e9eff]' :
+            'bg-[#f87171]/15 text-[#f87171]'
+          }`}>
             {client.status === 'client' ? 'Client' : client.status === 'prospect' ? 'Prospect' : 'Perdu'}
           </span>
         </div>
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-3">
-          <p className="text-xs text-white/30 mb-1">Mensuel</p>
-          <p className="text-lg font-bold text-white/90">{client.montantMensuel} €</p>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-black/20 border border-white/[0.08] rounded-[20px] p-5">
+          <p className="text-xs text-white/[0.3] mb-1">Mensuel</p>
+          <p className="text-lg font-bold text-[#F5F5F7]">{client.montantMensuel} €</p>
         </div>
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-3">
-          <p className="text-xs text-white/30 mb-1">Total facturé</p>
-          <p className="text-lg font-bold text-white/90">{totalFacture.toLocaleString('fr-FR')} €</p>
+        <div className="bg-black/20 border border-white/[0.08] rounded-[20px] p-5">
+          <p className="text-xs text-white/[0.3] mb-1">Total facturé</p>
+          <p className="text-lg font-bold text-[#F5F5F7]">{totalFacture.toLocaleString('fr-FR')} €</p>
         </div>
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-3">
-          <p className="text-xs text-white/30 mb-1">Projets</p>
-          <p className="text-lg font-bold text-white/90">{projects.length}</p>
+        <div className="bg-black/20 border border-white/[0.08] rounded-[20px] p-5">
+          <p className="text-xs text-white/[0.3] mb-1">Projets</p>
+          <p className="text-lg font-bold text-[#F5F5F7]">{projects.length}</p>
         </div>
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-3">
-          <p className="text-xs text-white/30 mb-1">Pipeline</p>
+        <div className="bg-black/20 border border-white/[0.08] rounded-[20px] p-5">
+          <p className="text-xs text-white/[0.3] mb-1">Pipeline</p>
           <p className="text-lg font-bold text-[#a78bfa]">{PIPELINE_LABELS[client.pipelineStage]}</p>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-white/[0.06]">
+      <div className="border-b border-white/[0.04]">
         <div className="flex gap-1 overflow-x-auto">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2.5 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+              className={`px-4 py-2.5 text-[13px] font-medium whitespace-nowrap border-b-2 transition-colors ${
                 activeTab === tab.id
-                  ? 'border-[#6c5ce7] text-[#a78bfa]'
-                  : 'border-transparent text-white/30 hover:text-white/90'
+                  ? 'border-[#5e9eff] text-[#a78bfa]'
+                  : 'border-transparent text-white/[0.3] hover:text-[#F5F5F7]'
               }`}
             >
               {tab.label}
@@ -148,51 +152,51 @@ export default function ClientDetailPage() {
       {activeTab === 'apercu' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 animate-fade-in">
           {/* Info */}
-          <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5 space-y-4">
-            <h3 className="font-semibold text-white/90">Informations</h3>
+          <div className="bg-black/20 border border-white/[0.04] rounded-[14px] p-5 space-y-4">
+            <h3 className="text-[15px] font-semibold text-[#F5F5F7]">Informations</h3>
             <div className="space-y-3">
               {client.email && (
                 <div className="flex items-center gap-3 text-sm">
-                  <Mail size={15} className="text-white/30" />
-                  <span className="text-white/90">{client.email}</span>
+                  <Mail size={15} className="text-white/[0.3]" />
+                  <span className="text-[#F5F5F7]">{client.email}</span>
                 </div>
               )}
               {client.telephone && (
                 <div className="flex items-center gap-3 text-sm">
-                  <Phone size={15} className="text-white/30" />
-                  <span className="text-white/90">{client.telephone}</span>
+                  <Phone size={15} className="text-white/[0.3]" />
+                  <span className="text-[#F5F5F7]">{client.telephone}</span>
                 </div>
               )}
               {client.siteWeb && (
                 <div className="flex items-center gap-3 text-sm">
-                  <Globe size={15} className="text-white/30" />
-                  <span className="text-white/90">{client.siteWeb}</span>
+                  <Globe size={15} className="text-white/[0.3]" />
+                  <span className="text-[#F5F5F7]">{client.siteWeb}</span>
                 </div>
               )}
               {client.adresse && (
                 <div className="flex items-center gap-3 text-sm">
-                  <MapPin size={15} className="text-white/30" />
-                  <span className="text-white/90">{client.adresse}</span>
+                  <MapPin size={15} className="text-white/[0.3]" />
+                  <span className="text-[#F5F5F7]">{client.adresse}</span>
                 </div>
               )}
               {client.secteur && (
                 <div className="flex items-center gap-3 text-sm">
-                  <Tag size={15} className="text-white/30" />
-                  <span className="text-white/90">{client.secteur}</span>
+                  <Tag size={15} className="text-white/[0.3]" />
+                  <span className="text-[#F5F5F7]">{client.secteur}</span>
                 </div>
               )}
               <div className="flex items-center gap-3 text-sm">
-                <Calendar size={15} className="text-white/30" />
-                <span className="text-white/30">Client depuis le {new Date(client.dateCreation).toLocaleDateString('fr-FR')}</span>
+                <Calendar size={15} className="text-white/[0.3]" />
+                <span className="text-white/[0.3]">Client depuis le {new Date(client.dateCreation).toLocaleDateString('fr-FR')}</span>
               </div>
               <div className="flex items-center gap-3 text-sm">
-                <Clock size={15} className="text-white/30" />
-                <span className="text-white/30">Dernier contact : {new Date(client.dernierContact).toLocaleDateString('fr-FR')}</span>
+                <Clock size={15} className="text-white/[0.3]" />
+                <span className="text-white/[0.3]">Dernier contact : {new Date(client.dernierContact).toLocaleDateString('fr-FR')}</span>
               </div>
               {client.source && (
                 <div className="flex items-center gap-3 text-sm">
-                  <TrendingUp size={15} className="text-white/30" />
-                  <span className="text-white/30">Source : {client.source}</span>
+                  <TrendingUp size={15} className="text-white/[0.3]" />
+                  <span className="text-white/[0.3]">Source : {client.source}</span>
                 </div>
               )}
             </div>
@@ -200,24 +204,24 @@ export default function ClientDetailPage() {
 
           {/* Services + Notes */}
           <div className="space-y-4">
-            <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5">
-              <h3 className="font-semibold text-white/90 mb-3">Services actifs</h3>
+            <div className="bg-black/20 border border-white/[0.04] rounded-[14px] p-5">
+              <h3 className="text-[15px] font-semibold text-[#F5F5F7] mb-3">Services actifs</h3>
               {client.servicesSouscrits.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
                   {client.servicesSouscrits.map(s => (
-                    <span key={s} className="px-3 py-1.5 rounded-lg bg-[rgba(108,92,231,0.08)] text-[#a78bfa] text-sm font-medium">
+                    <span key={s} className="px-3 py-1.5 rounded-xl bg-[rgba(94,158,255,0.08)] text-[#a78bfa] text-sm font-medium">
                       {SERVICE_LABELS[s]}
                     </span>
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-white/30">Aucun service souscrit</p>
+                <p className="text-sm text-white/[0.3]">Aucun service souscrit</p>
               )}
             </div>
 
-            <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5">
-              <h3 className="font-semibold text-white/90 mb-3">Notes</h3>
-              <p className="text-sm text-white/30 whitespace-pre-wrap">{client.notes || 'Aucune note'}</p>
+            <div className="bg-black/20 border border-white/[0.04] rounded-[14px] p-5">
+              <h3 className="text-[15px] font-semibold text-[#F5F5F7] mb-3">Notes</h3>
+              <p className="text-sm text-white/[0.3] whitespace-pre-wrap">{client.notes || 'Aucune note'}</p>
             </div>
           </div>
         </div>
@@ -226,39 +230,39 @@ export default function ClientDetailPage() {
       {activeTab === 'projets' && (
         <div className="space-y-3 animate-fade-in">
           {projects.map((project) => (
-            <div key={project.id} className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4 hover:border-white/[0.08] transition-colors">
+            <div key={project.id} className="bg-black/20 border border-white/[0.04] rounded-[14px] p-4 hover:border-white/[0.08] transition-colors">
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <h4 className="font-medium text-white/90">{project.nom}</h4>
-                  <p className="text-xs text-white/30 mt-0.5">{SERVICE_LABELS[project.type]}</p>
+                  <h4 className="font-medium text-[#F5F5F7]">{project.nom}</h4>
+                  <p className="text-xs text-white/[0.3] mt-0.5">{SERVICE_LABELS[project.type]}</p>
                 </div>
                 <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                  project.status === 'en-cours' ? 'bg-[rgba(96,165,250,0.12)] text-[#60a5fa] border border-[rgba(96,165,250,0.25)]' :
-                  project.status === 'termine' ? 'bg-[rgba(52,211,153,0.12)] text-[#34d399] border border-[rgba(52,211,153,0.25)]' :
-                  project.status === 'en-attente' ? 'bg-[rgba(251,191,36,0.12)] text-[#fbbf24] border border-[rgba(251,191,36,0.25)]' :
-                  'bg-[rgba(248,113,113,0.12)] text-[#f87171] border border-[rgba(248,113,113,0.25)]'
+                  project.status === 'en-cours' ? 'bg-[#5e9eff]/15 text-[#5e9eff] border border-[rgba(94,158,255,0.25)]' :
+                  project.status === 'termine' ? 'bg-[#34d399]/15 text-[#34d399] border border-[rgba(52,211,153,0.25)]' :
+                  project.status === 'en-attente' ? 'bg-[#fbbf24]/15 text-[#fbbf24] border border-[rgba(251,191,36,0.25)]' :
+                  'bg-[#f87171]/15 text-[#f87171] border border-[rgba(248,113,113,0.25)]'
                 }`}>
                   {PROJECT_STATUS_LABELS[project.status]}
                 </span>
               </div>
-              <p className="text-sm text-white/30 mb-3">{project.description}</p>
-              <div className="flex items-center gap-4 text-xs text-white/30 mb-2">
+              <p className="text-sm text-white/[0.3] mb-3">{project.description}</p>
+              <div className="flex items-center gap-4 text-xs text-white/[0.3] mb-2">
                 <span>Début : {new Date(project.dateDebut).toLocaleDateString('fr-FR')}</span>
                 <span>Deadline : {new Date(project.deadline).toLocaleDateString('fr-FR')}</span>
-                <span className="font-medium text-white/90">{project.montant.toLocaleString('fr-FR')} €</span>
+                <span className="font-medium text-[#F5F5F7]">{project.montant.toLocaleString('fr-FR')} €</span>
               </div>
               {/* Progress bar */}
-              <div className="w-full h-2 bg-[#050505] rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-[#0C0C14] rounded-full overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-[#6c5ce7] transition-all duration-500"
+                  className="h-full rounded-full bg-[#5e9eff] transition-all duration-500"
                   style={{ width: `${project.progression}%` }}
                 />
               </div>
-              <p className="text-xs text-white/30 mt-1">{project.progression}%</p>
+              <p className="text-xs text-white/[0.3] mt-1">{project.progression}%</p>
             </div>
           ))}
           {projects.length === 0 && (
-            <div className="text-center py-12 text-white/30">
+            <div className="text-center py-12 text-white/[0.3]">
               <FileText size={40} className="mx-auto mb-3 opacity-50" />
               <p>Aucun projet pour ce client</p>
             </div>
@@ -267,32 +271,32 @@ export default function ClientDetailPage() {
       )}
 
       {activeTab === 'factures' && (
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl overflow-hidden animate-fade-in">
+        <div className="bg-black/20 border border-white/[0.04] rounded-[14px] overflow-hidden animate-fade-in">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-white/40 border-b border-white/[0.06] bg-white/[0.02]">
-                <th className="px-4 py-3 font-medium">N°</th>
-                <th className="px-4 py-3 font-medium hidden sm:table-cell">Description</th>
-                <th className="px-4 py-3 font-medium">Montant</th>
-                <th className="px-4 py-3 font-medium hidden sm:table-cell">Échéance</th>
-                <th className="px-4 py-3 font-medium">Statut</th>
+              <tr className="text-left border-b border-white/[0.04] bg-black/20">
+                <th className="px-4 py-3 text-white/[0.3] text-[10px] uppercase tracking-[1px] font-semibold">N°</th>
+                <th className="px-4 py-3 text-white/[0.3] text-[10px] uppercase tracking-[1px] font-semibold hidden sm:table-cell">Description</th>
+                <th className="px-4 py-3 text-white/[0.3] text-[10px] uppercase tracking-[1px] font-semibold">Montant</th>
+                <th className="px-4 py-3 text-white/[0.3] text-[10px] uppercase tracking-[1px] font-semibold hidden sm:table-cell">Échéance</th>
+                <th className="px-4 py-3 text-white/[0.3] text-[10px] uppercase tracking-[1px] font-semibold">Statut</th>
               </tr>
             </thead>
             <tbody>
               {invoices.map((inv) => (
-                <tr key={inv.id} className="border-b border-white/[0.03] hover:bg-white/[0.03] transition-colors">
+                <tr key={inv.id} className="border-b border-white/[0.04] hover:bg-white/[0.03] transition-colors">
                   <td className="px-4 py-3 font-mono text-xs">{inv.numero}</td>
-                  <td className="px-4 py-3 text-white/30 hidden sm:table-cell">{inv.description}</td>
+                  <td className="px-4 py-3 text-white/[0.3] hidden sm:table-cell">{inv.description}</td>
                   <td className="px-4 py-3 font-medium">{inv.montant} €</td>
-                  <td className="px-4 py-3 text-white/30 text-xs hidden sm:table-cell">
+                  <td className="px-4 py-3 text-white/[0.3] text-xs hidden sm:table-cell">
                     {new Date(inv.dateEcheance).toLocaleDateString('fr-FR')}
                   </td>
                   <td className="px-4 py-3">
                     <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                      inv.status === 'payee' ? 'bg-[rgba(52,211,153,0.12)] text-[#34d399] border border-[rgba(52,211,153,0.25)]' :
-                      inv.status === 'en-attente' ? 'bg-[rgba(251,191,36,0.12)] text-[#fbbf24] border border-[rgba(251,191,36,0.25)]' :
-                      inv.status === 'en-retard' ? 'bg-[rgba(248,113,113,0.12)] text-[#f87171] border border-[rgba(248,113,113,0.25)]' :
-                      'bg-white/[0.06] text-white/30'
+                      inv.status === 'payee' ? 'bg-[#34d399]/15 text-[#34d399] border border-[rgba(52,211,153,0.25)]' :
+                      inv.status === 'en-attente' ? 'bg-[#fbbf24]/15 text-[#fbbf24] border border-[rgba(251,191,36,0.25)]' :
+                      inv.status === 'en-retard' ? 'bg-[#f87171]/15 text-[#f87171] border border-[rgba(248,113,113,0.25)]' :
+                      'bg-white/[0.06] text-white/[0.3]'
                     }`}>
                       {INVOICE_STATUS_LABELS[inv.status]}
                     </span>
@@ -302,7 +306,7 @@ export default function ClientDetailPage() {
             </tbody>
           </table>
           {invoices.length === 0 && (
-            <div className="text-center py-12 text-white/30">
+            <div className="text-center py-12 text-white/[0.3]">
               <FileText size={40} className="mx-auto mb-3 opacity-50" />
               <p>Aucune facture</p>
             </div>
@@ -314,7 +318,7 @@ export default function ClientDetailPage() {
         <div className="space-y-3 animate-fade-in">
           <button
             onClick={() => setAddInteractionOpen(true)}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#6c5ce7] hover:bg-[#7c6df0] text-white text-sm font-medium transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/[0.15] text-white text-[13px] font-semibold transition-colors hover:bg-white/[0.05]"
           >
             <Plus size={16} />
             Ajouter une interaction
@@ -322,28 +326,28 @@ export default function ClientDetailPage() {
 
           <div className="space-y-3">
             {[...interactions].sort((a, b) => b.date.localeCompare(a.date)).map((inter) => (
-              <div key={inter.id} className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4 hover:border-white/[0.08] transition-colors">
+              <div key={inter.id} className="bg-black/20 border border-white/[0.04] rounded-[14px] p-4 hover:border-white/[0.08] transition-colors">
                 <div className="flex items-center gap-3 mb-2">
                   <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                    inter.type === 'appel' ? 'bg-[rgba(52,211,153,0.12)] text-[#34d399]' :
-                    inter.type === 'email' ? 'bg-[rgba(96,165,250,0.12)] text-[#60a5fa]' :
-                    inter.type === 'rdv' ? 'bg-[rgba(108,92,231,0.12)] text-[#a78bfa]' :
-                    'bg-[rgba(251,191,36,0.12)] text-[#fbbf24]'
+                    inter.type === 'appel' ? 'bg-[#34d399]/15 text-[#34d399]' :
+                    inter.type === 'email' ? 'bg-[#5e9eff]/15 text-[#5e9eff]' :
+                    inter.type === 'rdv' ? 'bg-[#a78bfa]/15 text-[#a78bfa]' :
+                    'bg-[#fbbf24]/15 text-[#fbbf24]'
                   }`}>
                     {inter.type === 'appel' ? 'Appel' : inter.type === 'email' ? 'Email' : inter.type === 'rdv' ? 'RDV' : 'Note'}
                   </span>
-                  <span className="text-xs text-white/30">
+                  <span className="text-xs text-white/[0.3]">
                     {new Date(inter.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
                   </span>
                 </div>
-                <h4 className="font-medium text-white/90 text-sm">{inter.sujet}</h4>
-                <p className="text-sm text-white/30 mt-1">{inter.contenu}</p>
+                <h4 className="font-medium text-[#F5F5F7] text-sm">{inter.sujet}</h4>
+                <p className="text-sm text-white/[0.3] mt-1">{inter.contenu}</p>
               </div>
             ))}
           </div>
 
           {interactions.length === 0 && (
-            <div className="text-center py-12 text-white/30">
+            <div className="text-center py-12 text-white/[0.3]">
               <MessageSquare size={40} className="mx-auto mb-3 opacity-50" />
               <p>Aucune interaction enregistrée</p>
             </div>
@@ -390,11 +394,11 @@ function AddInteractionModal({ isOpen, onClose, clientId, onSave }: {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs text-white/40 mb-1">Type</label>
+            <label className="block text-xs text-white/[0.45] mb-1">Type</label>
             <select
               value={form.type}
               onChange={(e) => setForm({ ...form, type: e.target.value as Interaction['type'] })}
-              className="w-full px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm focus:outline-none focus:border-[#6c5ce7]"
+              className="w-full px-3 py-2 rounded-xl bg-black/25 border border-white/[0.06] text-[#F5F5F7] text-[13px] focus:outline-none focus:border-[#5e9eff]"
             >
               <option value="appel">Appel</option>
               <option value="email">Email</option>
@@ -403,45 +407,45 @@ function AddInteractionModal({ isOpen, onClose, clientId, onSave }: {
             </select>
           </div>
           <div>
-            <label className="block text-xs text-white/40 mb-1">Date</label>
+            <label className="block text-xs text-white/[0.45] mb-1">Date</label>
             <input
               type="date"
               value={form.date}
               onChange={(e) => setForm({ ...form, date: e.target.value })}
-              className="w-full px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm focus:outline-none focus:border-[#6c5ce7]"
+              className="w-full px-3 py-2 rounded-xl bg-black/25 border border-white/[0.06] text-[#F5F5F7] text-[13px] focus:outline-none focus:border-[#5e9eff]"
             />
           </div>
         </div>
         <div>
-          <label className="block text-xs text-white/40 mb-1">Sujet</label>
+          <label className="block text-xs text-white/[0.45] mb-1">Sujet</label>
           <input
             type="text"
             required
             value={form.sujet}
             onChange={(e) => setForm({ ...form, sujet: e.target.value })}
-            className="w-full px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm focus:outline-none focus:border-[#6c5ce7]"
+            className="w-full px-3 py-2 rounded-xl bg-black/25 border border-white/[0.06] text-[#F5F5F7] text-[13px] focus:outline-none focus:border-[#5e9eff]"
           />
         </div>
         <div>
-          <label className="block text-xs text-white/40 mb-1">Contenu</label>
+          <label className="block text-xs text-white/[0.45] mb-1">Contenu</label>
           <textarea
             value={form.contenu}
             onChange={(e) => setForm({ ...form, contenu: e.target.value })}
             rows={4}
-            className="w-full px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm focus:outline-none focus:border-[#6c5ce7] resize-none"
+            className="w-full px-3 py-2 rounded-xl bg-black/25 border border-white/[0.06] text-[#F5F5F7] text-[13px] focus:outline-none focus:border-[#5e9eff] resize-none"
           />
         </div>
         <div className="flex gap-3 pt-2">
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 px-4 py-2.5 rounded-lg border border-white/[0.06] text-white/30 text-sm transition-colors hover:text-white/90"
+            className="flex-1 px-4 py-2.5 rounded-xl border border-white/[0.15] text-white/[0.3] text-[13px] transition-colors hover:text-[#F5F5F7]"
           >
             Annuler
           </button>
           <button
             type="submit"
-            className="flex-1 px-4 py-2.5 rounded-lg bg-[#6c5ce7] hover:bg-[#7c6df0] text-white text-sm font-medium transition-colors"
+            className="flex-1 px-4 py-2.5 rounded-xl border border-white/[0.15] text-white text-[13px] font-semibold transition-colors hover:bg-white/[0.05]"
           >
             Enregistrer
           </button>

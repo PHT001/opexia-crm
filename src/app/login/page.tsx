@@ -35,32 +35,34 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] flex items-center justify-center p-4 relative">
-      <div className="w-full max-w-[360px] relative z-10">
+    <div className="min-h-screen bg-[#0C0C14] flex items-center justify-center p-4 relative">
+      <div className="w-full max-w-[380px] relative z-10">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white/[0.04] border border-white/[0.06] mb-4">
-            <span className="text-lg font-bold tracking-tight">
-              <span className="text-white/80">O</span>
-              <span className="text-[#a78bfa]">IA</span>
-            </span>
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#5e9eff]/20 mb-4">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5e9eff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
           </div>
-          <h1 className="text-xl font-semibold text-white/90">OpexIA CRM</h1>
-          <p className="text-xs text-white/30 mt-1">Accès sécurisé</p>
+          <h1 className="text-xl font-bold text-[#F5F5F7]">
+            <span>OPEX</span>
+            <span className="text-[#5e9eff]">IA</span>
+          </h1>
+          <p className="text-xs text-white/[0.45] mt-1">Accès sécurisé</p>
         </div>
 
         {/* Login Card */}
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5 space-y-4">
-          <div className="flex items-center gap-2.5 p-2.5 rounded-lg bg-[rgba(108,92,231,0.06)] border border-[rgba(108,92,231,0.1)]">
-            <Lock size={14} className="text-[#a78bfa] flex-shrink-0" />
-            <p className="text-[11px] text-white/40">
+        <div className="border border-white/[0.08] rounded-2xl p-6 space-y-4">
+          <div className="flex items-center gap-2.5 p-3 rounded-xl bg-[#5e9eff]/[0.06] border border-[#5e9eff]/[0.1]">
+            <Lock size={14} className="text-[#5e9eff] flex-shrink-0" />
+            <p className="text-[12px] text-white/[0.55]">
               Entrez votre mot de passe pour accéder au CRM
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-3">
             <div>
-              <label className="block text-[11px] text-white/40 mb-1.5 font-medium">Mot de passe</label>
+              <label className="block text-[11px] text-white/[0.45] mb-1.5 font-medium">Mot de passe</label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -68,7 +70,7 @@ export default function LoginPage() {
                   onChange={(e) => { setPassword(e.target.value); setError(''); }}
                   placeholder="Entrez votre mot de passe"
                   autoFocus
-                  className="w-full px-3 py-2.5 pr-9 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm placeholder:text-white/15 focus:outline-none"
+                  className="w-full px-3.5 py-2.5 pr-9 rounded-xl bg-black/25 border border-white/[0.06] text-[#F5F5F7] text-[13px] placeholder:text-white/20 focus:outline-none"
                 />
                 <button
                   type="button"
@@ -81,7 +83,7 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <div className="flex items-center gap-2 p-2.5 rounded-lg bg-[rgba(248,113,113,0.06)] border border-[rgba(248,113,113,0.12)] text-[#f87171] text-xs">
+              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[rgba(248,113,113,0.06)] border border-[rgba(248,113,113,0.12)] text-[#f87171] text-xs">
                 <AlertCircle size={14} className="flex-shrink-0" />
                 {error}
               </div>
@@ -90,7 +92,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading || !password}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#6c5ce7] hover:bg-[#7c6df0] text-white text-sm font-medium transition-colors disabled:opacity-40"
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-white/[0.15] text-white text-[13px] font-semibold transition-colors hover:bg-white/[0.04] disabled:opacity-40"
             >
               {loading ? (
                 <>

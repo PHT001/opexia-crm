@@ -23,7 +23,7 @@ import {
 
 // WorkOS/AuthKit palette
 const CATEGORY_COLORS: Record<ChargeCategory, string> = {
-  'abonnement': '#6c5ce7',
+  'abonnement': '#5e9eff',
   'logiciel': '#a78bfa',
   'marketing': '#fbbf24',
   'hebergement': '#60a5fa',
@@ -35,10 +35,10 @@ const CATEGORY_COLORS: Record<ChargeCategory, string> = {
 };
 
 const TOOLTIP_STYLE = {
-  background: '#0f0f0f',
+  background: '#0C0C14',
   border: '1px solid rgba(255,255,255,0.08)',
-  borderRadius: '8px',
-  color: '#ededed',
+  borderRadius: '10px',
+  color: '#F5F5F7',
   fontSize: '12px',
   padding: '8px 12px',
 };
@@ -126,19 +126,19 @@ export default function ChargesPage() {
     setEditingCharge(null);
   };
 
-  if (!mounted) return <div className="p-6 pt-16 lg:pt-6"><div className="h-8 w-48 rounded-xl animate-pulse" /></div>;
+  if (!mounted) return <div className="p-5 lg:p-8 pt-16 lg:pt-8"><div className="h-8 w-48 rounded-[14px] animate-pulse" /></div>;
 
   return (
-    <div className="p-4 lg:p-6 space-y-6 pt-16 lg:pt-6">
+    <div className="p-5 lg:p-8 space-y-6 pt-16 lg:pt-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white/90">Charges & Abonnements</h1>
-          <p className="text-sm text-white/40 mt-1">{charges.length} charge{charges.length > 1 ? 's' : ''} au total · {activeCharges.length} active{activeCharges.length > 1 ? 's' : ''}</p>
+          <h1 className="text-[30px] font-bold text-[#F5F5F7]">Charges & Abonnements</h1>
+          <p className="text-[13px] text-white/[0.45] mt-1">{charges.length} charge{charges.length > 1 ? 's' : ''} au total · {activeCharges.length} active{activeCharges.length > 1 ? 's' : ''}</p>
         </div>
         <button
           onClick={() => { setEditingCharge(null); setModalOpen(true); }}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#6c5ce7] hover:bg-[#7c6df0] text-white text-sm font-medium transition-colors"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/[0.15] text-[#F5F5F7] text-[13px] font-semibold transition-colors hover:bg-white/[0.04]"
         >
           <Plus size={16} />
           Nouvelle charge
@@ -147,39 +147,39 @@ export default function ChargesPage() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4">
+        <div className="bg-black/20 border border-white/[0.08] rounded-[20px] p-5">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] text-white/40 font-medium uppercase tracking-wide">Total /mois</span>
+            <span className="text-[10px] text-white/[0.3] font-semibold uppercase tracking-[1px]">Total /mois</span>
             <div className="p-2 rounded-xl" style={{ background: 'rgba(251,191,36,0.08)' }}>
               <Wallet size={18} className="text-[#fbbf24]" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-white/90">{Math.round(totalMensuel).toLocaleString('fr-FR')} €</p>
-          <p className="text-xs text-white/25 mt-1">{activeCharges.length} charge{activeCharges.length > 1 ? 's' : ''} active{activeCharges.length > 1 ? 's' : ''}</p>
+          <p className="text-2xl font-bold text-[#F5F5F7]">{Math.round(totalMensuel).toLocaleString('fr-FR')} €</p>
+          <p className="text-xs text-white/[0.3] mt-1">{activeCharges.length} charge{activeCharges.length > 1 ? 's' : ''} active{activeCharges.length > 1 ? 's' : ''}</p>
         </div>
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4">
+        <div className="bg-black/20 border border-white/[0.08] rounded-[20px] p-5">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] text-white/40 font-medium uppercase tracking-wide">Total /an</span>
+            <span className="text-[10px] text-white/[0.3] font-semibold uppercase tracking-[1px]">Total /an</span>
             <div className="p-2 rounded-xl" style={{ background: 'rgba(248,113,113,0.08)' }}>
               <TrendingDown size={18} className="text-[#f87171]" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-white/90">{Math.round(totalAnnuel).toLocaleString('fr-FR')} €</p>
-          <p className="text-xs text-white/25 mt-1">Projection annuelle</p>
+          <p className="text-2xl font-bold text-[#F5F5F7]">{Math.round(totalAnnuel).toLocaleString('fr-FR')} €</p>
+          <p className="text-xs text-white/[0.3] mt-1">Projection annuelle</p>
         </div>
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4">
+        <div className="bg-black/20 border border-white/[0.08] rounded-[20px] p-5">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] text-white/40 font-medium uppercase tracking-wide">CA /mois</span>
-            <div className="p-2 rounded-xl" style={{ background: 'rgba(108,92,231,0.08)' }}>
-              <BarChart3 size={18} className="text-[#6c5ce7]" />
+            <span className="text-[10px] text-white/[0.3] font-semibold uppercase tracking-[1px]">CA /mois</span>
+            <div className="p-2 rounded-xl" style={{ background: 'rgba(94,158,255,0.08)' }}>
+              <BarChart3 size={18} className="text-[#5e9eff]" />
             </div>
           </div>
-          <p className="text-2xl font-bold text-white/90">{caMensuel.toLocaleString('fr-FR')} €</p>
-          <p className="text-xs text-white/25 mt-1">Revenus récurrents</p>
+          <p className="text-2xl font-bold text-[#F5F5F7]">{caMensuel.toLocaleString('fr-FR')} €</p>
+          <p className="text-xs text-white/[0.3] mt-1">Revenus récurrents</p>
         </div>
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4">
+        <div className="bg-black/20 border border-white/[0.08] rounded-[20px] p-5">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] text-white/40 font-medium uppercase tracking-wide">Bénéfice /mois</span>
+            <span className="text-[10px] text-white/[0.3] font-semibold uppercase tracking-[1px]">Bénéfice /mois</span>
             <div className="p-2 rounded-xl" style={{ background: beneficeMensuel >= 0 ? 'rgba(52,211,153,0.08)' : 'rgba(248,113,113,0.08)' }}>
               <CreditCard size={18} className={beneficeMensuel >= 0 ? 'text-[#34d399]' : 'text-[#f87171]'} />
             </div>
@@ -187,15 +187,15 @@ export default function ChargesPage() {
           <p className={`text-2xl font-bold ${beneficeMensuel >= 0 ? 'text-[#34d399]' : 'text-[#f87171]'}`}>
             {beneficeMensuel >= 0 ? '+' : ''}{Math.round(beneficeMensuel).toLocaleString('fr-FR')} €
           </p>
-          <p className="text-xs text-white/25 mt-1">{beneficeMensuel >= 0 ? 'Rentable' : 'Déficitaire'}</p>
+          <p className="text-xs text-white/[0.3] mt-1">{beneficeMensuel >= 0 ? 'Rentable' : 'Déficitaire'}</p>
         </div>
       </div>
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* By Category */}
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5">
-          <h3 className="text-sm font-medium text-white/90 mb-4">Répartition par catégorie</h3>
+        <div className="bg-black/20 border border-white/[0.04] rounded-[14px] p-5">
+          <h3 className="text-[15px] font-semibold text-[#F5F5F7] mb-4">Répartition par catégorie</h3>
           {chargesByCategory.length > 0 ? (
             <div className="flex items-start gap-4">
               <ResponsiveContainer width="50%" height={200}>
@@ -208,7 +208,7 @@ export default function ChargesPage() {
                     outerRadius={78}
                     paddingAngle={3}
                     dataKey="value"
-                    stroke="rgba(5,5,5,0.8)"
+                    stroke="rgba(12,12,20,0.8)"
                     strokeWidth={2}
                     cornerRadius={6}
                   >
@@ -218,7 +218,7 @@ export default function ChargesPage() {
                   </Pie>
                   <Tooltip
                     contentStyle={TOOLTIP_STYLE}
-                    itemStyle={{ color: '#ededed' }}
+                    itemStyle={{ color: '#F5F5F7' }}
                     formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €/mois`, '']}
                   />
                 </PieChart>
@@ -228,26 +228,26 @@ export default function ChargesPage() {
                   <div key={item.name} className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
                       <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: item.color }} />
-                      <span className="text-[11px] text-white/40">{item.name}</span>
+                      <span className="text-[11px] text-white/[0.45]">{item.name}</span>
                     </div>
                     <div className="text-right">
-                      <span className="text-xs font-semibold text-white/90 tabular-nums">{item.value} €</span>
-                      <span className="text-[10px] text-white/25 ml-1">({item.count})</span>
+                      <span className="text-xs font-semibold text-[#F5F5F7] tabular-nums">{item.value} €</span>
+                      <span className="text-[10px] text-white/[0.3] ml-1">({item.count})</span>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center h-48 text-white/25 text-sm">
+            <div className="flex items-center justify-center h-48 text-white/[0.3] text-sm">
               <p>Aucune charge active</p>
             </div>
           )}
         </div>
 
         {/* By Frequency */}
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5">
-          <h3 className="text-sm font-medium text-white/90 mb-4">Par fréquence de paiement</h3>
+        <div className="bg-black/20 border border-white/[0.04] rounded-[14px] p-5">
+          <h3 className="text-[15px] font-semibold text-[#F5F5F7] mb-4">Par fréquence de paiement</h3>
           {chargesByFrequency.length > 0 ? (
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={chargesByFrequency} barCategoryGap="25%">
@@ -259,11 +259,11 @@ export default function ChargesPage() {
                   formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €`, 'Total']}
                   cursor={{ fill: 'rgba(255,255,255,0.03)' }}
                 />
-                <Bar dataKey="total" fill="#6c5ce7" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="total" fill="#5e9eff" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex items-center justify-center h-48 text-white/25 text-sm">
+            <div className="flex items-center justify-center h-48 text-white/[0.3] text-sm">
               <p>Aucune charge active</p>
             </div>
           )}
@@ -273,19 +273,19 @@ export default function ChargesPage() {
       {/* Search + Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/25" />
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/[0.3]" />
           <input
             type="text"
             placeholder="Rechercher une charge..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm placeholder:text-white/25 focus:outline-none focus:border-[rgba(108,92,231,0.5)]"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-black/25 border border-white/[0.06] text-[#F5F5F7] text-[13px] placeholder:text-white/[0.3] focus:outline-none focus:border-[rgba(94,158,255,0.5)]"
           />
         </div>
         <select
           value={filterCategory}
           onChange={(e) => setFilterCategory(e.target.value as ChargeCategory | 'toutes')}
-          className="px-4 py-2.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm focus:outline-none focus:border-[rgba(108,92,231,0.5)]"
+          className="px-4 py-2.5 rounded-xl bg-black/25 border border-white/[0.06] text-[#F5F5F7] text-[13px] focus:outline-none focus:border-[rgba(94,158,255,0.5)]"
         >
           <option value="toutes">Toutes les catégories</option>
           {Object.entries(CHARGE_CATEGORY_LABELS).map(([key, label]) => (
@@ -295,7 +295,7 @@ export default function ChargesPage() {
         <select
           value={filterActive}
           onChange={(e) => setFilterActive(e.target.value as 'toutes' | 'actives' | 'inactives')}
-          className="px-4 py-2.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm focus:outline-none focus:border-[rgba(108,92,231,0.5)]"
+          className="px-4 py-2.5 rounded-xl bg-black/25 border border-white/[0.06] text-[#F5F5F7] text-[13px] focus:outline-none focus:border-[rgba(94,158,255,0.5)]"
         >
           <option value="toutes">Toutes</option>
           <option value="actives">Actives</option>
@@ -304,19 +304,19 @@ export default function ChargesPage() {
       </div>
 
       {/* Charges List */}
-      <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl overflow-hidden">
+      <div className="bg-black/20 border border-white/[0.04] rounded-[14px] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-white/25 border-b border-white/[0.06] bg-white/[0.02]">
-                <th className="px-4 py-3 text-[11px] font-medium">Charge</th>
-                <th className="px-4 py-3 text-[11px] font-medium hidden md:table-cell">Catégorie</th>
-                <th className="px-4 py-3 text-[11px] font-medium hidden lg:table-cell">Fournisseur</th>
-                <th className="px-4 py-3 text-[11px] font-medium">Montant</th>
-                <th className="px-4 py-3 text-[11px] font-medium hidden sm:table-cell">Fréquence</th>
-                <th className="px-4 py-3 text-[11px] font-medium hidden lg:table-cell">Coût /mois</th>
-                <th className="px-4 py-3 text-[11px] font-medium">Statut</th>
-                <th className="px-4 py-3 text-[11px] font-medium text-right">Actions</th>
+              <tr className="text-left text-white/[0.3] border-b border-white/[0.04] bg-black/20">
+                <th className="px-4 py-3 text-[10px] uppercase tracking-[1px] font-semibold">Charge</th>
+                <th className="px-4 py-3 text-[10px] uppercase tracking-[1px] font-semibold hidden md:table-cell">Catégorie</th>
+                <th className="px-4 py-3 text-[10px] uppercase tracking-[1px] font-semibold hidden lg:table-cell">Fournisseur</th>
+                <th className="px-4 py-3 text-[10px] uppercase tracking-[1px] font-semibold">Montant</th>
+                <th className="px-4 py-3 text-[10px] uppercase tracking-[1px] font-semibold hidden sm:table-cell">Fréquence</th>
+                <th className="px-4 py-3 text-[10px] uppercase tracking-[1px] font-semibold hidden lg:table-cell">Coût /mois</th>
+                <th className="px-4 py-3 text-[10px] uppercase tracking-[1px] font-semibold">Statut</th>
+                <th className="px-4 py-3 text-[10px] uppercase tracking-[1px] font-semibold text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -329,12 +329,12 @@ export default function ChargesPage() {
                 .map((charge, i) => (
                 <tr
                   key={charge.id}
-                  className={`border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors animate-fade-in ${!charge.actif ? 'opacity-50' : ''}`}
+                  className={`border-b border-white/[0.04] hover:bg-black/20 transition-colors animate-fade-in ${!charge.actif ? 'opacity-50' : ''}`}
                   style={{ animationDelay: `${i * 30}ms` }}
                 >
                   <td className="px-4 py-3">
-                    <p className="font-medium text-white/90">{charge.nom}</p>
-                    {charge.notes && <p className="text-xs text-white/25 truncate max-w-[200px]">{charge.notes}</p>}
+                    <p className="font-medium text-[#F5F5F7]">{charge.nom}</p>
+                    {charge.notes && <p className="text-xs text-white/[0.3] truncate max-w-[200px]">{charge.notes}</p>}
                   </td>
                   <td className="px-4 py-3 hidden md:table-cell">
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium" style={{
@@ -345,13 +345,13 @@ export default function ChargesPage() {
                       {CHARGE_CATEGORY_LABELS[charge.categorie]}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-white/40 hidden lg:table-cell">{charge.fournisseur || '—'}</td>
-                  <td className="px-4 py-3 font-bold text-white/90">{charge.montant.toLocaleString('fr-FR')} €</td>
+                  <td className="px-4 py-3 text-white/[0.45] hidden lg:table-cell">{charge.fournisseur || '—'}</td>
+                  <td className="px-4 py-3 font-bold text-[#F5F5F7]">{charge.montant.toLocaleString('fr-FR')} €</td>
                   <td className="px-4 py-3 hidden sm:table-cell">
-                    <span className="text-xs text-white/40">{CHARGE_FREQUENCY_LABELS[charge.frequence]}</span>
+                    <span className="text-xs text-white/[0.45]">{CHARGE_FREQUENCY_LABELS[charge.frequence]}</span>
                   </td>
                   <td className="px-4 py-3 hidden lg:table-cell">
-                    <span className="text-sm font-medium text-white/90">
+                    <span className="text-sm font-medium text-[#F5F5F7]">
                       {charge.frequence === 'ponctuel' ? '—' : `${Math.round(getMontantMensuel(charge)).toLocaleString('fr-FR')} €`}
                     </span>
                   </td>
@@ -361,7 +361,7 @@ export default function ChargesPage() {
                       className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${
                         charge.actif
                           ? 'bg-[rgba(52,211,153,0.1)] text-[#34d399] hover:bg-[rgba(52,211,153,0.15)]'
-                          : 'bg-white/[0.04] text-white/25 hover:bg-white/[0.06]'
+                          : 'bg-white/[0.04] text-white/[0.3] hover:bg-white/[0.06]'
                       }`}
                     >
                       {charge.actif ? <ToggleRight size={14} /> : <ToggleLeft size={14} />}
@@ -372,13 +372,13 @@ export default function ChargesPage() {
                     <div className="flex items-center justify-end gap-1">
                       <button
                         onClick={() => { setEditingCharge(charge); setModalOpen(true); }}
-                        className="p-1.5 rounded-lg hover:bg-[rgba(108,92,231,0.1)] text-white/25 hover:text-[#6c5ce7] transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-[rgba(94,158,255,0.1)] text-white/[0.3] hover:text-[#5e9eff] transition-colors"
                       >
                         <Edit3 size={15} />
                       </button>
                       <button
                         onClick={() => handleDelete(charge.id)}
-                        className="p-1.5 rounded-lg hover:bg-[rgba(248,113,113,0.1)] text-white/25 hover:text-[#f87171] transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-[rgba(248,113,113,0.1)] text-white/[0.3] hover:text-[#f87171] transition-colors"
                       >
                         <Trash2 size={15} />
                       </button>
@@ -390,13 +390,13 @@ export default function ChargesPage() {
           </table>
         </div>
         {filtered.length === 0 && (
-          <div className="text-center py-12 text-white/25">
+          <div className="text-center py-12 text-white/[0.3]">
             <Wallet size={40} className="mx-auto mb-3 opacity-50" />
             <p>Aucune charge trouvée</p>
             {charges.length === 0 && (
               <button
                 onClick={() => { setEditingCharge(null); setModalOpen(true); }}
-                className="inline-flex items-center gap-2 mt-3 px-4 py-2 rounded-lg bg-[#6c5ce7] hover:bg-[#7c6df0] text-white text-xs font-medium transition-colors"
+                className="inline-flex items-center gap-2 mt-3 px-4 py-2 rounded-xl border border-white/[0.15] text-[#F5F5F7] text-[13px] font-semibold transition-colors hover:bg-white/[0.04]"
               >
                 <Plus size={14} />
                 Ajouter votre première charge
@@ -452,24 +452,24 @@ function ChargeFormModal({ isOpen, onClose, onSave, charge }: {
     <Modal isOpen={isOpen} onClose={onClose} title={charge ? 'Modifier la charge' : 'Nouvelle charge'} size="md">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-[11px] text-white/40 mb-1">Nom de la charge</label>
+          <label className="block text-[11px] text-white/[0.45] mb-1">Nom de la charge</label>
           <input
             type="text"
             required
             value={form.nom || ''}
             onChange={(e) => setForm({ ...form, nom: e.target.value })}
             placeholder="Ex: ChatGPT Plus, Vercel Pro, Google Ads..."
-            className="w-full px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm focus:outline-none focus:border-[rgba(108,92,231,0.5)]"
+            className="w-full px-3 py-2 rounded-xl bg-black/25 border border-white/[0.06] text-[#F5F5F7] text-[13px] focus:outline-none focus:border-[rgba(94,158,255,0.5)]"
           />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-[11px] text-white/40 mb-1">Catégorie</label>
+            <label className="block text-[11px] text-white/[0.45] mb-1">Catégorie</label>
             <select
               value={form.categorie || 'abonnement'}
               onChange={(e) => setForm({ ...form, categorie: e.target.value as ChargeCategory })}
-              className="w-full px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm focus:outline-none focus:border-[rgba(108,92,231,0.5)]"
+              className="w-full px-3 py-2 rounded-xl bg-black/25 border border-white/[0.06] text-[#F5F5F7] text-[13px] focus:outline-none focus:border-[rgba(94,158,255,0.5)]"
             >
               {Object.entries(CHARGE_CATEGORY_LABELS).map(([key, label]) => (
                 <option key={key} value={key}>{label}</option>
@@ -477,20 +477,20 @@ function ChargeFormModal({ isOpen, onClose, onSave, charge }: {
             </select>
           </div>
           <div>
-            <label className="block text-[11px] text-white/40 mb-1">Fournisseur</label>
+            <label className="block text-[11px] text-white/[0.45] mb-1">Fournisseur</label>
             <input
               type="text"
               value={form.fournisseur || ''}
               onChange={(e) => setForm({ ...form, fournisseur: e.target.value })}
               placeholder="Ex: OpenAI, Vercel..."
-              className="w-full px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm focus:outline-none focus:border-[rgba(108,92,231,0.5)]"
+              className="w-full px-3 py-2 rounded-xl bg-black/25 border border-white/[0.06] text-[#F5F5F7] text-[13px] focus:outline-none focus:border-[rgba(94,158,255,0.5)]"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-[11px] text-white/40 mb-1">Montant (€)</label>
+            <label className="block text-[11px] text-white/[0.45] mb-1">Montant (€)</label>
             <input
               type="number"
               required
@@ -498,15 +498,15 @@ function ChargeFormModal({ isOpen, onClose, onSave, charge }: {
               step={0.01}
               value={form.montant || ''}
               onChange={(e) => setForm({ ...form, montant: Number(e.target.value) })}
-              className="w-full px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm focus:outline-none focus:border-[rgba(108,92,231,0.5)]"
+              className="w-full px-3 py-2 rounded-xl bg-black/25 border border-white/[0.06] text-[#F5F5F7] text-[13px] focus:outline-none focus:border-[rgba(94,158,255,0.5)]"
             />
           </div>
           <div>
-            <label className="block text-[11px] text-white/40 mb-1">Fréquence</label>
+            <label className="block text-[11px] text-white/[0.45] mb-1">Fréquence</label>
             <select
               value={form.frequence || 'mensuel'}
               onChange={(e) => setForm({ ...form, frequence: e.target.value as ChargeFrequency })}
-              className="w-full px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm focus:outline-none focus:border-[rgba(108,92,231,0.5)]"
+              className="w-full px-3 py-2 rounded-xl bg-black/25 border border-white/[0.06] text-[#F5F5F7] text-[13px] focus:outline-none focus:border-[rgba(94,158,255,0.5)]"
             >
               {Object.entries(CHARGE_FREQUENCY_LABELS).map(([key, label]) => (
                 <option key={key} value={key}>{label}</option>
@@ -517,26 +517,26 @@ function ChargeFormModal({ isOpen, onClose, onSave, charge }: {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-[11px] text-white/40 mb-1">Date de début</label>
+            <label className="block text-[11px] text-white/[0.45] mb-1">Date de début</label>
             <input
               type="date"
               value={form.dateDebut || ''}
               onChange={(e) => setForm({ ...form, dateDebut: e.target.value })}
-              className="w-full px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm focus:outline-none focus:border-[rgba(108,92,231,0.5)]"
+              className="w-full px-3 py-2 rounded-xl bg-black/25 border border-white/[0.06] text-[#F5F5F7] text-[13px] focus:outline-none focus:border-[rgba(94,158,255,0.5)]"
             />
           </div>
           <div>
-            <label className="block text-[11px] text-white/40 mb-1">Date de fin (optionnel)</label>
+            <label className="block text-[11px] text-white/[0.45] mb-1">Date de fin (optionnel)</label>
             <input
               type="date"
               value={form.dateFin || ''}
               onChange={(e) => setForm({ ...form, dateFin: e.target.value })}
-              className="w-full px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm focus:outline-none focus:border-[rgba(108,92,231,0.5)]"
+              className="w-full px-3 py-2 rounded-xl bg-black/25 border border-white/[0.06] text-[#F5F5F7] text-[13px] focus:outline-none focus:border-[rgba(94,158,255,0.5)]"
             />
           </div>
         </div>
 
-        <div className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+        <div className="flex items-center gap-3 p-3 rounded-[14px] bg-black/20 border border-white/[0.04]">
           <label className="relative inline-flex items-center cursor-pointer">
             <input
               type="checkbox"
@@ -547,19 +547,19 @@ function ChargeFormModal({ isOpen, onClose, onSave, charge }: {
             <div className="w-9 h-5 bg-white/[0.1] rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#34d399]" />
           </label>
           <div>
-            <p className="text-sm font-medium text-white/90">Charge active</p>
-            <p className="text-xs text-white/25">Les charges inactives ne sont pas comptabilisées</p>
+            <p className="text-sm font-medium text-[#F5F5F7]">Charge active</p>
+            <p className="text-xs text-white/[0.3]">Les charges inactives ne sont pas comptabilisées</p>
           </div>
         </div>
 
         <div>
-          <label className="block text-[11px] text-white/40 mb-1">Notes</label>
+          <label className="block text-[11px] text-white/[0.45] mb-1">Notes</label>
           <textarea
             value={form.notes || ''}
             onChange={(e) => setForm({ ...form, notes: e.target.value })}
             rows={2}
             placeholder="Informations complémentaires..."
-            className="w-full px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm focus:outline-none focus:border-[rgba(108,92,231,0.5)] resize-none"
+            className="w-full px-3 py-2 rounded-xl bg-black/25 border border-white/[0.06] text-[#F5F5F7] text-[13px] focus:outline-none focus:border-[rgba(94,158,255,0.5)] resize-none"
           />
         </div>
 
@@ -567,13 +567,13 @@ function ChargeFormModal({ isOpen, onClose, onSave, charge }: {
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 px-4 py-2.5 rounded-lg border border-white/[0.06] text-white/40 hover:text-white/90 text-sm transition-colors hover:bg-white/[0.03]"
+            className="flex-1 px-4 py-2.5 rounded-xl border border-white/[0.06] text-white/[0.45] hover:text-[#F5F5F7] text-[13px] transition-colors hover:bg-black/25"
           >
             Annuler
           </button>
           <button
             type="submit"
-            className="flex-1 px-4 py-2.5 rounded-lg bg-[#6c5ce7] hover:bg-[#7c6df0] text-white text-sm font-medium transition-colors"
+            className="flex-1 px-4 py-2.5 rounded-xl border border-white/[0.15] text-[#F5F5F7] text-[13px] font-semibold transition-colors hover:bg-white/[0.04]"
           >
             {charge ? 'Mettre à jour' : 'Ajouter'}
           </button>

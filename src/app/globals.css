@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* ===== WorkOS / AuthKit — Dark Minimal ===== */
-  --color-background: #050505;
-  --color-background-secondary: #0a0a0a;
-  --color-foreground: #ededed;
-  --color-foreground-secondary: #a0a0a0;
-  --color-card: rgba(255, 255, 255, 0.03);
-  --color-card-hover: rgba(255, 255, 255, 0.05);
-  --color-card-elevated: rgba(255, 255, 255, 0.06);
-  --color-border: rgba(255, 255, 255, 0.06);
-  --color-border-light: rgba(255, 255, 255, 0.1);
-  --color-primary: #6c5ce7;
-  --color-primary-hover: #7c6df0;
-  --color-primary-light: rgba(108, 92, 231, 0.12);
+  /* ===== ReelCRM — Exact Design System ===== */
+  --color-background: #0C0C14;
+  --color-background-secondary: #0C0C14;
+  --color-foreground: #F5F5F7;
+  --color-foreground-secondary: rgba(255, 255, 255, 0.55);
+  --color-card: rgba(0, 0, 0, 0.2);
+  --color-card-hover: rgba(0, 0, 0, 0.25);
+  --color-card-elevated: rgba(0, 0, 0, 0.3);
+  --color-border: rgba(255, 255, 255, 0.04);
+  --color-border-light: rgba(255, 255, 255, 0.08);
+  --color-primary: #5e9eff;
+  --color-primary-hover: #6eaaff;
+  --color-primary-light: rgba(94, 158, 255, 0.12);
   --color-secondary: #a78bfa;
   --color-success: #34d399;
   --color-warning: #fbbf24;
@@ -21,10 +21,10 @@
   --color-info: #60a5fa;
   --color-muted: #525252;
   --color-muted-foreground: #737373;
-  --color-sidebar: rgba(5, 5, 5, 0.95);
+  --color-sidebar: #0C0C14;
   --color-sidebar-hover: rgba(255, 255, 255, 0.04);
-  --color-sidebar-active: rgba(108, 92, 231, 0.1);
-  --font-sans: var(--font-geist-sans);
+  --color-sidebar-active: rgba(255, 255, 255, 0.08);
+  --font-sans: "SF Pro Display", -apple-system, "system-ui", Inter, "Segoe UI", system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
@@ -40,9 +40,9 @@
 
 /* ===== BODY ===== */
 body {
-  background: #050505;
-  color: var(--color-foreground);
-  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: #0C0C14;
+  color: #F5F5F7;
+  font-family: "SF Pro Display", -apple-system, system-ui, Inter, "Segoe UI", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -67,58 +67,56 @@ body {
 .animate-slide-in { animation: slideIn 0.4s ease-out forwards; }
 .animate-scale-in { animation: scaleIn 0.3s ease-out forwards; }
 
-/* ===== CARDS — WorkOS Minimal ===== */
+/* ===== CARDS — ReelCRM Style ===== */
 .glass-card {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 14px;
   transition: border-color 0.2s ease;
 }
 
 .glass-card:hover {
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 .card-glow {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 14px;
   transition: border-color 0.2s ease;
 }
 
 .card-glow:hover {
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 /* KPI Cards */
 .kpi-glow {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 12px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 20px;
   transition: border-color 0.2s ease;
 }
 
 .kpi-glow:hover {
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 /* ===== STATUS BADGES ===== */
 .status-client {
-  background: rgba(52, 211, 153, 0.1);
+  background: rgba(52, 211, 153, 0.15);
   color: #34d399;
-  border: 1px solid rgba(52, 211, 153, 0.15);
 }
 
 .status-prospect {
-  background: rgba(108, 92, 231, 0.1);
-  color: #a78bfa;
-  border: 1px solid rgba(108, 92, 231, 0.15);
+  background: rgba(94, 158, 255, 0.15);
+  color: #5e9eff;
 }
 
 .status-perdu {
-  background: rgba(248, 113, 113, 0.1);
+  background: rgba(248, 113, 113, 0.15);
   color: #f87171;
-  border: 1px solid rgba(248, 113, 113, 0.15);
 }
 
 /* Kanban */
@@ -132,8 +130,8 @@ input, select, textarea {
 
 input:focus, select:focus, textarea:focus {
   outline: none;
-  border-color: rgba(108, 92, 231, 0.4) !important;
-  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.08);
+  border-color: rgba(94, 158, 255, 0.4) !important;
+  box-shadow: 0 0 0 3px rgba(94, 158, 255, 0.08);
 }
 
 /* Table rows */
@@ -143,36 +141,34 @@ tr:hover td {
 
 /* Active nav */
 .active-glow {
-  background: rgba(108, 92, 231, 0.08);
-  border: 1px solid rgba(108, 92, 231, 0.15);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 /* Icon containers */
-.icon-glow-primary { background: rgba(108, 92, 231, 0.1); color: #a78bfa; }
+.icon-glow-primary { background: rgba(94, 158, 255, 0.1); color: #5e9eff; }
 .icon-glow-success { background: rgba(52, 211, 153, 0.1); color: #34d399; }
 .icon-glow-warning { background: rgba(251, 191, 36, 0.1); color: #fbbf24; }
 .icon-glow-danger { background: rgba(248, 113, 113, 0.1); color: #f87171; }
 .icon-glow-info { background: rgba(96, 165, 250, 0.1); color: #60a5fa; }
 
-/* Button glow */
+/* Button */
 .btn-glow {
-  box-shadow: 0 1px 8px rgba(108, 92, 231, 0.2);
   transition: all 0.2s ease;
 }
 
 .btn-glow:hover {
-  box-shadow: 0 2px 16px rgba(108, 92, 231, 0.3);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Gradient text — subtle */
+/* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #a78bfa, #6c5ce7);
+  background: linear-gradient(135deg, #5e9eff, #a78bfa);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Subtle top shine — hidden by default in WorkOS style */
+/* Subtle shine — not used */
 .shine-top {}
 
 /* ===== SKELETON ===== */
@@ -180,7 +176,7 @@ tr:hover td {
   animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   background: rgba(255, 255, 255, 0.03) !important;
   border: 1px solid rgba(255, 255, 255, 0.04) !important;
-  border-radius: 12px !important;
+  border-radius: 14px !important;
 }
 
 @keyframes pulse-subtle {

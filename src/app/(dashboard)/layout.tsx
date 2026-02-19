@@ -13,7 +13,7 @@ export default function DashboardLayout({
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#050505]">
+    <div className="min-h-screen bg-[#0C0C14]">
       <Sidebar
         collapsed={sidebarCollapsed}
         onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
@@ -24,7 +24,7 @@ export default function DashboardLayout({
       <main
         className={clsx(
           'min-h-screen transition-all duration-200',
-          sidebarCollapsed ? 'lg:ml-[60px]' : 'lg:ml-[220px]'
+          sidebarCollapsed ? 'lg:ml-[60px]' : 'lg:ml-[260px]'
         )}
       >
         {/* Mobile menu trigger */}
