@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import {
   LayoutDashboard,
@@ -25,7 +25,6 @@ const navItems = [
   { href: '/pipeline', label: 'Pipeline', icon: GitBranch },
   { href: '/charges', label: 'Charges', icon: Wallet },
   { href: '/calendly', label: 'Calendrier', icon: Calendar },
-  { href: '/parametres', label: 'Paramètres', icon: Settings },
 ];
 
 interface SidebarProps {
@@ -37,10 +36,20 @@ interface SidebarProps {
 
 export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/';
     return pathname.startsWith(href);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      router.push('/login');
+    } catch {
+      window.location.href = '/login';
+    }
   };
 
   return (
@@ -111,22 +120,42 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
 
         {/* Bottom */}
         <div className="border-t border-white/5 p-2 space-y-0.5">
+          {/* Param\u00e8tres */}
+          <Link
+            href="/parametres"
+            onClick={onMobileClose}
+            className={clsx(
+              'flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150',
+              isActive('/parametres')
+                ? 'active-glow text-white'
+                : 'text-white/50 hover:text-white/80 hover:bg-white/5',
+              collapsed && 'justify-center px-0'
+            )}
+            title={collapsed ? 'Param\u00e8tres' : undefined}
+          >
+            <Settings size={18} className={clsx('flex-shrink-0', isActive('/parametres') && 'text-secondary')} />
+            {!collapsed && <span>Param&egrave;tres</span>}
+          </Link>
+
+          {/* Toggle collapse */}
           <button
             onClick={onToggle}
             className="hidden lg:flex items-center gap-3 w-full px-3 py-2 rounded-lg text-[13px] text-white/50 hover:text-white/80 hover:bg-white/5 transition-all duration-150"
           >
             {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-            {!collapsed && <span>Réduire</span>}
+            {!collapsed && <span>R&eacute;duire</span>}
           </button>
 
+          {/* D\u00e9connexion */}
           <button
+            onClick={handleLogout}
             className={clsx(
               'flex items-center gap-3 w-full px-3 py-2 rounded-lg text-[13px] text-white/50 hover:text-red-400 hover:bg-red-500/10 transition-all duration-150',
               collapsed && 'justify-center px-0'
             )}
           >
             <LogOut size={18} className="flex-shrink-0" />
-            {!collapsed && <span>Déconnexion</span>}
+            {!collapsed && <span>D&eacute;connexion</span>}
           </button>
         </div>
       </aside>
