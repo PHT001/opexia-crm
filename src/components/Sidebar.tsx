@@ -115,7 +115,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
                 )}
                 title={collapsed ? item.label : undefined}
               >
-                <Icon size={18} className={clsx('flex-shrink-0', active && 'text-[#a78bfa]')} />
+                <Icon size={18} className={clsx('flex-shrink-0', active && 'text-[#0a84ff]')} />
                 {!collapsed && <span>{item.label}</span>}
               </Link>
             );
@@ -136,7 +136,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
             )}
             title={collapsed ? 'Paramètres' : undefined}
           >
-            <Settings size={18} className={clsx('flex-shrink-0', isActive('/parametres') && 'text-[#a78bfa]')} />
+            <Settings size={18} className={clsx('flex-shrink-0', isActive('/parametres') && 'text-[#0a84ff]')} />
             {!collapsed && <span>Param&egrave;tres</span>}
           </Link>
 
