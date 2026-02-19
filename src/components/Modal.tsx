@@ -32,21 +32,18 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' }:
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-xl" onClick={onClose} />
-      <div className={`relative w-full ${sizeClasses[size]} bg-[rgba(20,20,28,0.85)] backdrop-blur-2xl border border-white/[0.08] rounded-2xl shadow-2xl animate-scale-in max-h-[90vh] flex flex-col`}>
-        {/* Subtle top shine */}
-        <div className="absolute top-0 left-[15%] right-[15%] h-px bg-gradient-to-r from-transparent via-white/[0.12] to-transparent rounded-t-2xl" />
-
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
-          <h2 className="text-lg font-semibold text-[#f5f5f7]">{title}</h2>
+      <div className="absolute inset-0 bg-black/70" onClick={onClose} />
+      <div className={`relative w-full ${sizeClasses[size]} bg-[#0a0a0a] border border-white/[0.08] rounded-xl shadow-2xl animate-scale-in max-h-[90vh] flex flex-col`}>
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.06]">
+          <h2 className="text-sm font-semibold text-white/90">{title}</h2>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl hover:bg-white/[0.06] text-white/35 hover:text-white/80 transition-colors"
+            className="p-1 rounded-md hover:bg-white/[0.06] text-white/30 hover:text-white/60 transition-colors"
           >
-            <X size={18} />
+            <X size={16} />
           </button>
         </div>
-        <div className="p-6 overflow-y-auto">
+        <div className="p-5 overflow-y-auto">
           {children}
         </div>
       </div>

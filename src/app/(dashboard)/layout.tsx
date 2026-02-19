@@ -13,7 +13,7 @@ export default function DashboardLayout({
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#050505]">
       <Sidebar
         collapsed={sidebarCollapsed}
         onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
@@ -23,17 +23,17 @@ export default function DashboardLayout({
 
       <main
         className={clsx(
-          'min-h-screen transition-all duration-300',
-          sidebarCollapsed ? 'lg:ml-[68px]' : 'lg:ml-[240px]'
+          'min-h-screen transition-all duration-200',
+          sidebarCollapsed ? 'lg:ml-[60px]' : 'lg:ml-[220px]'
         )}
       >
-        {/* Mobile menu trigger is passed down via children header */}
-        <div className="lg:hidden fixed top-0 left-0 z-30 p-4">
+        {/* Mobile menu trigger */}
+        <div className="lg:hidden fixed top-0 left-0 z-30 p-3">
           <button
             onClick={() => setMobileOpen(true)}
-            className="p-2 rounded-xl bg-card border border-border text-muted hover:text-foreground"
+            className="p-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/30 hover:text-white/60 transition-colors"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
         </div>
 

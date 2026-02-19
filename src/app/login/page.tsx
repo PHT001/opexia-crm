@@ -35,39 +35,32 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Ambient glow orbs — Apple style subtle */}
-      <div className="absolute top-1/3 left-1/4 w-[600px] h-[600px] bg-[rgba(10,132,255,0.04)] rounded-full blur-[150px] pointer-events-none" />
-      <div className="absolute bottom-1/3 right-1/4 w-[500px] h-[500px] bg-[rgba(94,92,230,0.03)] rounded-full blur-[130px] pointer-events-none" />
-
-      <div className="w-full max-w-sm relative z-10">
+    <div className="min-h-screen bg-[#050505] flex items-center justify-center p-4 relative">
+      <div className="w-full max-w-[360px] relative z-10">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-[22px] bg-[rgba(255,255,255,0.04)] backdrop-blur-2xl border border-white/[0.08] mb-4 shadow-lg">
-            <span className="text-3xl font-bold tracking-tight">
-              <span className="text-white/90">O</span>
-              <span className="bg-gradient-to-r from-[#0a84ff] to-[#5e5ce6] bg-clip-text text-transparent">IA</span>
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white/[0.04] border border-white/[0.06] mb-4">
+            <span className="text-lg font-bold tracking-tight">
+              <span className="text-white/80">O</span>
+              <span className="text-[#a78bfa]">IA</span>
             </span>
           </div>
-          <h1 className="text-2xl font-bold text-[#f5f5f7]">OpexIA CRM</h1>
-          <p className="text-sm text-[#636366] mt-1">Acc&egrave;s s&eacute;curis&eacute;</p>
+          <h1 className="text-xl font-semibold text-white/90">OpexIA CRM</h1>
+          <p className="text-xs text-white/30 mt-1">Accès sécurisé</p>
         </div>
 
-        {/* Login Card — Apple glass */}
-        <div className="relative bg-[rgba(255,255,255,0.03)] backdrop-blur-2xl border border-white/[0.08] rounded-2xl p-6 space-y-5 shadow-2xl">
-          {/* Subtle top shine */}
-          <div className="absolute top-0 left-[15%] right-[15%] h-px bg-gradient-to-r from-transparent via-white/[0.1] to-transparent rounded-t-2xl" />
-
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-[rgba(10,132,255,0.06)] border border-[rgba(10,132,255,0.12)]">
-            <Lock size={18} className="text-[#0a84ff] flex-shrink-0" />
-            <p className="text-xs text-[#8e8e93]">
-              Entrez votre mot de passe pour acc&eacute;der au CRM
+        {/* Login Card */}
+        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5 space-y-4">
+          <div className="flex items-center gap-2.5 p-2.5 rounded-lg bg-[rgba(108,92,231,0.06)] border border-[rgba(108,92,231,0.1)]">
+            <Lock size={14} className="text-[#a78bfa] flex-shrink-0" />
+            <p className="text-[11px] text-white/40">
+              Entrez votre mot de passe pour accéder au CRM
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3">
             <div>
-              <label className="block text-xs text-[#8e8e93] mb-1.5 font-medium">Mot de passe</label>
+              <label className="block text-[11px] text-white/40 mb-1.5 font-medium">Mot de passe</label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -75,21 +68,21 @@ export default function LoginPage() {
                   onChange={(e) => { setPassword(e.target.value); setError(''); }}
                   placeholder="Entrez votre mot de passe"
                   autoFocus
-                  className="w-full px-4 py-3 pr-10 rounded-xl bg-white/[0.04] border border-white/[0.08] text-[#f5f5f7] text-sm placeholder:text-white/15 focus:outline-none focus:border-[rgba(10,132,255,0.5)]"
+                  className="w-full px-3 py-2.5 pr-9 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm placeholder:text-white/15 focus:outline-none"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/25 hover:text-white/65 transition-colors"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/50 transition-colors"
                 >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
                 </button>
               </div>
             </div>
 
             {error && (
-              <div className="flex items-center gap-2 p-3 rounded-xl bg-[rgba(255,69,58,0.08)] border border-[rgba(255,69,58,0.2)] text-[#ff453a] text-sm">
-                <AlertCircle size={16} className="flex-shrink-0" />
+              <div className="flex items-center gap-2 p-2.5 rounded-lg bg-[rgba(248,113,113,0.06)] border border-[rgba(248,113,113,0.12)] text-[#f87171] text-xs">
+                <AlertCircle size={14} className="flex-shrink-0" />
                 {error}
               </div>
             )}
@@ -97,16 +90,16 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading || !password}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#0a84ff] hover:bg-[#409cff] text-white text-sm font-semibold transition-all disabled:opacity-50 btn-glow"
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#6c5ce7] hover:bg-[#7c6df0] text-white text-sm font-medium transition-colors disabled:opacity-40"
             >
               {loading ? (
                 <>
-                  <Loader2 size={16} className="animate-spin" />
+                  <Loader2 size={14} className="animate-spin" />
                   Connexion...
                 </>
               ) : (
                 <>
-                  <Lock size={16} />
+                  <Lock size={14} />
                   Se connecter
                 </>
               )}
@@ -114,8 +107,8 @@ export default function LoginPage() {
           </form>
         </div>
 
-        <p className="text-center text-xs text-white/15 mt-6">
-          OpexIA &mdash; Agence d&apos;automatisation IA
+        <p className="text-center text-[10px] text-white/15 mt-6">
+          OpexIA — Agence d&apos;automatisation IA
         </p>
       </div>
     </div>

@@ -49,22 +49,22 @@ function nextNumero(prefix: string, existing: string[]): string {
 // ========== STATUS BADGE ==========
 function StatusBadge({ status, type }: { status: string; type: 'facture' | 'devis' }) {
   const colors: Record<string, string> = {
-    'payee': 'bg-success/15 text-success border-success/30',
-    'en-attente': 'bg-warning/15 text-warning border-warning/30',
-    'en-retard': 'bg-danger/15 text-danger border-danger/30',
-    'annulee': 'bg-muted/15 text-muted border-muted/30',
-    'brouillon': 'bg-muted/15 text-muted border-muted/30',
-    'envoye': 'bg-info/15 text-info border-info/30',
-    'accepte': 'bg-success/15 text-success border-success/30',
-    'refuse': 'bg-danger/15 text-danger border-danger/30',
-    'expire': 'bg-warning/15 text-warning border-warning/30',
+    'payee': 'bg-[rgba(52,211,153,0.08)] text-[#34d399] border-[rgba(52,211,153,0.2)]',
+    'en-attente': 'bg-[rgba(251,191,36,0.08)] text-[#fbbf24] border-[rgba(251,191,36,0.2)]',
+    'en-retard': 'bg-[rgba(248,113,113,0.08)] text-[#f87171] border-[rgba(248,113,113,0.2)]',
+    'annulee': 'bg-white/[0.03] text-white/30 border-white/[0.08]',
+    'brouillon': 'bg-white/[0.03] text-white/30 border-white/[0.08]',
+    'envoye': 'bg-[rgba(96,165,250,0.08)] text-[#60a5fa] border-[rgba(96,165,250,0.2)]',
+    'accepte': 'bg-[rgba(52,211,153,0.08)] text-[#34d399] border-[rgba(52,211,153,0.2)]',
+    'refuse': 'bg-[rgba(248,113,113,0.08)] text-[#f87171] border-[rgba(248,113,113,0.2)]',
+    'expire': 'bg-[rgba(251,191,36,0.08)] text-[#fbbf24] border-[rgba(251,191,36,0.2)]',
   };
   const label = type === 'facture'
     ? INVOICE_STATUS_LABELS[status as InvoiceStatus]
     : DEVIS_STATUS_LABELS[status as DevisStatus];
 
   return (
-    <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${colors[status] || 'bg-muted/15 text-muted'}`}>
+    <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${colors[status] || 'bg-white/[0.03] text-white/30'}`}>
       {label || status}
     </span>
   );
@@ -197,29 +197,29 @@ export default function FacturationPage() {
   const totalDevisEnvoye = devisList.filter(d => d.status === 'envoye').length;
   const totalDevisAccepte = devisList.filter(d => d.status === 'accepte').reduce((s, d) => s + d.montantTTC, 0);
 
-  if (!mounted) return <div className="p-6 pt-16 lg:pt-6"><div className="h-8 w-48 bg-card rounded animate-pulse" /></div>;
+  if (!mounted) return <div className="p-6 pt-16 lg:pt-6"><div className="h-8 w-48 bg-white/[0.02] rounded animate-pulse" /></div>;
 
   return (
     <div className="p-4 lg:p-6 space-y-6 pt-16 lg:pt-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Facturation</h1>
-          <p className="text-sm text-muted mt-1">
+          <h1 className="text-lg font-semibold text-white/90">Facturation</h1>
+          <p className="text-sm text-white/30 mt-1">
             {invoices.length} factures &middot; {devisList.length} devis
           </p>
         </div>
         <div className="flex gap-2">
           <button
             onClick={() => openModal('devis')}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-primary text-primary hover:bg-primary/5 text-sm font-medium transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#6c5ce7] text-[#a78bfa] hover:bg-[rgba(108,92,231,0.08)] text-sm font-medium transition-colors"
           >
             <FileText size={16} />
             Nouveau devis
           </button>
           <button
             onClick={() => openModal('facture')}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-white text-sm font-medium transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#6c5ce7] hover:bg-[#7c6df0] text-white text-sm font-medium transition-colors"
           >
             <Plus size={16} />
             Nouvelle facture
@@ -230,69 +230,69 @@ export default function FacturationPage() {
       {/* Stats */}
       {activeTab === 'factures' ? (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <div className="kpi-glow rounded-xl p-4 shine-top">
+          <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
-              <div className="p-1.5 rounded-lg bg-success/10"><CheckCircle size={16} className="text-success" /></div>
-              <span className="text-xs text-muted">Pay&eacute;es</span>
+              <div className="p-1.5 rounded-lg bg-[rgba(52,211,153,0.08)]"><CheckCircle size={16} className="text-[#34d399]" /></div>
+              <span className="text-xs text-white/40">Pay&eacute;es</span>
             </div>
-            <p className="text-xl font-bold text-foreground">{totalPayees.toLocaleString('fr-FR')} &euro;</p>
+            <p className="text-xl font-bold text-white/90">{totalPayees.toLocaleString('fr-FR')} &euro;</p>
           </div>
-          <div className="kpi-glow rounded-xl p-4 shine-top">
+          <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
-              <div className="p-1.5 rounded-lg bg-warning/10"><Clock size={16} className="text-warning" /></div>
-              <span className="text-xs text-muted">En attente</span>
+              <div className="p-1.5 rounded-lg bg-[rgba(251,191,36,0.08)]"><Clock size={16} className="text-[#fbbf24]" /></div>
+              <span className="text-xs text-white/40">En attente</span>
             </div>
-            <p className="text-xl font-bold text-foreground">{totalEnAttente.toLocaleString('fr-FR')} &euro;</p>
+            <p className="text-xl font-bold text-white/90">{totalEnAttente.toLocaleString('fr-FR')} &euro;</p>
           </div>
-          <div className="kpi-glow rounded-xl p-4 shine-top">
+          <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
-              <div className="p-1.5 rounded-lg bg-danger/10"><AlertTriangle size={16} className="text-danger" /></div>
-              <span className="text-xs text-muted">En retard</span>
+              <div className="p-1.5 rounded-lg bg-[rgba(248,113,113,0.08)]"><AlertTriangle size={16} className="text-[#f87171]" /></div>
+              <span className="text-xs text-white/40">En retard</span>
             </div>
-            <p className="text-xl font-bold text-danger">{totalEnRetard.toLocaleString('fr-FR')} &euro;</p>
+            <p className="text-xl font-bold text-[#f87171]">{totalEnRetard.toLocaleString('fr-FR')} &euro;</p>
           </div>
-          <div className="kpi-glow rounded-xl p-4 shine-top">
+          <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
-              <div className="p-1.5 rounded-lg bg-primary/10"><TrendingUp size={16} className="text-primary" /></div>
-              <span className="text-xs text-muted">CA Total</span>
+              <div className="p-1.5 rounded-lg bg-[rgba(108,92,231,0.08)]"><TrendingUp size={16} className="text-[#a78bfa]" /></div>
+              <span className="text-xs text-white/40">CA Total</span>
             </div>
-            <p className="text-xl font-bold gradient-text">{(totalPayees + totalEnAttente).toLocaleString('fr-FR')} &euro;</p>
+            <p className="text-xl font-bold text-[#a78bfa]">{(totalPayees + totalEnAttente).toLocaleString('fr-FR')} &euro;</p>
           </div>
         </div>
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-          <div className="kpi-glow rounded-xl p-4 shine-top">
+          <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
-              <div className="p-1.5 rounded-lg bg-muted/10"><FileText size={16} className="text-muted" /></div>
-              <span className="text-xs text-muted">Brouillons</span>
+              <div className="p-1.5 rounded-lg bg-white/[0.03]"><FileText size={16} className="text-white/30" /></div>
+              <span className="text-xs text-white/40">Brouillons</span>
             </div>
-            <p className="text-xl font-bold text-foreground">{totalDevisBrouillon}</p>
+            <p className="text-xl font-bold text-white/90">{totalDevisBrouillon}</p>
           </div>
-          <div className="kpi-glow rounded-xl p-4 shine-top">
+          <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
-              <div className="p-1.5 rounded-lg bg-info/10"><Clock size={16} className="text-info" /></div>
-              <span className="text-xs text-muted">Envoy&eacute;s</span>
+              <div className="p-1.5 rounded-lg bg-[rgba(96,165,250,0.08)]"><Clock size={16} className="text-[#60a5fa]" /></div>
+              <span className="text-xs text-white/40">Envoy&eacute;s</span>
             </div>
-            <p className="text-xl font-bold text-foreground">{totalDevisEnvoye}</p>
+            <p className="text-xl font-bold text-white/90">{totalDevisEnvoye}</p>
           </div>
-          <div className="kpi-glow rounded-xl p-4 shine-top">
+          <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
-              <div className="p-1.5 rounded-lg bg-success/10"><CheckCircle size={16} className="text-success" /></div>
-              <span className="text-xs text-muted">Accept&eacute;s (TTC)</span>
+              <div className="p-1.5 rounded-lg bg-[rgba(52,211,153,0.08)]"><CheckCircle size={16} className="text-[#34d399]" /></div>
+              <span className="text-xs text-white/40">Accept&eacute;s (TTC)</span>
             </div>
-            <p className="text-xl font-bold gradient-text">{totalDevisAccepte.toLocaleString('fr-FR')} &euro;</p>
+            <p className="text-xl font-bold text-[#a78bfa]">{totalDevisAccepte.toLocaleString('fr-FR')} &euro;</p>
           </div>
         </div>
       )}
 
       {/* Tabs */}
-      <div className="flex gap-1 p-1 bg-background-secondary rounded-xl w-fit">
+      <div className="flex gap-1 p-1 bg-white/[0.02] border border-white/[0.06] rounded-xl w-fit">
         <button
           onClick={() => { setActiveTab('factures'); setFilterStatus('tous'); setSearch(''); }}
           className={`px-5 py-2 rounded-lg text-sm font-medium transition-all ${
             activeTab === 'factures'
-              ? 'bg-card text-foreground shadow-sm'
-              : 'text-muted hover:text-foreground'
+              ? 'bg-white/[0.06] text-white/90 shadow-sm'
+              : 'text-white/30 hover:text-white/90'
           }`}
         >
           <Receipt size={14} className="inline mr-2" />
@@ -302,8 +302,8 @@ export default function FacturationPage() {
           onClick={() => { setActiveTab('devis'); setFilterStatus('tous'); setSearch(''); }}
           className={`px-5 py-2 rounded-lg text-sm font-medium transition-all ${
             activeTab === 'devis'
-              ? 'bg-card text-foreground shadow-sm'
-              : 'text-muted hover:text-foreground'
+              ? 'bg-white/[0.06] text-white/90 shadow-sm'
+              : 'text-white/30 hover:text-white/90'
           }`}
         >
           <FileText size={14} className="inline mr-2" />
@@ -314,19 +314,19 @@ export default function FacturationPage() {
       {/* Search + Filter */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
           <input
             type="text"
             placeholder={activeTab === 'factures' ? 'Rechercher une facture...' : 'Rechercher un devis...'}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-card border border-border text-foreground text-sm placeholder:text-muted focus:outline-none focus:border-primary"
+            className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm placeholder:text-white/25 focus:outline-none"
           />
         </div>
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="px-4 py-2.5 rounded-xl bg-card border border-border text-foreground text-sm focus:outline-none focus:border-primary"
+          className="px-4 py-2.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm focus:outline-none"
         >
           <option value="tous">Tous les statuts</option>
           {activeTab === 'factures' ? (
@@ -350,14 +350,14 @@ export default function FacturationPage() {
 
       {/* Devis Error Banner */}
       {devisError && activeTab === 'devis' && (
-        <div className="card-glow rounded-xl p-4 border-warning/30 bg-warning/5">
-          <p className="text-sm text-foreground font-medium mb-1">Table &quot;devis&quot; non trouv&eacute;e</p>
-          <p className="text-xs text-muted mb-3">
+        <div className="bg-white/[0.02] border border-[rgba(251,191,36,0.2)] rounded-xl p-4">
+          <p className="text-sm text-white/90 font-medium mb-1">Table &quot;devis&quot; non trouv&eacute;e</p>
+          <p className="text-xs text-white/30 mb-3">
             La table devis n&apos;existe pas encore dans Supabase. Ex&eacute;cutez le SQL ci-dessous dans le SQL Editor de votre dashboard Supabase.
           </p>
           <details className="cursor-pointer">
-            <summary className="text-xs text-primary font-medium">Voir le SQL</summary>
-            <pre className="mt-2 p-3 bg-background rounded-lg text-xs text-foreground overflow-x-auto whitespace-pre-wrap">
+            <summary className="text-xs text-[#a78bfa] font-medium">Voir le SQL</summary>
+            <pre className="mt-2 p-3 bg-[#050505] rounded-lg text-xs text-white/90 overflow-x-auto whitespace-pre-wrap">
 {`CREATE TABLE IF NOT EXISTS devis (
   id TEXT PRIMARY KEY,
   client_id TEXT,
@@ -388,11 +388,11 @@ ALTER TABLE invoices ADD COLUMN IF NOT EXISTS devis_id TEXT;`}
 
       {/* ===== FACTURES TABLE ===== */}
       {activeTab === 'factures' && (
-        <div className="card-glow rounded-xl overflow-hidden">
+        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-muted border-b border-border bg-background-secondary">
+                <tr className="text-left text-white/40 border-b border-white/[0.06] bg-white/[0.02]">
                   <th className="px-4 py-3 font-medium">N&deg;</th>
                   <th className="px-4 py-3 font-medium">Client</th>
                   <th className="px-4 py-3 font-medium hidden lg:table-cell">Description</th>
@@ -407,19 +407,19 @@ ALTER TABLE invoices ADD COLUMN IF NOT EXISTS devis_id TEXT;`}
                 {filteredInvoices.map((inv, i) => (
                   <tr
                     key={inv.id}
-                    className="border-b border-border/50 hover:bg-card-hover transition-colors animate-fade-in"
+                    className="border-b border-white/[0.04] hover:bg-white/[0.03] transition-colors animate-fade-in"
                     style={{ animationDelay: `${i * 20}ms` }}
                   >
-                    <td className="px-4 py-3 font-mono text-xs text-primary">{inv.numero}</td>
-                    <td className="px-4 py-3 font-medium">{getClientName(inv.clientId)}</td>
-                    <td className="px-4 py-3 text-muted hidden lg:table-cell truncate max-w-[200px]">{inv.description}</td>
-                    <td className="px-4 py-3 font-bold text-right">
+                    <td className="px-4 py-3 font-mono text-xs text-[#a78bfa]">{inv.numero}</td>
+                    <td className="px-4 py-3 font-medium text-white/90">{getClientName(inv.clientId)}</td>
+                    <td className="px-4 py-3 text-white/30 hidden lg:table-cell truncate max-w-[200px]">{inv.description}</td>
+                    <td className="px-4 py-3 font-bold text-right text-white/90">
                       {(inv.montantTTC || inv.montant).toLocaleString('fr-FR')} &euro;
                     </td>
-                    <td className="px-4 py-3 text-muted text-xs hidden md:table-cell">
+                    <td className="px-4 py-3 text-white/30 text-xs hidden md:table-cell">
                       {inv.dateEmission ? new Date(inv.dateEmission).toLocaleDateString('fr-FR') : '-'}
                     </td>
-                    <td className="px-4 py-3 text-muted text-xs hidden md:table-cell">
+                    <td className="px-4 py-3 text-white/30 text-xs hidden md:table-cell">
                       {inv.dateEcheance ? new Date(inv.dateEcheance).toLocaleDateString('fr-FR') : '-'}
                     </td>
                     <td className="px-4 py-3">
@@ -430,7 +430,7 @@ ALTER TABLE invoices ADD COLUMN IF NOT EXISTS devis_id TEXT;`}
                         {inv.lignes && inv.lignes.length > 0 && (
                           <button
                             onClick={() => downloadPDF('facture', inv)}
-                            className="p-1.5 rounded-lg hover:bg-primary/10 text-muted hover:text-primary transition-colors"
+                            className="p-1.5 rounded-lg hover:bg-[rgba(108,92,231,0.08)] text-white/30 hover:text-[#a78bfa] transition-colors"
                             title="T&eacute;l&eacute;charger PDF"
                           >
                             <Download size={14} />
@@ -438,7 +438,7 @@ ALTER TABLE invoices ADD COLUMN IF NOT EXISTS devis_id TEXT;`}
                         )}
                         <button
                           onClick={async () => { await deleteInvoice(inv.id); refresh(); }}
-                          className="p-1.5 rounded-lg hover:bg-danger/10 text-muted hover:text-danger transition-colors"
+                          className="p-1.5 rounded-lg hover:bg-[rgba(248,113,113,0.08)] text-white/30 hover:text-[#f87171] transition-colors"
                           title="Supprimer"
                         >
                           <Trash2 size={14} />
@@ -451,7 +451,7 @@ ALTER TABLE invoices ADD COLUMN IF NOT EXISTS devis_id TEXT;`}
             </table>
           </div>
           {filteredInvoices.length === 0 && (
-            <div className="text-center py-12 text-muted">
+            <div className="text-center py-12 text-white/30">
               <Receipt size={40} className="mx-auto mb-3 opacity-50" />
               <p>Aucune facture trouv&eacute;e</p>
             </div>
@@ -461,11 +461,11 @@ ALTER TABLE invoices ADD COLUMN IF NOT EXISTS devis_id TEXT;`}
 
       {/* ===== DEVIS TABLE ===== */}
       {activeTab === 'devis' && !devisError && (
-        <div className="card-glow rounded-xl overflow-hidden">
+        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-muted border-b border-border bg-background-secondary">
+                <tr className="text-left text-white/40 border-b border-white/[0.06] bg-white/[0.02]">
                   <th className="px-4 py-3 font-medium">N&deg;</th>
                   <th className="px-4 py-3 font-medium">Client</th>
                   <th className="px-4 py-3 font-medium hidden lg:table-cell">Notes</th>
@@ -480,17 +480,17 @@ ALTER TABLE invoices ADD COLUMN IF NOT EXISTS devis_id TEXT;`}
                 {filteredDevis.map((d, i) => (
                   <tr
                     key={d.id}
-                    className="border-b border-border/50 hover:bg-card-hover transition-colors animate-fade-in"
+                    className="border-b border-white/[0.04] hover:bg-white/[0.03] transition-colors animate-fade-in"
                     style={{ animationDelay: `${i * 20}ms` }}
                   >
-                    <td className="px-4 py-3 font-mono text-xs text-primary">{d.numero}</td>
-                    <td className="px-4 py-3 font-medium">{getClientName(d.clientId)}</td>
-                    <td className="px-4 py-3 text-muted hidden lg:table-cell truncate max-w-[200px]">{d.notes || '-'}</td>
-                    <td className="px-4 py-3 font-bold text-right">{d.montantTTC.toLocaleString('fr-FR')} &euro;</td>
-                    <td className="px-4 py-3 text-muted text-xs hidden md:table-cell">
+                    <td className="px-4 py-3 font-mono text-xs text-[#a78bfa]">{d.numero}</td>
+                    <td className="px-4 py-3 font-medium text-white/90">{getClientName(d.clientId)}</td>
+                    <td className="px-4 py-3 text-white/30 hidden lg:table-cell truncate max-w-[200px]">{d.notes || '-'}</td>
+                    <td className="px-4 py-3 font-bold text-right text-white/90">{d.montantTTC.toLocaleString('fr-FR')} &euro;</td>
+                    <td className="px-4 py-3 text-white/30 text-xs hidden md:table-cell">
                       {d.dateCreation ? new Date(d.dateCreation).toLocaleDateString('fr-FR') : '-'}
                     </td>
-                    <td className="px-4 py-3 text-muted text-xs hidden md:table-cell">
+                    <td className="px-4 py-3 text-white/30 text-xs hidden md:table-cell">
                       {d.dateValidite ? new Date(d.dateValidite).toLocaleDateString('fr-FR') : '-'}
                     </td>
                     <td className="px-4 py-3">
@@ -500,7 +500,7 @@ ALTER TABLE invoices ADD COLUMN IF NOT EXISTS devis_id TEXT;`}
                       <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => downloadPDF('devis', d)}
-                          className="p-1.5 rounded-lg hover:bg-primary/10 text-muted hover:text-primary transition-colors"
+                          className="p-1.5 rounded-lg hover:bg-[rgba(108,92,231,0.08)] text-white/30 hover:text-[#a78bfa] transition-colors"
                           title="T&eacute;l&eacute;charger PDF"
                         >
                           <Download size={14} />
@@ -508,7 +508,7 @@ ALTER TABLE invoices ADD COLUMN IF NOT EXISTS devis_id TEXT;`}
                         {(d.status === 'envoye' || d.status === 'accepte') && (
                           <button
                             onClick={() => convertDevisToInvoice(d)}
-                            className="p-1.5 rounded-lg hover:bg-success/10 text-muted hover:text-success transition-colors"
+                            className="p-1.5 rounded-lg hover:bg-[rgba(52,211,153,0.08)] text-white/30 hover:text-[#34d399] transition-colors"
                             title="Convertir en facture"
                           >
                             <ArrowRightLeft size={14} />
@@ -516,7 +516,7 @@ ALTER TABLE invoices ADD COLUMN IF NOT EXISTS devis_id TEXT;`}
                         )}
                         <button
                           onClick={async () => { await deleteDevis(d.id); refresh(); }}
-                          className="p-1.5 rounded-lg hover:bg-danger/10 text-muted hover:text-danger transition-colors"
+                          className="p-1.5 rounded-lg hover:bg-[rgba(248,113,113,0.08)] text-white/30 hover:text-[#f87171] transition-colors"
                           title="Supprimer"
                         >
                           <Trash2 size={14} />
@@ -529,7 +529,7 @@ ALTER TABLE invoices ADD COLUMN IF NOT EXISTS devis_id TEXT;`}
             </table>
           </div>
           {filteredDevis.length === 0 && (
-            <div className="text-center py-12 text-muted">
+            <div className="text-center py-12 text-white/30">
               <FileText size={40} className="mx-auto mb-3 opacity-50" />
               <p>Aucun devis trouv&eacute;</p>
             </div>
@@ -570,18 +570,18 @@ function InvoiceStatusDropdown({ invoice, onUpdate }: {
     <div className="relative">
       <button onClick={() => setOpen(!open)} className="flex items-center gap-1">
         <StatusBadge status={invoice.status} type="facture" />
-        <ChevronDown size={12} className="text-muted" />
+        <ChevronDown size={12} className="text-white/30" />
       </button>
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute z-50 top-full left-0 mt-1 bg-card border border-border rounded-xl shadow-lg py-1 min-w-[140px]">
+          <div className="absolute z-50 top-full left-0 mt-1 bg-[#0a0a0a] border border-white/[0.06] rounded-xl shadow-lg py-1 min-w-[140px]">
             {statuses.map(s => (
               <button
                 key={s}
                 onClick={() => { onUpdate(invoice, s); setOpen(false); }}
-                className={`w-full text-left px-3 py-1.5 text-xs hover:bg-card-hover transition-colors ${
-                  invoice.status === s ? 'text-primary font-medium' : 'text-foreground'
+                className={`w-full text-left px-3 py-1.5 text-xs hover:bg-white/[0.03] transition-colors ${
+                  invoice.status === s ? 'text-[#a78bfa] font-medium' : 'text-white/90'
                 }`}
               >
                 {INVOICE_STATUS_LABELS[s]}
@@ -606,18 +606,18 @@ function DevisStatusDropdown({ devis, onUpdate }: {
     <div className="relative">
       <button onClick={() => setOpen(!open)} className="flex items-center gap-1">
         <StatusBadge status={devis.status} type="devis" />
-        <ChevronDown size={12} className="text-muted" />
+        <ChevronDown size={12} className="text-white/30" />
       </button>
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute z-50 top-full left-0 mt-1 bg-card border border-border rounded-xl shadow-lg py-1 min-w-[140px]">
+          <div className="absolute z-50 top-full left-0 mt-1 bg-[#0a0a0a] border border-white/[0.06] rounded-xl shadow-lg py-1 min-w-[140px]">
             {statuses.map(s => (
               <button
                 key={s}
                 onClick={() => { onUpdate(devis, s); setOpen(false); }}
-                className={`w-full text-left px-3 py-1.5 text-xs hover:bg-card-hover transition-colors ${
-                  devis.status === s ? 'text-primary font-medium' : 'text-foreground'
+                className={`w-full text-left px-3 py-1.5 text-xs hover:bg-white/[0.03] transition-colors ${
+                  devis.status === s ? 'text-[#a78bfa] font-medium' : 'text-white/90'
                 }`}
               >
                 {DEVIS_STATUS_LABELS[s]}
@@ -630,7 +630,7 @@ function DevisStatusDropdown({ devis, onUpdate }: {
   );
 }
 
-// ========== CATALOGUE PRESTATIONS PRÉDÉFINIES ==========
+// ========== CATALOGUE PRESTATIONS PREDEFINIES ==========
 interface PresetPrestation {
   id: string;
   nom: string;
@@ -645,91 +645,91 @@ const PRESET_PRESTATIONS: PresetPrestation[] = [
   {
     id: 'site-web-chatbot',
     nom: 'Site Web Vitrine + Chatbot IA',
-    description: 'Création d\'un site web vitrine professionnel avec chatbot IA intégré',
+    description: 'Cr\u00e9ation d\'un site web vitrine professionnel avec chatbot IA int\u00e9gr\u00e9',
     prixHT: 400,
     type: 'ponctuel',
     details: [
-      'Design responsive adapté à votre image',
-      'Chatbot intelligent intégré pour prise de commande en ligne',
-      'Suivi de commande en temps réel',
-      'Suggestions personnalisées selon la carte',
-      'Réponses aux questions fréquentes (horaires, adresse, allergènes)',
-      'Mises à jour et améliorations continues',
+      'Design responsive adapt\u00e9 \u00e0 votre image',
+      'Chatbot intelligent int\u00e9gr\u00e9 pour prise de commande en ligne',
+      'Suivi de commande en temps r\u00e9el',
+      'Suggestions personnalis\u00e9es selon la carte',
+      'R\u00e9ponses aux questions fr\u00e9quentes (horaires, adresse, allerg\u00e8nes)',
+      'Mises \u00e0 jour et am\u00e9liorations continues',
     ],
-    emoji: '🌐',
+    emoji: '\u{1F310}',
   },
   {
     id: 'maintenance-site',
     nom: 'Maintenance Site Web',
-    description: 'Maintenance et hébergement du site web vitrine',
+    description: 'Maintenance et h\u00e9bergement du site web vitrine',
     prixHT: 20,
     type: 'mensuel',
     details: [
-      'Hébergement et nom de domaine inclus',
-      'Mises à jour de sécurité',
+      'H\u00e9bergement et nom de domaine inclus',
+      'Mises \u00e0 jour de s\u00e9curit\u00e9',
       'Support technique',
-      'Sauvegardes régulières',
+      'Sauvegardes r\u00e9guli\u00e8res',
     ],
-    emoji: '🔧',
+    emoji: '\u{1F527}',
   },
   {
     id: 'chatbot-ia',
     nom: 'Chatbot IA',
-    description: 'Chatbot intelligent intégrable sur site web ou en standalone',
+    description: 'Chatbot intelligent int\u00e9grable sur site web ou en standalone',
     prixHT: 90,
     type: 'mensuel',
     details: [
-      'Prise de commande automatisée par conversation',
-      'Suivi de commande en temps réel',
-      'Suggestions personnalisées selon la carte',
-      'Réponses aux questions fréquentes (horaires, adresse, allergènes)',
-      'Mises à jour et améliorations continues',
+      'Prise de commande automatis\u00e9e par conversation',
+      'Suivi de commande en temps r\u00e9el',
+      'Suggestions personnalis\u00e9es selon la carte',
+      'R\u00e9ponses aux questions fr\u00e9quentes (horaires, adresse, allerg\u00e8nes)',
+      'Mises \u00e0 jour et am\u00e9liorations continues',
     ],
-    emoji: '🤖',
+    emoji: '\u{1F916}',
   },
   {
     id: 'receptionniste-ia',
-    nom: 'Réceptionniste IA Vocale',
-    description: 'Standard téléphonique intelligent propulsé par IA',
+    nom: 'R\u00e9ceptionniste IA Vocale',
+    description: 'Standard t\u00e9l\u00e9phonique intelligent propuls\u00e9 par IA',
     prixHT: 140,
     type: 'mensuel',
     details: [
-      'Accueil téléphonique automatisé 24h/24',
-      'Prise de commande vocale complète',
-      'Vérification des stocks en temps réel',
+      'Accueil t\u00e9l\u00e9phonique automatis\u00e9 24h/24',
+      'Prise de commande vocale compl\u00e8te',
+      'V\u00e9rification des stocks en temps r\u00e9el',
       'Envoi automatique de SMS de confirmation au client',
       'Gestion des horaires et informations restaurant',
     ],
-    emoji: '📞',
+    emoji: '\u{1F4DE}',
   },
   {
     id: 'programme-fidelite',
-    nom: 'Programme de Fidélité',
-    description: 'Système de fidélisation client intégré au CRM',
+    nom: 'Programme de Fid\u00e9lit\u00e9',
+    description: 'Syst\u00e8me de fid\u00e9lisation client int\u00e9gr\u00e9 au CRM',
     prixHT: 80,
     type: 'mensuel',
     details: [
-      'Attribution automatique de points à chaque commande',
-      'Catalogue de récompenses personnalisable',
+      'Attribution automatique de points \u00e0 chaque commande',
+      'Catalogue de r\u00e9compenses personnalisable',
       'Suivi des points et historique client',
-      'Tableau de bord statistiques fidélité',
-      'Notifications automatiques (seuils de récompense atteints)',
+      'Tableau de bord statistiques fid\u00e9lit\u00e9',
+      'Notifications automatiques (seuils de r\u00e9compense atteints)',
     ],
-    emoji: '⭐',
+    emoji: '\u2B50',
   },
   {
     id: 'automatisation-custom',
     nom: 'Automatisation sur mesure',
-    description: 'Solution d\'automatisation personnalisée selon vos besoins',
+    description: 'Solution d\'automatisation personnalis\u00e9e selon vos besoins',
     prixHT: 200,
     type: 'ponctuel',
     details: [
       'Analyse de vos processus existants',
-      'Développement de workflows automatisés',
-      'Intégration avec vos outils existants',
+      'D\u00e9veloppement de workflows automatis\u00e9s',
+      'Int\u00e9gration avec vos outils existants',
       'Formation et documentation',
     ],
-    emoji: '⚡',
+    emoji: '\u26A1',
   },
 ];
 
@@ -858,26 +858,26 @@ function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave
       <form onSubmit={handleSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto pr-1">
         {/* Client */}
         <div>
-          <label className="block text-xs text-muted mb-1">Client</label>
+          <label className="block text-xs text-white/40 mb-1">Client</label>
           <select
             required
             value={clientId}
             onChange={(e) => setClientId(e.target.value)}
-            className="w-full px-3 py-2 rounded-xl bg-background border border-border text-foreground text-sm"
+            className="w-full px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm focus:outline-none"
           >
-            <option value="">Sélectionner un client</option>
+            <option value="">S\u00e9lectionner un client</option>
             {clients.map(c => (
               <option key={c.id} value={c.id}>{c.entreprise} - {c.prenom} {c.nom}</option>
             ))}
           </select>
         </div>
 
-        {/* Catalogue de prestations prédéfinies */}
+        {/* Catalogue de prestations predefinies */}
         <div>
           <button
             type="button"
             onClick={() => setShowCatalog(!showCatalog)}
-            className="flex items-center gap-2 text-xs font-medium text-primary hover:text-primary-hover transition-colors mb-2"
+            className="flex items-center gap-2 text-xs font-medium text-[#a78bfa] hover:text-[#7c6df0] transition-colors mb-2"
           >
             <Package size={14} />
             Catalogue de prestations
@@ -890,20 +890,20 @@ function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave
                 const isSelected = selectedPresets.has(preset.id);
                 const isExpanded = expandedPreset === preset.id;
                 return (
-                  <div key={preset.id} className="rounded-xl border border-border/50 overflow-hidden transition-all">
+                  <div key={preset.id} className="rounded-lg border border-white/[0.04] overflow-hidden transition-all">
                     <div
                       className={`flex items-center gap-3 p-3 cursor-pointer transition-all ${
                         isSelected
-                          ? 'bg-primary/5 border-primary/20'
-                          : 'bg-background hover:bg-card-hover'
+                          ? 'bg-[rgba(108,92,231,0.06)] border-[rgba(108,92,231,0.15)]'
+                          : 'bg-[#050505] hover:bg-white/[0.03]'
                       }`}
                       onClick={() => togglePreset(preset)}
                     >
                       {/* Checkbox */}
                       <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all ${
                         isSelected
-                          ? 'bg-primary border-primary'
-                          : 'border-border hover:border-primary/50'
+                          ? 'bg-[#6c5ce7] border-[#6c5ce7]'
+                          : 'border-white/[0.12] hover:border-[rgba(108,92,231,0.4)]'
                       }`}>
                         {isSelected && <Check size={12} className="text-white" />}
                       </div>
@@ -914,29 +914,29 @@ function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave
                       {/* Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-foreground truncate">{preset.nom}</span>
+                          <span className="text-sm font-medium text-white/90 truncate">{preset.nom}</span>
                           <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium flex-shrink-0 ${
                             preset.type === 'mensuel'
-                              ? 'bg-info/10 text-info'
-                              : 'bg-success/10 text-success'
+                              ? 'bg-[rgba(96,165,250,0.08)] text-[#60a5fa]'
+                              : 'bg-[rgba(52,211,153,0.08)] text-[#34d399]'
                           }`}>
                             {preset.type === 'mensuel' ? '/mois' : 'unique'}
                           </span>
                         </div>
-                        <p className="text-xs text-muted truncate">{preset.description}</p>
+                        <p className="text-xs text-white/30 truncate">{preset.description}</p>
                       </div>
 
                       {/* Price */}
                       <div className="text-right flex-shrink-0">
-                        <p className="text-sm font-bold text-foreground">{preset.prixHT} €</p>
-                        <p className="text-[10px] text-muted">HT</p>
+                        <p className="text-sm font-bold text-white/90">{preset.prixHT} \u20ac</p>
+                        <p className="text-[10px] text-white/30">HT</p>
                       </div>
 
                       {/* Expand details */}
                       <button
                         type="button"
                         onClick={(e) => { e.stopPropagation(); setExpandedPreset(isExpanded ? null : preset.id); }}
-                        className="p-1 rounded-lg hover:bg-white/10 text-muted hover:text-foreground transition-colors flex-shrink-0"
+                        className="p-1 rounded-lg hover:bg-white/[0.06] text-white/30 hover:text-white/90 transition-colors flex-shrink-0"
                       >
                         <ChevronDown size={14} className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
                       </button>
@@ -944,11 +944,11 @@ function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave
 
                     {/* Expanded details */}
                     {isExpanded && (
-                      <div className="px-4 pb-3 pt-1 bg-background-secondary border-t border-border/30">
+                      <div className="px-4 pb-3 pt-1 bg-white/[0.02] border-t border-white/[0.04]">
                         <ul className="space-y-1">
                           {preset.details.map((detail, i) => (
-                            <li key={i} className="text-xs text-muted flex items-start gap-1.5">
-                              <span className="text-primary mt-0.5">•</span>
+                            <li key={i} className="text-xs text-white/30 flex items-start gap-1.5">
+                              <span className="text-[#a78bfa] mt-0.5">&bull;</span>
                               {detail}
                             </li>
                           ))}
@@ -962,40 +962,40 @@ function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave
           )}
 
           {selectedPresets.size > 0 && (
-            <div className="mt-2 flex items-center gap-2 text-xs text-success">
+            <div className="mt-2 flex items-center gap-2 text-xs text-[#34d399]">
               <Check size={12} />
-              {selectedPresets.size} prestation{selectedPresets.size > 1 ? 's' : ''} sélectionnée{selectedPresets.size > 1 ? 's' : ''}
+              {selectedPresets.size} prestation{selectedPresets.size > 1 ? 's' : ''} s\u00e9lectionn\u00e9e{selectedPresets.size > 1 ? 's' : ''}
             </div>
           )}
         </div>
 
-        {/* Séparateur */}
+        {/* Separateur */}
         <div className="flex items-center gap-3">
-          <div className="flex-1 h-px bg-border" />
-          <span className="text-[10px] text-muted uppercase tracking-wider">Lignes du document</span>
-          <div className="flex-1 h-px bg-border" />
+          <div className="flex-1 h-px bg-white/[0.06]" />
+          <span className="text-[10px] text-white/25 uppercase tracking-wider">Lignes du document</span>
+          <div className="flex-1 h-px bg-white/[0.06]" />
         </div>
 
         {/* Lignes */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="text-xs text-muted font-medium">
+            <label className="text-xs text-white/40 font-medium">
               Prestations ({lignes.length} ligne{lignes.length > 1 ? 's' : ''})
             </label>
             <button
               type="button"
               onClick={addLigne}
-              className="text-xs text-primary hover:text-primary-hover font-medium flex items-center gap-1"
+              className="text-xs text-[#a78bfa] hover:text-[#7c6df0] font-medium flex items-center gap-1"
             >
               <Plus size={12} /> Ajouter une ligne libre
             </button>
           </div>
 
           {lignes.length === 0 && (
-            <div className="text-center py-6 bg-background rounded-xl border border-dashed border-border">
-              <Package size={24} className="mx-auto mb-2 text-muted/50" />
-              <p className="text-xs text-muted">Sélectionnez des prestations dans le catalogue</p>
-              <p className="text-xs text-muted">ou ajoutez une ligne libre</p>
+            <div className="text-center py-6 bg-[#050505] rounded-lg border border-dashed border-white/[0.08]">
+              <Package size={24} className="mx-auto mb-2 text-white/20" />
+              <p className="text-xs text-white/30">S\u00e9lectionnez des prestations dans le catalogue</p>
+              <p className="text-xs text-white/30">ou ajoutez une ligne libre</p>
             </div>
           )}
 
@@ -1003,14 +1003,14 @@ function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave
             {lignes.map((ligne, i) => {
               const isPresetLine = PRESET_PRESTATIONS.some(p => `${p.nom}\n${p.description}` === ligne.description);
               return (
-                <div key={i} className={`flex gap-2 items-start p-3 rounded-xl border ${
-                  isPresetLine ? 'bg-primary/3 border-primary/15' : 'bg-background border-border/50'
+                <div key={i} className={`flex gap-2 items-start p-3 rounded-lg border ${
+                  isPresetLine ? 'bg-[rgba(108,92,231,0.03)] border-[rgba(108,92,231,0.1)]' : 'bg-[#050505] border-white/[0.04]'
                 }`}>
                   <div className="flex-1 space-y-2">
                     {isPresetLine ? (
                       <div className="flex items-center gap-2">
-                        <Package size={12} className="text-primary flex-shrink-0" />
-                        <span className="text-sm font-medium text-foreground">{ligne.description.split('\n')[0]}</span>
+                        <Package size={12} className="text-[#a78bfa] flex-shrink-0" />
+                        <span className="text-sm font-medium text-white/90">{ligne.description.split('\n')[0]}</span>
                       </div>
                     ) : (
                       <input
@@ -1019,23 +1019,23 @@ function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave
                         placeholder="Description de la prestation"
                         value={ligne.description}
                         onChange={(e) => updateLigne(i, 'description', e.target.value)}
-                        className="w-full px-3 py-1.5 rounded-lg bg-card border border-border text-foreground text-sm"
+                        className="w-full px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm focus:outline-none"
                       />
                     )}
                     <div className="flex gap-2">
                       <div className="w-20">
-                        <label className="text-[10px] text-muted">Qté</label>
+                        <label className="text-[10px] text-white/30">Qt\u00e9</label>
                         <input
                           type="number"
                           min={1}
                           required
                           value={ligne.quantite}
                           onChange={(e) => updateLigne(i, 'quantite', Number(e.target.value))}
-                          className="w-full px-2 py-1 rounded-lg bg-card border border-border text-foreground text-sm"
+                          className="w-full px-2 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm focus:outline-none"
                         />
                       </div>
                       <div className="flex-1">
-                        <label className="text-[10px] text-muted">Prix unitaire HT</label>
+                        <label className="text-[10px] text-white/30">Prix unitaire HT</label>
                         <input
                           type="number"
                           min={0}
@@ -1043,23 +1043,23 @@ function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave
                           required
                           value={ligne.prixUnitaire || ''}
                           onChange={(e) => updateLigne(i, 'prixUnitaire', Number(e.target.value))}
-                          className="w-full px-2 py-1 rounded-lg bg-card border border-border text-foreground text-sm"
+                          className="w-full px-2 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm focus:outline-none"
                         />
                       </div>
                       <div className="w-20">
-                        <label className="text-[10px] text-muted">TVA %</label>
+                        <label className="text-[10px] text-white/30">TVA %</label>
                         <input
                           type="number"
                           min={0}
                           max={100}
                           value={ligne.tva}
                           onChange={(e) => updateLigne(i, 'tva', Number(e.target.value))}
-                          className="w-full px-2 py-1 rounded-lg bg-card border border-border text-foreground text-sm"
+                          className="w-full px-2 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm focus:outline-none"
                         />
                       </div>
                       <div className="w-24 text-right pt-3">
-                        <p className="text-sm font-bold text-foreground">
-                          {calcLigneTotal(ligne).toLocaleString('fr-FR')} €
+                        <p className="text-sm font-bold text-white/90">
+                          {calcLigneTotal(ligne).toLocaleString('fr-FR')} \u20ac
                         </p>
                       </div>
                     </div>
@@ -1067,7 +1067,7 @@ function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave
                   <button
                     type="button"
                     onClick={() => removeLigne(i)}
-                    className="mt-1 p-1 rounded-lg hover:bg-danger/10 text-muted hover:text-danger transition-colors"
+                    className="mt-1 p-1 rounded-lg hover:bg-[rgba(248,113,113,0.08)] text-white/30 hover:text-[#f87171] transition-colors"
                   >
                     <X size={14} />
                   </button>
@@ -1079,25 +1079,25 @@ function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave
 
         {/* Totals */}
         {lignes.length > 0 && (
-          <div className="bg-background-secondary rounded-xl p-4 space-y-2">
+          <div className="bg-white/[0.02] border border-white/[0.06] rounded-lg p-4 space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-muted">Sous-total HT</span>
-              <span className="font-medium">{totalHT.toLocaleString('fr-FR')} €</span>
+              <span className="text-white/30">Sous-total HT</span>
+              <span className="font-medium text-white/90">{totalHT.toLocaleString('fr-FR')} \u20ac</span>
             </div>
             {totalTVA > 0 ? (
               <div className="flex justify-between text-sm">
-                <span className="text-muted">TVA</span>
-                <span className="font-medium">{totalTVA.toLocaleString('fr-FR')} €</span>
+                <span className="text-white/30">TVA</span>
+                <span className="font-medium text-white/90">{totalTVA.toLocaleString('fr-FR')} \u20ac</span>
               </div>
             ) : (
               <div className="flex justify-between text-sm">
-                <span className="text-muted">TVA</span>
-                <span className="text-xs text-muted italic">Non applicable, art. 293 B du CGI</span>
+                <span className="text-white/30">TVA</span>
+                <span className="text-xs text-white/25 italic">Non applicable, art. 293 B du CGI</span>
               </div>
             )}
-            <div className="flex justify-between text-base font-bold border-t border-border pt-2">
-              <span className="text-foreground">Total TTC</span>
-              <span className="gradient-text">{totalTTC.toLocaleString('fr-FR')} €</span>
+            <div className="flex justify-between text-base font-bold border-t border-white/[0.06] pt-2">
+              <span className="text-white/90">Total TTC</span>
+              <span className="text-[#a78bfa]">{totalTTC.toLocaleString('fr-FR')} \u20ac</span>
             </div>
           </div>
         )}
@@ -1105,33 +1105,33 @@ function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave
         {/* Date */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs text-muted mb-1">
-              {type === 'devis' ? 'Date de validité' : 'Date d\'échéance'}
+            <label className="block text-xs text-white/40 mb-1">
+              {type === 'devis' ? 'Date de validit\u00e9' : 'Date d\'\u00e9ch\u00e9ance'}
             </label>
             <input
               type="date"
               required
               value={dateEnd}
               onChange={(e) => setDateEnd(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-background border border-border text-foreground text-sm"
+              className="w-full px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-xs text-muted mb-1">Statut</label>
+            <label className="block text-xs text-white/40 mb-1">Statut</label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-background border border-border text-foreground text-sm"
+              className="w-full px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm focus:outline-none"
             >
               {type === 'devis' ? (
                 <>
                   <option value="brouillon">Brouillon</option>
-                  <option value="envoye">Envoyé</option>
+                  <option value="envoye">Envoy\u00e9</option>
                 </>
               ) : (
                 <>
                   <option value="en-attente">En attente</option>
-                  <option value="payee">Payée</option>
+                  <option value="payee">Pay\u00e9e</option>
                 </>
               )}
             </select>
@@ -1140,15 +1140,15 @@ function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave
 
         {/* Notes */}
         <div>
-          <label className="block text-xs text-muted mb-1">
+          <label className="block text-xs text-white/40 mb-1">
             {type === 'devis' ? 'Notes / Conditions' : 'Description'}
           </label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
-            placeholder={type === 'devis' ? 'Conditions particulières, notes...' : 'Description de la facture...'}
-            className="w-full px-3 py-2 rounded-xl bg-background border border-border text-foreground text-sm resize-none"
+            placeholder={type === 'devis' ? 'Conditions particuli\u00e8res, notes...' : 'Description de la facture...'}
+            className="w-full px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.06] text-white/90 text-sm resize-none focus:outline-none"
           />
         </div>
 
@@ -1157,16 +1157,16 @@ function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 px-4 py-2.5 rounded-xl border border-border text-muted text-sm hover:text-foreground transition-colors"
+            className="flex-1 px-4 py-2.5 rounded-lg border border-white/[0.06] text-white/40 text-sm hover:text-white/90 transition-colors"
           >
             Annuler
           </button>
           <button
             type="submit"
             disabled={lignes.length === 0}
-            className="flex-1 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-white text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex-1 px-4 py-2.5 rounded-lg bg-[#6c5ce7] hover:bg-[#7c6df0] text-white text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {type === 'devis' ? 'Créer le devis' : 'Créer la facture'}
+            {type === 'devis' ? 'Cr\u00e9er le devis' : 'Cr\u00e9er la facture'}
           </button>
         </div>
       </form>

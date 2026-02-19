@@ -8,13 +8,13 @@ import Link from 'next/link';
 
 const stages: PipelineStage[] = ['premier-contact', 'proposition', 'signe', 'refuse', 'perdu'];
 
-// Apple palette
+// WorkOS/AuthKit palette
 const stageColors: Record<PipelineStage, string> = {
-  'premier-contact': '#0a84ff',
-  'proposition': '#5e5ce6',
-  'signe': '#30d158',
-  'refuse': '#ff9f0a',
-  'perdu': '#636366',
+  'premier-contact': '#6c5ce7',
+  'proposition': '#a78bfa',
+  'signe': '#34d399',
+  'refuse': '#fbbf24',
+  'perdu': '#525252',
 };
 
 export default function PipelinePage() {
@@ -69,7 +69,7 @@ export default function PipelinePage() {
     setDragOverStage(null);
   };
 
-  if (!mounted) return <div className="p-6 pt-16 lg:pt-6"><div className="h-8 w-48 rounded-xl animate-pulse" /></div>;
+  if (!mounted) return <div className="p-6 pt-16 lg:pt-6"><div className="h-8 w-48 rounded-lg animate-pulse bg-white/[0.04]" /></div>;
 
   const totalPipeline = clients.filter(c => c.pipelineStage !== 'perdu' && c.pipelineStage !== 'refuse').reduce((s, c) => s + c.montantMensuel, 0);
 
@@ -78,9 +78,9 @@ export default function PipelinePage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Pipeline Commercial</h1>
-          <p className="text-sm text-[#636366] mt-1">
-            {clients.length} contacts · Valeur pipeline : <span className="text-[#0a84ff] font-medium">{totalPipeline.toLocaleString('fr-FR')} €/mois</span>
+          <h1 className="text-2xl font-semibold text-white/90">Pipeline Commercial</h1>
+          <p className="text-[11px] text-white/40 mt-1">
+            {clients.length} contacts · Valeur pipeline : <span className="text-[#6c5ce7] font-medium">{totalPipeline.toLocaleString('fr-FR')} €/mois</span>
           </p>
         </div>
       </div>
@@ -94,8 +94,8 @@ export default function PipelinePage() {
           return (
             <div
               key={stage}
-              className={`flex-shrink-0 w-72 glass-card rounded-2xl flex flex-col transition-all ${
-                isOver ? '!border-[rgba(10,132,255,0.3)]' : ''
+              className={`flex-shrink-0 w-72 bg-white/[0.02] border border-white/[0.06] rounded-xl flex flex-col transition-all ${
+                isOver ? '!border-[#6c5ce7]/30' : ''
               }`}
               onDragOver={(e) => handleDragOver(e, stage)}
               onDragLeave={handleDragLeave}
@@ -106,17 +106,17 @@ export default function PipelinePage() {
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <div
-                      className="w-3 h-3 rounded-full"
+                      className="w-2.5 h-2.5 rounded-full"
                       style={{ background: stageColors[stage] }}
                     />
-                    <h3 className="font-semibold text-foreground text-sm">{PIPELINE_LABELS[stage]}</h3>
+                    <h3 className="font-semibold text-white/90 text-xs">{PIPELINE_LABELS[stage]}</h3>
                   </div>
-                  <span className="text-xs bg-white/[0.04] px-2 py-0.5 rounded-full text-[#8e8e93]">
+                  <span className="text-[11px] bg-white/[0.04] px-2 py-0.5 rounded-full text-white/30">
                     {stageClients.length}
                   </span>
                 </div>
                 {getMontantByStage(stage) > 0 && (
-                  <p className="text-xs text-[#636366]">
+                  <p className="text-[11px] text-white/40">
                     {getMontantByStage(stage).toLocaleString('fr-FR')} €/mois
                   </p>
                 )}
@@ -129,31 +129,31 @@ export default function PipelinePage() {
                     key={client.id}
                     draggable
                     onDragStart={() => handleDragStart(client.id)}
-                    className={`kanban-card p-3 rounded-xl border border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.04] transition-all ${
+                    className={`p-3 rounded-lg border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] transition-all cursor-grab active:cursor-grabbing ${
                       draggedClient === client.id ? 'opacity-50 scale-95' : ''
                     }`}
                   >
                     <div className="flex items-start justify-between mb-2">
-                      <Link href={`/clients/${client.id}`} className="hover:text-[#0a84ff]">
-                        <p className="font-medium text-foreground text-sm">{client.prenom} {client.nom}</p>
+                      <Link href={`/clients/${client.id}`} className="hover:text-[#a78bfa] transition-colors">
+                        <p className="font-medium text-white/90 text-xs">{client.prenom} {client.nom}</p>
                       </Link>
-                      <GripVertical size={14} className="text-[#636366] flex-shrink-0 mt-0.5" />
+                      <GripVertical size={14} className="text-white/25 flex-shrink-0 mt-0.5" />
                     </div>
-                    <div className="flex items-center gap-1.5 text-xs text-[#8e8e93] mb-2">
+                    <div className="flex items-center gap-1.5 text-[11px] text-white/30 mb-2">
                       <Building2 size={12} />
                       <span className="truncate">{client.entreprise}</span>
                     </div>
                     {client.servicesSouscrits.length > 0 && (
                       <div className="flex flex-wrap gap-1 mb-2">
                         {client.servicesSouscrits.map(s => (
-                          <span key={s} className="px-1.5 py-0.5 rounded text-[10px] bg-[rgba(10,132,255,0.1)] text-[#0a84ff]">
+                          <span key={s} className="px-1.5 py-0.5 rounded text-[10px] bg-[#6c5ce7]/10 text-[#a78bfa]">
                             {SERVICE_LABELS[s]}
                           </span>
                         ))}
                       </div>
                     )}
                     {client.montantMensuel > 0 && (
-                      <div className="flex items-center gap-1 text-xs font-medium text-[#30d158]">
+                      <div className="flex items-center gap-1 text-[11px] font-medium text-[#34d399]">
                         <DollarSign size={12} />
                         {client.montantMensuel} €/mois
                       </div>
@@ -161,9 +161,9 @@ export default function PipelinePage() {
                   </div>
                 ))}
                 {stageClients.length === 0 && (
-                  <div className="text-center py-8 text-[#636366]/50">
+                  <div className="text-center py-8 text-white/25">
                     <Users size={24} className="mx-auto mb-2" />
-                    <p className="text-xs">Aucun contact</p>
+                    <p className="text-[11px]">Aucun contact</p>
                   </div>
                 )}
               </div>

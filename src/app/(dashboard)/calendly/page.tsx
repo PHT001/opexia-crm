@@ -15,13 +15,13 @@ export default function CalendlyPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 flex-shrink-0">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Rendez-vous</h1>
-          <p className="text-sm text-muted mt-1">Vos RDV Calendly synchronisés avec Google Agenda</p>
+          <h1 className="text-lg font-semibold text-white/90">Rendez-vous</h1>
+          <p className="text-xs text-white/30 mt-1">Vos RDV Calendly synchronisés avec Google Agenda</p>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setKey(k => k + 1)}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border text-foreground hover:bg-card-hover text-sm font-medium transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-white/[0.06] text-white/60 hover:bg-white/[0.03] text-xs font-medium transition-colors"
           >
             <RefreshCw size={15} />
             Rafraîchir
@@ -30,7 +30,7 @@ export default function CalendlyPage() {
             href={CALENDLY_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-white text-sm font-medium transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#6c5ce7] hover:bg-[#7c6df0] text-white text-xs font-medium transition-colors"
           >
             <ExternalLink size={15} />
             Ouvrir Calendly
@@ -40,39 +40,39 @@ export default function CalendlyPage() {
 
       {/* Info cards */}
       <div className="grid grid-cols-3 gap-3 flex-shrink-0">
-        <div className="kpi-glow rounded-xl p-3 flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-primary/10">
-            <Link2 size={18} className="text-primary" />
+        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-3 flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-[rgba(108,92,231,0.08)]">
+            <Link2 size={18} className="text-[#a78bfa]" />
           </div>
           <div>
-            <p className="text-xs text-muted">Lien de réservation</p>
-            <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-primary hover:underline truncate block">
+            <p className="text-xs text-white/30">Lien de réservation</p>
+            <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-[#a78bfa] hover:underline truncate block">
               calendly.com/opexia
             </a>
           </div>
         </div>
-        <div className="kpi-glow rounded-xl p-3 flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-success/10">
-            <Clock size={18} className="text-success" />
+        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-3 flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-[rgba(52,211,153,0.08)]">
+            <Clock size={18} className="text-[#34d399]" />
           </div>
           <div>
-            <p className="text-xs text-muted">Synchronisation</p>
-            <p className="text-sm font-medium text-success">Google Agenda connecté</p>
+            <p className="text-xs text-white/30">Synchronisation</p>
+            <p className="text-sm font-medium text-[#34d399]">Google Agenda connecté</p>
           </div>
         </div>
-        <div className="kpi-glow rounded-xl p-3 flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-info/10">
-            <Calendar size={18} className="text-info" />
+        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-3 flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-[rgba(96,165,250,0.08)]">
+            <Calendar size={18} className="text-[#60a5fa]" />
           </div>
           <div>
-            <p className="text-xs text-muted">Compte</p>
-            <p className="text-sm font-medium text-foreground truncate">{GOOGLE_CALENDAR_EMAIL}</p>
+            <p className="text-xs text-white/30">Compte</p>
+            <p className="text-sm font-medium text-white/90 truncate">{GOOGLE_CALENDAR_EMAIL}</p>
           </div>
         </div>
       </div>
 
       {/* Google Agenda Embed */}
-      <div className="flex-1 card-glow rounded-xl overflow-hidden min-h-0">
+      <div className="flex-1 bg-white/[0.02] border border-white/[0.06] rounded-xl overflow-hidden min-h-0">
         <iframe
           key={key}
           src={GOOGLE_CALENDAR_EMBED}
