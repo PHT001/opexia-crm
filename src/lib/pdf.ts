@@ -1,5 +1,6 @@
 import { jsPDF } from 'jspdf';
 import { DocumentLigne, Client, Devis, Invoice } from './types';
+import { LOGO_BASE64 } from './logo-base64';
 
 // ===== COMPANY INFO =====
 const COMPANY = {
@@ -9,27 +10,36 @@ const COMPANY = {
   city: '94120 Fontenay-sous-Bois',
   country: 'France',
   email: 'contact@opexia.fr',
-  site: 'https://opexia.fr',
+  site: 'www.opexia.fr',
 };
 
-// ===== COLORS =====
+// ===== PREMIUM COLOR PALETTE =====
 type RGB = [number, number, number];
-const COLORS = {
-  primary: [110, 87, 224] as RGB,       // #6e57e0 — violet like Facture.net
-  primaryLight: [140, 120, 240] as RGB,  // lighter for decorations
-  dark: [51, 51, 51] as RGB,             // #333
-  text: [68, 68, 68] as RGB,             // #444
-  muted: [136, 136, 136] as RGB,         // #888
-  label: [119, 119, 119] as RGB,         // #777
-  border: [220, 220, 220] as RGB,        // #dcdcdc
-  borderLight: [235, 235, 235] as RGB,   // #ebebeb
-  bg: [248, 248, 252] as RGB,            // #f8f8fc
+const C = {
+  // Dark luxury palette
+  navy: [30, 21, 51] as RGB,           // #1e1533 sidebar
+  dark: [35, 30, 55] as RGB,           // #231e37
+  charcoal: [45, 42, 58] as RGB,       // #2d2a3a
+  text: [55, 50, 70] as RGB,           // #373246
+  textLight: [110, 105, 128] as RGB,   // #6e6980
+  muted: [148, 144, 166] as RGB,       // #9490a6
+  label: [130, 125, 150] as RGB,       // #827d96
+  // Accent blue (matching logo gradient)
+  blue: [65, 105, 185] as RGB,         // #4169b9
+  blueLight: [90, 135, 210] as RGB,    // #5a87d2
+  bluePale: [210, 225, 245] as RGB,    // #d2e1f5
+  // Structural
+  border: [215, 212, 225] as RGB,      // #d7d4e1
+  borderLight: [232, 229, 240] as RGB, // #e8e5f0
+  bg: [248, 247, 252] as RGB,          // #f8f7fc
+  bgWarm: [245, 244, 250] as RGB,      // #f5f4fa
   white: [255, 255, 255] as RGB,
-  tableHeader: [110, 87, 224] as RGB,    // same as primary
-  tableHeaderText: [255, 255, 255] as RGB,
+  // Gold accent for premium feel
+  gold: [180, 155, 90] as RGB,         // #b49b5a
+  goldLight: [210, 190, 135] as RGB,   // #d2be87
 };
 
-// ===== PRESET DETAILS MAP (for rich descriptions in PDF) =====
+// ===== PRESET DETAILS MAP =====
 interface PresetInfo {
   description: string;
   details: string[];
@@ -79,7 +89,7 @@ const PRESET_MAP: Record<string, PresetInfo> = {
       'Envoi automatique de SMS de confirmation au client',
       'Gestion des horaires et informations restaurant',
     ],
-    pricingNote: '1er mois : p\u00e9riode de test \u2014 facturation \u00e0 l\'usage (selon le nombre d\'appels trait\u00e9s)\n\u00c0 partir du 2\u00e8me mois : 140\u20ac HT/mois (forfait illimit\u00e9)',
+    pricingNote: '1er mois : p\u00e9riode de test \u2014 facturation \u00e0 l\'usage\n\u00c0 partir du 2\u00e8me mois : 140\u20ac HT/mois (forfait illimit\u00e9)',
   },
   'Programme de Fid\u00e9lit\u00e9': {
     description: 'Syst\u00e8me de fid\u00e9lisation client int\u00e9gr\u00e9 au CRM :',
@@ -125,36 +135,54 @@ function calcTotalTVA(lignes: DocumentLigne[]): number {
   return lignes.reduce((s, l) => s + calcTotal(l) * (l.tva / 100), 0);
 }
 
-// ===== DECORATIVE WAVE (top-right corner like Facture.net) =====
-function drawWaves(pdf: jsPDF) {
+// ===== DRAW PREMIUM HEADER BAND =====
+function drawHeaderBand(pdf: jsPDF) {
   const W = 210;
-  // Draw several bezier-like curves in the top-right corner
-  pdf.setDrawColor(...COLORS.primaryLight);
-  pdf.setLineWidth(0.4);
+  // Dark navy top band
+  pdf.setFillColor(...C.navy);
+  pdf.rect(0, 0, W, 44, 'F');
 
-  // Wave 1
-  for (let i = 0; i < 5; i++) {
-    const offsetY = i * 6;
-    const opacity = 0.15 + i * 0.05;
+  // Subtle gold accent line at bottom of band
+  pdf.setFillColor(...C.gold);
+  pdf.rect(0, 44, W, 0.8, 'F');
+
+  // Subtle diagonal geometric lines (premium pattern)
+  pdf.setDrawColor(255, 255, 255);
+  pdf.setLineWidth(0.15);
+  for (let i = 0; i < 8; i++) {
+    const x = W - 80 + i * 12;
+    const alpha = 0.03 + i * 0.01;
     pdf.setDrawColor(
-      Math.round(COLORS.primaryLight[0] + (255 - COLORS.primaryLight[0]) * (1 - opacity)),
-      Math.round(COLORS.primaryLight[1] + (255 - COLORS.primaryLight[1]) * (1 - opacity)),
-      Math.round(COLORS.primaryLight[2] + (255 - COLORS.primaryLight[2]) * (1 - opacity))
+      Math.round(255 * alpha + C.navy[0] * (1 - alpha)),
+      Math.round(255 * alpha + C.navy[1] * (1 - alpha)),
+      Math.round(255 * alpha + C.navy[2] * (1 - alpha))
     );
-    pdf.setLineWidth(0.6);
-    // Simple sine-like wave using line segments
-    const startX = W * 0.55;
-    const endX = W + 5;
-    const baseY = -5 + offsetY;
-    const segments = 30;
-    for (let s = 0; s < segments; s++) {
-      const x1 = startX + (endX - startX) * (s / segments);
-      const x2 = startX + (endX - startX) * ((s + 1) / segments);
-      const y1 = baseY + Math.sin((s / segments) * Math.PI * 2.5) * 8;
-      const y2 = baseY + Math.sin(((s + 1) / segments) * Math.PI * 2.5) * 8;
-      pdf.line(x1, y1, x2, y2);
-    }
+    pdf.line(x, 0, x + 30, 44);
   }
+}
+
+// ===== DRAW FOOTER BAND =====
+function drawFooterBand(pdf: jsPDF, numero: string, type: string, page: number, totalPages: number) {
+  const W = 210;
+  const H = 297;
+
+  // Gold thin line
+  pdf.setFillColor(...C.gold);
+  pdf.rect(0, H - 16, W, 0.5, 'F');
+
+  // Dark footer
+  pdf.setFillColor(...C.navy);
+  pdf.rect(0, H - 15, W, 15, 'F');
+
+  // Footer text
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(7);
+  pdf.setTextColor(180, 175, 195);
+  pdf.text(`${COMPANY.name} | ${COMPANY.email} | ${COMPANY.site}`, 20, H - 7);
+
+  pdf.text(`${type === 'devis' ? 'Devis' : 'Facture'} ${numero}`, 105, H - 7, { align: 'center' });
+
+  pdf.text(`Page ${page} sur ${totalPages}`, 190, H - 7, { align: 'right' });
 }
 
 // ===== MAIN GENERATE PDF =====
@@ -167,282 +195,311 @@ export function generatePDF(
   const pdf = new jsPDF('p', 'mm', 'a4');
   const W = 210;
   const H = 297;
-  const marginL = 18;
-  const marginR = 18;
-  const contentW = W - marginL - marginR;
+  const mL = 20; // margin left
+  const mR = 20; // margin right
+  const cW = W - mL - mR; // content width
   const numero = 'numero' in doc ? doc.numero : '';
   let y = 0;
-  let pageNum = 1;
-  let totalPages = 1; // We'll estimate
+  let pageCount = 1;
+  let totalPagesEst = 1;
 
-  // ===== HELPER: Draw footer on current page =====
-  function drawFooter(currentPage: number) {
-    // Document number bottom-left
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(7);
-    pdf.setTextColor(...COLORS.muted);
-    pdf.text(`${type === 'devis' ? 'Devis' : 'Facture'} ${numero}`, marginL, H - 10);
-    // Page number bottom-right
-    pdf.text(`Page ${currentPage} sur ${totalPages}`, W - marginR, H - 10, { align: 'right' });
+  function startPage() {
+    if (pageCount > 1) pdf.addPage();
+    drawHeaderBand(pdf);
+    pageCount++;
+    y = 12;
   }
 
-  // ===== HELPER: New page with waves + footer =====
-  function newPage() {
-    if (pageNum > 1) {
-      pdf.addPage();
-    }
-    drawWaves(pdf);
-    y = 25;
-    pageNum++;
-  }
-
-  // ===== HELPER: Check if need new page =====
-  function checkPage(needed: number) {
+  function needPage(needed: number) {
     if (y + needed > H - 25) {
-      drawFooter(pageNum);
-      newPage();
+      startPage();
     }
   }
 
   // ===== PAGE 1 =====
-  newPage();
+  startPage();
 
-  // ===== HEADER: Title + Date =====
-  pdf.setFont('helvetica', 'bold');
-  pdf.setFontSize(24);
-  pdf.setTextColor(...COLORS.primary);
-  const titleLabel = type === 'devis' ? 'Devis' : 'Facture';
-  pdf.text(`${titleLabel} ${numero}`, marginL, y);
-
-  y += 7;
-  pdf.setFont('helvetica', 'normal');
-  pdf.setFontSize(10);
-  pdf.setTextColor(...COLORS.text);
-  if (type === 'devis') {
-    pdf.text(fmtDate((doc as Devis).dateCreation), marginL, y);
-  } else {
-    pdf.text(fmtDate((doc as Invoice).dateEmission), marginL, y);
+  // ===== LOGO in header band =====
+  try {
+    pdf.addImage(LOGO_BASE64, 'PNG', mL, 8, 28, 28);
+  } catch {
+    // fallback: text
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(20);
+    pdf.setTextColor(...C.white);
+    pdf.text('OpexIA', mL, 26);
   }
 
+  // ===== Document title in header band =====
+  const titleText = type === 'devis' ? 'DEVIS' : 'FACTURE';
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(28);
+  pdf.setTextColor(...C.white);
+  pdf.text(titleText, W - mR, 22, { align: 'right' });
+
+  // Numero under title
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(10);
+  pdf.setTextColor(...C.goldLight);
+  pdf.text(`N\u00b0 ${numero}`, W - mR, 30, { align: 'right' });
+
+  // Date under numero
+  pdf.setFontSize(8.5);
+  pdf.setTextColor(180, 175, 195);
+  const dateStr = type === 'devis'
+    ? fmtDate((doc as Devis).dateCreation)
+    : fmtDate((doc as Invoice).dateEmission);
+  pdf.text(dateStr, W - mR, 37, { align: 'right' });
+
+  // ===== AFTER HEADER BAND =====
+  y = 55;
+
   // ===== EMETTEUR / DESTINATAIRE =====
-  y += 15;
-  const halfW = contentW / 2 - 5;
-  const rightColX = marginL + halfW + 10;
+  const halfW = cW / 2 - 8;
+  const rightX = mL + halfW + 16;
+
+  // Émetteur box
+  pdf.setFillColor(...C.bgWarm);
+  pdf.roundedRect(mL, y, halfW, 46, 3, 3, 'F');
+  pdf.setDrawColor(...C.border);
+  pdf.setLineWidth(0.3);
+  pdf.roundedRect(mL, y, halfW, 46, 3, 3, 'S');
+
+  // Destinataire box
+  pdf.setFillColor(...C.white);
+  pdf.roundedRect(rightX, y, halfW, 46, 3, 3, 'F');
+  pdf.setDrawColor(...C.blue);
+  pdf.setLineWidth(0.5);
+  pdf.roundedRect(rightX, y, halfW, 46, 3, 3, 'S');
 
   // Émetteur header
+  const boxPad = 6;
+  let eY = y + 8;
   pdf.setFont('helvetica', 'bold');
-  pdf.setFontSize(13);
-  pdf.setTextColor(...COLORS.primary);
-  pdf.text('\u00c9metteur', marginL, y);
+  pdf.setFontSize(7);
+  pdf.setTextColor(...C.muted);
+  pdf.text('\u00c9METTEUR', mL + boxPad, eY);
+
+  eY += 6;
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(10);
+  pdf.setTextColor(...C.navy);
+  pdf.text(COMPANY.name, mL + boxPad, eY);
+
+  eY += 5;
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(8);
+  pdf.setTextColor(...C.textLight);
+  pdf.text(COMPANY.contact, mL + boxPad, eY);
+  eY += 4;
+  pdf.text(COMPANY.address, mL + boxPad, eY);
+  eY += 4;
+  pdf.text(COMPANY.city, mL + boxPad, eY);
+  eY += 4;
+  pdf.text(COMPANY.country, mL + boxPad, eY);
 
   // Destinataire header
-  pdf.text('Destinataire', rightColX, y);
+  let dY = y + 8;
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(7);
+  pdf.setTextColor(...C.blue);
+  pdf.text('DESTINATAIRE', rightX + boxPad, dY);
 
-  y += 8;
+  dY += 6;
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(10);
+  pdf.setTextColor(...C.navy);
+  pdf.text(client.entreprise, rightX + boxPad, dY);
 
-  // Émetteur details
-  const emetteurFields = [
-    { label: 'Soci\u00e9t\u00e9 :', value: COMPANY.name },
-    { label: 'Votre contact :', value: COMPANY.contact },
-    { label: 'Adresse :', value: `${COMPANY.address}\n${COMPANY.city}` },
-    { label: 'Pays :', value: COMPANY.country },
-  ];
-
-  // Destinataire details
-  const clientAddress = client.adresse || '';
-  const destFields = [
-    { label: 'Soci\u00e9t\u00e9 :', value: client.entreprise },
-    ...(clientAddress ? [{ label: 'Adresse :', value: clientAddress }] : []),
-    { label: 'Pays :', value: 'France' },
-  ];
-
-  const labelW = 28;
-  let leftY = y;
-  let rightY = y;
-
-  // Draw Émetteur fields
-  emetteurFields.forEach(field => {
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(8);
-    pdf.setTextColor(...COLORS.label);
-    pdf.text(field.label, marginL, leftY);
-
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(9);
-    pdf.setTextColor(...COLORS.dark);
-    const lines = field.value.split('\n');
-    lines.forEach((line, i) => {
-      pdf.text(line, marginL + labelW, leftY + i * 4);
+  dY += 5;
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(8);
+  pdf.setTextColor(...C.textLight);
+  if (client.prenom || client.nom) {
+    pdf.text(`${client.prenom} ${client.nom}`.trim(), rightX + boxPad, dY);
+    dY += 4;
+  }
+  if (client.adresse) {
+    const addrLines = pdf.splitTextToSize(client.adresse, halfW - boxPad * 2);
+    addrLines.forEach((line: string) => {
+      pdf.text(line, rightX + boxPad, dY);
+      dY += 4;
     });
-    leftY += 4 * Math.max(lines.length, 1) + 2;
-  });
+  }
+  if (client.email) {
+    pdf.text(client.email, rightX + boxPad, dY);
+    dY += 4;
+  }
+  if (client.telephone) {
+    pdf.text(client.telephone, rightX + boxPad, dY);
+  }
 
-  // Draw Destinataire fields
-  destFields.forEach(field => {
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(8);
-    pdf.setTextColor(...COLORS.label);
-    pdf.text(field.label, rightColX, rightY);
+  y += 54;
 
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(9);
-    pdf.setTextColor(...COLORS.dark);
-    const lines = field.value.split('\n');
-    lines.forEach((line, i) => {
-      pdf.text(line, rightColX + labelW, rightY + i * 4);
-    });
-    rightY += 4 * Math.max(lines.length, 1) + 2;
-  });
-
-  y = Math.max(leftY, rightY) + 5;
-
-  // ===== INTRO TEXT =====
+  // ===== INTRO TEXT (devis only) =====
   if (type === 'devis') {
-    checkPage(20);
+    y += 4;
+    needPage(22);
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(9);
-    pdf.setTextColor(...COLORS.text);
-    pdf.text('Madame, Monsieur,', marginL, y);
+    pdf.setTextColor(...C.text);
+    pdf.text('Madame, Monsieur,', mL, y);
     y += 6;
 
     const introText = `Nous avons le plaisir de vous soumettre notre proposition commerciale pour la mise en place de solutions digitales et IA pour votre \u00e9tablissement ${client.entreprise}.`;
-    const introLines = pdf.splitTextToSize(introText, contentW);
-    pdf.text(introLines, marginL, y);
-    y += introLines.length * 4 + 3;
+    pdf.setFont('helvetica', 'normal');
+    const introLines = pdf.splitTextToSize(introText, cW);
+    pdf.text(introLines, mL, y);
+    y += introLines.length * 4 + 2;
 
-    const moduleCount = lignes.length;
-    if (moduleCount > 1) {
+    if (lignes.length > 1) {
       pdf.setFont('helvetica', 'bold');
-      pdf.text(`Ce devis comprend ${moduleCount} modules compl\u00e9mentaires, activables ind\u00e9pendamment selon vos besoins.`, marginL, y);
+      pdf.setFontSize(8.5);
+      pdf.setTextColor(...C.text);
+      pdf.text(`Ce devis comprend ${lignes.length} modules compl\u00e9mentaires, activables ind\u00e9pendamment selon vos besoins.`, mL, y);
       pdf.setFont('helvetica', 'normal');
-      y += 8;
+      y += 7;
     } else {
-      y += 4;
+      y += 3;
     }
+  } else {
+    y += 6;
   }
 
-  // ===== DETAIL SECTION TITLE =====
-  checkPage(15);
+  // ===== DETAIL TITLE with accent line =====
+  needPage(18);
   pdf.setFont('helvetica', 'bold');
-  pdf.setFontSize(16);
-  pdf.setTextColor(...COLORS.dark);
-  pdf.text('D\u00e9tail', marginL, y);
-  y += 8;
+  pdf.setFontSize(14);
+  pdf.setTextColor(...C.navy);
+  pdf.text('D\u00e9tail des prestations', mL, y);
+
+  // Gold underline accent
+  y += 2;
+  pdf.setFillColor(...C.gold);
+  pdf.rect(mL, y, 40, 0.8, 'F');
+  pdf.setFillColor(...C.borderLight);
+  pdf.rect(mL + 40, y, cW - 40, 0.3, 'F');
+  y += 6;
 
   // ===== TABLE HEADER =====
-  const colType = { x: marginL, w: 22 };
-  const colDesc = { x: marginL + 22, w: contentW * 0.43 };
-  const colPrix = { x: marginL + 22 + contentW * 0.43, w: contentW * 0.18 };
-  const colQte = { x: marginL + 22 + contentW * 0.43 + contentW * 0.18, w: contentW * 0.1 };
-  const colTotal = { x: marginL + 22 + contentW * 0.43 + contentW * 0.18 + contentW * 0.1, w: contentW * 0.29 - 22 };
+  const tColType = { x: mL, w: 20 };
+  const tColDesc = { x: mL + 20, w: cW * 0.42 };
+  const tColPrix = { x: mL + 20 + cW * 0.42, w: cW * 0.17 };
+  const tColQte = { x: mL + 20 + cW * 0.42 + cW * 0.17, w: cW * 0.10 };
+  const tColTotal = { x: mL + 20 + cW * 0.42 + cW * 0.17 + cW * 0.10, w: cW * 0.31 - 20 };
 
   function drawTableHeader() {
-    pdf.setFillColor(...COLORS.tableHeader);
-    pdf.rect(marginL, y - 4.5, contentW, 9, 'F');
+    // Dark header row
+    pdf.setFillColor(...C.navy);
+    pdf.rect(mL, y - 5, cW, 10, 'F');
 
     pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(7.5);
-    pdf.setTextColor(...COLORS.tableHeaderText);
-    pdf.text('Type', colType.x + 3, y + 1);
-    pdf.text('Description', colDesc.x + 3, y + 1);
-    pdf.text('Prix unitaire HT', colPrix.x + colPrix.w, y + 1, { align: 'right' });
-    pdf.text('Quantit\u00e9', colQte.x + colQte.w, y + 1, { align: 'right' });
-    pdf.text('Total HT', colTotal.x + colTotal.w, y + 1, { align: 'right' });
+    pdf.setFontSize(7);
+    pdf.setTextColor(...C.white);
+    pdf.text('Type', tColType.x + 3, y + 0.5);
+    pdf.text('Description', tColDesc.x + 3, y + 0.5);
+    pdf.text('Prix unitaire HT', tColPrix.x + tColPrix.w, y + 0.5, { align: 'right' });
+    pdf.text('Quantit\u00e9', tColQte.x + tColQte.w, y + 0.5, { align: 'right' });
+    pdf.text('Total HT', tColTotal.x + tColTotal.w, y + 0.5, { align: 'right' });
 
-    y += 8;
+    y += 9;
   }
 
   drawTableHeader();
 
   // ===== TABLE ROWS =====
   lignes.forEach((ligne, idx) => {
-    // Get the display name (first line of description if preset)
     const descParts = ligne.description.split('\n');
     const displayName = descParts[0];
-
-    // Try to find matching preset for detailed info
     const preset = PRESET_MAP[displayName];
 
-    // Estimate needed height
-    let neededHeight = 14; // minimum for name + price row
+    // Estimate height needed
+    let neededH = 14;
     if (preset) {
-      neededHeight += 5; // description line
-      neededHeight += preset.details.length * 4; // bullet points
-      if (preset.pricingNote) {
-        neededHeight += preset.pricingNote.split('\n').length * 4 + 2;
-      }
-      neededHeight += 4; // spacing
+      neededH += 5 + preset.details.length * 4;
+      if (preset.pricingNote) neededH += preset.pricingNote.split('\n').length * 4 + 3;
+      neededH += 6;
     }
 
-    // Check if we need a new page
-    if (y + neededHeight > H - 30) {
-      drawFooter(pageNum);
-      newPage();
+    if (y + neededH > H - 30) {
+      startPage();
+      y = 52;
       drawTableHeader();
     }
 
-    // Row separator line
+    // Row separator
     if (idx > 0) {
-      pdf.setDrawColor(...COLORS.borderLight);
+      pdf.setDrawColor(...C.borderLight);
       pdf.setLineWidth(0.3);
-      pdf.line(marginL, y - 3, marginL + contentW, y - 3);
+      pdf.line(mL, y - 3, mL + cW, y - 3);
     }
 
-    // Service type
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(8);
-    pdf.setTextColor(...COLORS.muted);
-    pdf.text('Service', colType.x + 3, y + 1);
+    // Alternating subtle background
+    if (idx % 2 === 0) {
+      pdf.setFillColor(...C.bgWarm);
+    } else {
+      pdf.setFillColor(...C.white);
+    }
 
-    // Module name (bold)
+    // Type
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(7.5);
+    pdf.setTextColor(...C.muted);
+    pdf.text('Service', tColType.x + 3, y + 1);
+
+    // Module name
     const moduleLabel = type === 'devis'
       ? `MODULE ${idx + 1} \u2014 ${displayName}`
       : displayName;
 
     pdf.setFont('helvetica', 'bold');
     pdf.setFontSize(9);
-    pdf.setTextColor(...COLORS.dark);
+    pdf.setTextColor(...C.navy);
 
-    // Wrap module name if too long
-    const maxDescW = colDesc.w - 5;
-    const nameLines = pdf.splitTextToSize(moduleLabel, maxDescW);
+    const maxDW = tColDesc.w - 5;
+    const nameLines = pdf.splitTextToSize(moduleLabel, maxDW);
     nameLines.forEach((line: string, li: number) => {
-      pdf.text(line, colDesc.x + 3, y + 1 + li * 4);
+      pdf.text(line, tColDesc.x + 3, y + 1 + li * 4);
     });
 
-    // Price columns on first line
+    // Price columns
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(8.5);
-    pdf.setTextColor(...COLORS.dark);
-    pdf.text(fmt(ligne.prixUnitaire), colPrix.x + colPrix.w, y + 1, { align: 'right' });
-    pdf.text(String(ligne.quantite), colQte.x + colQte.w, y + 1, { align: 'right' });
+    pdf.setTextColor(...C.text);
+    pdf.text(fmt(ligne.prixUnitaire), tColPrix.x + tColPrix.w, y + 1, { align: 'right' });
+    pdf.text(String(ligne.quantite), tColQte.x + tColQte.w, y + 1, { align: 'right' });
 
     pdf.setFont('helvetica', 'bold');
-    pdf.text(fmt(calcTotal(ligne)), colTotal.x + colTotal.w, y + 1, { align: 'right' });
+    pdf.setTextColor(...C.navy);
+    pdf.text(fmt(calcTotal(ligne)), tColTotal.x + tColTotal.w, y + 1, { align: 'right' });
 
-    y += Math.max(nameLines.length * 4, 4) + 4;
+    y += Math.max(nameLines.length * 4, 4) + 5;
 
     // Detailed description if preset
     if (preset) {
       // Description intro
-      pdf.setFont('helvetica', 'normal');
+      pdf.setFont('helvetica', 'italic');
       pdf.setFontSize(8);
-      pdf.setTextColor(...COLORS.muted);
-      const descLines = pdf.splitTextToSize(preset.description, maxDescW);
-      pdf.text(descLines, colDesc.x + 3, y);
+      pdf.setTextColor(...C.textLight);
+      const descLines = pdf.splitTextToSize(preset.description, maxDW);
+      pdf.text(descLines, tColDesc.x + 5, y);
       y += descLines.length * 3.5 + 2;
 
       // Bullet points
       preset.details.forEach(detail => {
-        if (y > H - 25) {
-          drawFooter(pageNum);
-          newPage();
+        if (y > H - 28) {
+          startPage();
+          y = 52;
           drawTableHeader();
         }
         pdf.setFont('helvetica', 'normal');
         pdf.setFontSize(7.5);
-        pdf.setTextColor(...COLORS.muted);
-        pdf.text(`- ${detail}`, colDesc.x + 5, y);
+        pdf.setTextColor(...C.textLight);
+
+        // Custom bullet: small blue dash
+        pdf.setFillColor(...C.blue);
+        pdf.rect(tColDesc.x + 6, y - 1, 2.5, 0.5, 'F');
+        pdf.text(detail, tColDesc.x + 11, y);
         y += 3.8;
       });
 
@@ -452,254 +509,293 @@ export function generatePDF(
       if (preset.pricingNote) {
         const noteLines = preset.pricingNote.split('\n');
         noteLines.forEach(noteLine => {
-          if (y > H - 25) {
-            drawFooter(pageNum);
-            newPage();
+          if (y > H - 28) {
+            startPage();
+            y = 52;
             drawTableHeader();
           }
           pdf.setFont('helvetica', 'normal');
           pdf.setFontSize(7.5);
-          pdf.setTextColor(...COLORS.text);
-          pdf.text(noteLine, colDesc.x + 5, y);
+          pdf.setTextColor(...C.text);
+          pdf.text(noteLine, tColDesc.x + 5, y);
           y += 4;
         });
       }
-
-      y += 3;
+      y += 4;
     } else {
-      // Non-preset: just show the sub-description if exists
+      // Non-preset: sub-description
       if (descParts.length > 1) {
         pdf.setFont('helvetica', 'normal');
         pdf.setFontSize(8);
-        pdf.setTextColor(...COLORS.muted);
-        const subLines = pdf.splitTextToSize(descParts.slice(1).join('\n'), maxDescW);
-        pdf.text(subLines, colDesc.x + 3, y);
-        y += subLines.length * 3.5 + 4;
+        pdf.setTextColor(...C.textLight);
+        const subLines = pdf.splitTextToSize(descParts.slice(1).join('\n'), maxDW);
+        pdf.text(subLines, tColDesc.x + 5, y);
+        y += subLines.length * 3.5 + 5;
       } else {
         y += 2;
       }
     }
   });
 
+  // Bottom table line
+  pdf.setDrawColor(...C.navy);
+  pdf.setLineWidth(0.5);
+  pdf.line(mL, y, mL + cW, y);
+
   // ===== TOTALS =====
-  y += 4;
-  checkPage(25);
+  y += 6;
+  needPage(30);
 
   const totalHT = calcTotalHT(lignes);
   const totalTVA = calcTotalTVA(lignes);
   const totalTTC = totalHT + totalTVA;
   const hasTVA = totalTVA > 0;
 
-  // TVA mention right-aligned
+  const totLabelX = tColPrix.x + tColPrix.w;
+  const totValX = W - mR;
+
+  // TVA mention
   if (!hasTVA) {
     pdf.setFont('helvetica', 'italic');
     pdf.setFontSize(7.5);
-    pdf.setTextColor(...COLORS.muted);
-    pdf.text('TVA non applicable, art. 293 B du CGI', W - marginR, y, { align: 'right' });
+    pdf.setTextColor(...C.muted);
+    pdf.text('TVA non applicable, art. 293 B du CGI', totValX, y, { align: 'right' });
     y += 6;
   }
-
-  // Total row
-  const totalsLabelX = colPrix.x;
-  const totalsValX = W - marginR;
 
   if (hasTVA) {
     // Sous-total HT
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(9);
-    pdf.setTextColor(...COLORS.muted);
-    pdf.text('Sous-total HT', totalsLabelX, y, { align: 'right' });
-    pdf.setTextColor(...COLORS.dark);
-    pdf.text(fmt(totalHT), totalsValX, y, { align: 'right' });
+    pdf.setTextColor(...C.textLight);
+    pdf.text('Sous-total HT', totLabelX, y, { align: 'right' });
+    pdf.setTextColor(...C.text);
+    pdf.text(fmt(totalHT), totValX, y, { align: 'right' });
     y += 5;
 
     // TVA
-    pdf.setTextColor(...COLORS.muted);
-    pdf.text('TVA', totalsLabelX, y, { align: 'right' });
-    pdf.setTextColor(...COLORS.dark);
-    pdf.text(fmt(totalTVA), totalsValX, y, { align: 'right' });
+    pdf.setTextColor(...C.textLight);
+    pdf.text('TVA', totLabelX, y, { align: 'right' });
+    pdf.setTextColor(...C.text);
+    pdf.text(fmt(totalTVA), totValX, y, { align: 'right' });
     y += 7;
   }
 
-  // Total final
+  // TOTAL box (premium dark with gold accent)
+  const totalBoxX = totLabelX - 5;
+  const totalBoxW = totValX - totalBoxX + 5;
+  pdf.setFillColor(...C.navy);
+  pdf.roundedRect(totalBoxX, y - 5, totalBoxW, 14, 2, 2, 'F');
+
+  // Gold accent on left side of total box
+  pdf.setFillColor(...C.gold);
+  pdf.rect(totalBoxX, y - 5, 1.5, 14, 'F');
+
   pdf.setFont('helvetica', 'bold');
   pdf.setFontSize(10);
-  pdf.setTextColor(...COLORS.primary);
-  pdf.text('Total', totalsLabelX, y, { align: 'right' });
-  pdf.setTextColor(...COLORS.dark);
-  pdf.text(fmt(totalTTC), totalsValX, y, { align: 'right' });
+  pdf.setTextColor(...C.goldLight);
+  pdf.text('TOTAL', totalBoxX + 8, y + 3.5);
 
-  // ===== CONDITIONS + BON POUR ACCORD (for devis) =====
+  pdf.setTextColor(...C.white);
+  pdf.setFontSize(12);
+  pdf.text(fmt(totalTTC), totValX - 3, y + 4, { align: 'right' });
+
+  // ===== CONDITIONS + BON POUR ACCORD =====
+  y += 22;
+
   if (type === 'devis') {
-    y += 18;
-    checkPage(80);
+    needPage(85);
 
-    const condX = marginL;
+    const condX = mL;
     const bonX = W / 2 + 5;
 
     // === Conditions ===
     pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(14);
-    pdf.setTextColor(...COLORS.primary);
+    pdf.setFontSize(12);
+    pdf.setTextColor(...C.navy);
     pdf.text('Conditions', condX, y);
+
+    // Gold underline
+    pdf.setFillColor(...C.gold);
+    pdf.rect(condX, y + 2, 25, 0.6, 'F');
 
     // === Bon pour accord ===
     pdf.text('Bon pour accord', bonX, y);
+    pdf.setFillColor(...C.gold);
+    pdf.rect(bonX, y + 2, 32, 0.6, 'F');
 
-    y += 8;
+    y += 10;
     const condStartY = y;
 
     // Conditions details
     pdf.setFontSize(8);
     pdf.setFont('helvetica', 'bold');
-    pdf.setTextColor(...COLORS.dark);
+    pdf.setTextColor(...C.text);
     pdf.text('Conditions de r\u00e8glement :', condX, y);
     pdf.setFont('helvetica', 'normal');
+    pdf.setTextColor(...C.textLight);
     pdf.text('\u00c0 r\u00e9ception', condX + 42, y);
 
     y += 5;
     pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(...C.text);
     pdf.text('Mode de r\u00e8glement :', condX, y);
     pdf.setFont('helvetica', 'normal');
+    pdf.setTextColor(...C.textLight);
     pdf.text('Virement bancaire', condX + 35, y);
 
     y += 5;
     pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(...C.text);
     pdf.text('Validit\u00e9 du devis :', condX, y);
     pdf.setFont('helvetica', 'normal');
+    pdf.setTextColor(...C.textLight);
     pdf.text('30 jours', condX + 32, y);
 
-    // Notes section
+    // Notes
     y += 7;
     const notes = (doc as Devis).notes;
     if (notes) {
       pdf.setFont('helvetica', 'bold');
       pdf.setFontSize(8);
-      pdf.setTextColor(...COLORS.dark);
+      pdf.setTextColor(...C.text);
       pdf.text('Notes :', condX, y);
       y += 4;
 
       pdf.setFont('helvetica', 'normal');
       pdf.setFontSize(7.5);
-      pdf.setTextColor(...COLORS.text);
-      const noteLines = pdf.splitTextToSize(notes, halfW - 5);
-      pdf.text(noteLines, condX, y);
-      y += noteLines.length * 3.5 + 4;
+      pdf.setTextColor(...C.textLight);
+      const nLines = pdf.splitTextToSize(notes, W / 2 - mL - 10);
+      pdf.text(nLines, condX, y);
+      y += nLines.length * 3.5 + 4;
     }
 
     // Closing text
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(7.5);
-    pdf.setTextColor(...COLORS.text);
+    pdf.setTextColor(...C.textLight);
     pdf.text('Ce devis est valable 30 jours \u00e0 compter de sa date d\'\u00e9mission.', condX, y);
     y += 4;
     pdf.text('Nous restons \u00e0 votre disposition pour toute question.', condX, y);
     y += 6;
+    pdf.setFont('helvetica', 'italic');
     pdf.text('Cordialement,', condX, y);
     y += 4;
     pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(8);
+    pdf.setTextColor(...C.navy);
     pdf.text('L\'\u00e9quipe OpexIA Agency', condX, y);
 
-    // === Bon pour accord details ===
+    // === Bon pour accord section ===
     let bonY = condStartY;
 
-    // "À ___, le ___ / ___ / ___"
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(8);
-    pdf.setTextColor(...COLORS.dark);
+    pdf.setTextColor(...C.text);
     pdf.text('\u00c0', bonX, bonY);
-    // Underline for city
-    pdf.setDrawColor(...COLORS.border);
+    // Underlines
+    pdf.setDrawColor(...C.border);
     pdf.setLineWidth(0.3);
-    pdf.line(bonX + 5, bonY + 1, bonX + 30, bonY + 1);
-    pdf.text(', le', bonX + 31, bonY);
-    pdf.line(bonX + 39, bonY + 1, bonX + 48, bonY + 1);
-    pdf.text('/', bonX + 49, bonY);
-    pdf.line(bonX + 52, bonY + 1, bonX + 60, bonY + 1);
-    pdf.text('/', bonX + 61, bonY);
-    pdf.line(bonX + 64, bonY + 1, bonX + 78, bonY + 1);
+    pdf.line(bonX + 5, bonY + 1, bonX + 32, bonY + 1);
+    pdf.text(', le', bonX + 33, bonY);
+    pdf.line(bonX + 41, bonY + 1, bonX + 50, bonY + 1);
+    pdf.text('/', bonX + 51, bonY);
+    pdf.line(bonX + 54, bonY + 1, bonX + 62, bonY + 1);
+    pdf.text('/', bonX + 63, bonY);
+    pdf.line(bonX + 66, bonY + 1, bonX + 80, bonY + 1);
 
-    bonY += 8;
+    bonY += 9;
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(8);
-    pdf.setTextColor(...COLORS.dark);
+    pdf.setTextColor(...C.muted);
     pdf.text('Signature et cachet', bonX, bonY);
 
     bonY += 3;
-    // Signature box
-    pdf.setDrawColor(...COLORS.border);
+    // Signature box with subtle styling
+    pdf.setDrawColor(...C.border);
     pdf.setLineWidth(0.3);
-    pdf.rect(bonX, bonY, W - marginR - bonX, 22);
+    pdf.setFillColor(...C.bg);
+    pdf.roundedRect(bonX, bonY, W - mR - bonX, 25, 2, 2, 'FD');
 
-    bonY += 27;
+    bonY += 30;
+    pdf.setTextColor(...C.muted);
     pdf.text('Qualit\u00e9 de signataire', bonX, bonY);
     bonY += 3;
-    pdf.line(bonX, bonY, W - marginR, bonY);
+    pdf.setDrawColor(...C.border);
+    pdf.line(bonX, bonY, W - mR, bonY);
 
   } else {
-    // ===== FACTURE: Conditions de paiement =====
-    y += 18;
-    checkPage(30);
+    // ===== FACTURE CONDITIONS =====
+    needPage(40);
 
     pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(14);
-    pdf.setTextColor(...COLORS.primary);
-    pdf.text('Conditions', marginL, y);
+    pdf.setFontSize(12);
+    pdf.setTextColor(...C.navy);
+    pdf.text('Conditions de paiement', mL, y);
+    pdf.setFillColor(...C.gold);
+    pdf.rect(mL, y + 2, 40, 0.6, 'F');
 
-    y += 8;
+    y += 10;
     pdf.setFontSize(8);
     pdf.setFont('helvetica', 'bold');
-    pdf.setTextColor(...COLORS.dark);
-    pdf.text('Conditions de r\u00e8glement :', marginL, y);
+    pdf.setTextColor(...C.text);
+    pdf.text('Conditions de r\u00e8glement :', mL, y);
     pdf.setFont('helvetica', 'normal');
-    pdf.text('\u00c0 r\u00e9ception', marginL + 42, y);
+    pdf.setTextColor(...C.textLight);
+    pdf.text('\u00c0 r\u00e9ception', mL + 42, y);
 
     y += 5;
     pdf.setFont('helvetica', 'bold');
-    pdf.text('Mode de r\u00e8glement :', marginL, y);
+    pdf.setTextColor(...C.text);
+    pdf.text('Mode de r\u00e8glement :', mL, y);
     pdf.setFont('helvetica', 'normal');
-    pdf.text('Virement bancaire', marginL + 35, y);
+    pdf.setTextColor(...C.textLight);
+    pdf.text('Virement bancaire', mL + 35, y);
 
     y += 5;
     pdf.setFont('helvetica', 'bold');
-    pdf.text('\u00c9ch\u00e9ance :', marginL, y);
+    pdf.setTextColor(...C.text);
+    pdf.text('\u00c9ch\u00e9ance :', mL, y);
     pdf.setFont('helvetica', 'normal');
-    pdf.text(fmtDate((doc as Invoice).dateEcheance), marginL + 20, y);
+    pdf.setTextColor(...C.textLight);
+    pdf.text(fmtDate((doc as Invoice).dateEcheance), mL + 20, y);
 
     y += 8;
     const invNotes = (doc as Invoice).description;
     if (invNotes) {
       pdf.setFont('helvetica', 'bold');
-      pdf.text('Notes :', marginL, y);
+      pdf.setTextColor(...C.text);
+      pdf.text('Notes :', mL, y);
       y += 4;
       pdf.setFont('helvetica', 'normal');
       pdf.setFontSize(7.5);
-      pdf.setTextColor(...COLORS.text);
-      const noteLines = pdf.splitTextToSize(invNotes, contentW);
-      pdf.text(noteLines, marginL, y);
-      y += noteLines.length * 3.5 + 4;
+      pdf.setTextColor(...C.textLight);
+      const nLines = pdf.splitTextToSize(invNotes, cW);
+      pdf.text(nLines, mL, y);
+      y += nLines.length * 3.5 + 4;
     }
 
     y += 4;
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(7.5);
-    pdf.setTextColor(...COLORS.text);
-    pdf.text('En cas de retard de paiement, des p\u00e9nalit\u00e9s de retard seront appliqu\u00e9es conform\u00e9ment \u00e0 la loi.', marginL, y);
-    y += 4;
-    pdf.text('Nous restons \u00e0 votre disposition pour toute question.', marginL, y);
+    pdf.setTextColor(...C.textLight);
+    pdf.text('En cas de retard de paiement, des p\u00e9nalit\u00e9s seront appliqu\u00e9es conform\u00e9ment \u00e0 la loi.', mL, y);
     y += 6;
-    pdf.text('Cordialement,', marginL, y);
+    pdf.setFont('helvetica', 'italic');
+    pdf.text('Cordialement,', mL, y);
     y += 4;
     pdf.setFont('helvetica', 'bold');
-    pdf.text('L\'\u00e9quipe OpexIA Agency', marginL, y);
+    pdf.setFontSize(8);
+    pdf.setTextColor(...C.navy);
+    pdf.text('L\'\u00e9quipe OpexIA Agency', mL, y);
   }
 
   // ===== DRAW FOOTERS ON ALL PAGES =====
-  totalPages = pageNum;
+  totalPagesEst = pageCount;
   const numPages = pdf.getNumberOfPages();
   for (let p = 1; p <= numPages; p++) {
     pdf.setPage(p);
-    drawFooter(p);
+    drawFooterBand(pdf, numero, type, p, totalPagesEst);
   }
 
   // ===== DOWNLOAD =====
