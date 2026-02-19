@@ -23,14 +23,14 @@ import {
 
 const CATEGORY_COLORS: Record<ChargeCategory, string> = {
   'abonnement': '#0a84ff',
-  'logiciel': '#5e5ce6',
-  'marketing': '#ffd60a',
-  'hebergement': '#64d2ff',
-  'telephonie': '#ff9f0a',
-  'freelance': '#30d158',
-  'materiel': '#ff453a',
-  'formation': '#bf5af2',
-  'autre': '#636366',
+  'logiciel': '#2898ff',
+  'marketing': '#47abff',
+  'hebergement': '#66bfff',
+  'telephonie': '#85d2ff',
+  'freelance': '#a3e0ff',
+  'materiel': '#48484a',
+  'formation': '#636366',
+  'autre': '#8e8e93',
 };
 
 export default function ChargesPage() {
@@ -194,31 +194,35 @@ export default function ChargesPage() {
                     data={chargesByCategory}
                     cx="50%"
                     cy="50%"
-                    innerRadius={45}
-                    outerRadius={75}
-                    paddingAngle={3}
+                    innerRadius={50}
+                    outerRadius={78}
+                    paddingAngle={2}
                     dataKey="value"
+                    stroke="rgba(0,0,0,0.3)"
+                    strokeWidth={1}
+                    cornerRadius={4}
                   >
                     {chargesByCategory.map((entry, index) => (
                       <Cell key={index} fill={entry.color} />
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ background: 'rgba(28,28,30,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#f5f5f7', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}
+                    contentStyle={{ background: 'rgba(28,28,30,0.95)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', color: '#f5f5f7', boxShadow: '0 8px 32px rgba(0,0,0,0.5)', backdropFilter: 'blur(20px)', fontSize: '13px', padding: '10px 14px' }}
+                    itemStyle={{ color: '#f5f5f7' }}
                     formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €/mois`, '']}
                   />
                 </PieChart>
               </ResponsiveContainer>
-              <div className="flex-1 space-y-2 pt-2">
+              <div className="flex-1 space-y-2.5 pt-2">
                 {chargesByCategory.map((item) => (
                   <div key={item.name} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: item.color }} />
-                      <span className="text-xs text-muted">{item.name}</span>
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-2.5 h-2.5 rounded-[4px] flex-shrink-0" style={{ background: item.color }} />
+                      <span className="text-xs text-[rgba(255,255,255,0.55)]">{item.name}</span>
                     </div>
                     <div className="text-right">
-                      <span className="text-xs font-semibold text-foreground">{item.value} €</span>
-                      <span className="text-[10px] text-muted ml-1">({item.count})</span>
+                      <span className="text-xs font-semibold text-foreground tabular-nums">{item.value} €</span>
+                      <span className="text-[10px] text-[rgba(255,255,255,0.35)] ml-1">({item.count})</span>
                     </div>
                   </div>
                 ))}
@@ -236,15 +240,16 @@ export default function ChargesPage() {
           <h3 className="font-semibold text-foreground mb-4">Par fréquence de paiement</h3>
           {chargesByFrequency.length > 0 ? (
             <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={chargesByFrequency}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-                <XAxis dataKey="name" stroke="rgba(255,255,255,0.25)" fontSize={12} />
-                <YAxis stroke="rgba(255,255,255,0.25)" fontSize={12} />
+              <BarChart data={chargesByFrequency} barCategoryGap="25%">
+                <CartesianGrid strokeDasharray="0" stroke="rgba(255,255,255,0.04)" vertical={false} />
+                <XAxis dataKey="name" stroke="rgba(255,255,255,0.2)" fontSize={11} tickLine={false} axisLine={false} dy={8} />
+                <YAxis stroke="rgba(255,255,255,0.2)" fontSize={11} tickLine={false} axisLine={false} dx={-8} />
                 <Tooltip
-                  contentStyle={{ background: 'rgba(28,28,30,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#f5f5f7', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}
+                  contentStyle={{ background: 'rgba(28,28,30,0.95)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', color: '#f5f5f7', boxShadow: '0 8px 32px rgba(0,0,0,0.5)', backdropFilter: 'blur(20px)', fontSize: '13px', padding: '10px 14px' }}
                   formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €`, 'Total']}
+                  cursor={{ fill: 'rgba(255,255,255,0.03)' }}
                 />
-                <Bar dataKey="total" fill="#0a84ff" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="total" fill="#0a84ff" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
