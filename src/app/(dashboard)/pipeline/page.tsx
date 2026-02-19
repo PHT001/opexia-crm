@@ -8,12 +8,13 @@ import Link from 'next/link';
 
 const stages: PipelineStage[] = ['premier-contact', 'proposition', 'signe', 'refuse', 'perdu'];
 
+// Apple palette
 const stageColors: Record<PipelineStage, string> = {
-  'premier-contact': '#818cf8',
-  'proposition': '#7c5cfc',
-  'signe': '#5b8af5',
-  'refuse': '#a78bfa',
-  'perdu': '#50506b',
+  'premier-contact': '#0a84ff',
+  'proposition': '#5e5ce6',
+  'signe': '#30d158',
+  'refuse': '#ff9f0a',
+  'perdu': '#636366',
 };
 
 export default function PipelinePage() {
@@ -68,7 +69,7 @@ export default function PipelinePage() {
     setDragOverStage(null);
   };
 
-  if (!mounted) return <div className="p-6 pt-16 lg:pt-6"><div className="h-8 w-48 bg-card rounded animate-pulse" /></div>;
+  if (!mounted) return <div className="p-6 pt-16 lg:pt-6"><div className="h-8 w-48 rounded-xl animate-pulse" /></div>;
 
   const totalPipeline = clients.filter(c => c.pipelineStage !== 'perdu' && c.pipelineStage !== 'refuse').reduce((s, c) => s + c.montantMensuel, 0);
 
@@ -78,8 +79,8 @@ export default function PipelinePage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Pipeline Commercial</h1>
-          <p className="text-sm text-muted mt-1">
-            {clients.length} contacts · Valeur pipeline : <span className="text-primary font-medium">{totalPipeline.toLocaleString('fr-FR')} €/mois</span>
+          <p className="text-sm text-[#636366] mt-1">
+            {clients.length} contacts · Valeur pipeline : <span className="text-[#0a84ff] font-medium">{totalPipeline.toLocaleString('fr-FR')} €/mois</span>
           </p>
         </div>
       </div>
@@ -93,15 +94,15 @@ export default function PipelinePage() {
           return (
             <div
               key={stage}
-              className={`flex-shrink-0 w-72 card-glow rounded-xl flex flex-col transition-all ${
-                isOver ? '!border-primary/30' : ''
+              className={`flex-shrink-0 w-72 glass-card rounded-2xl flex flex-col transition-all ${
+                isOver ? '!border-[rgba(10,132,255,0.3)]' : ''
               }`}
               onDragOver={(e) => handleDragOver(e, stage)}
               onDragLeave={handleDragLeave}
               onDrop={() => handleDrop(stage)}
             >
               {/* Column Header */}
-              <div className="p-4 border-b border-border">
+              <div className="p-4 border-b border-white/[0.06]">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <div
@@ -110,12 +111,12 @@ export default function PipelinePage() {
                     />
                     <h3 className="font-semibold text-foreground text-sm">{PIPELINE_LABELS[stage]}</h3>
                   </div>
-                  <span className="text-xs bg-background px-2 py-0.5 rounded-full text-muted">
+                  <span className="text-xs bg-white/[0.04] px-2 py-0.5 rounded-full text-[#8e8e93]">
                     {stageClients.length}
                   </span>
                 </div>
                 {getMontantByStage(stage) > 0 && (
-                  <p className="text-xs text-muted">
+                  <p className="text-xs text-[#636366]">
                     {getMontantByStage(stage).toLocaleString('fr-FR')} €/mois
                   </p>
                 )}
@@ -128,31 +129,31 @@ export default function PipelinePage() {
                     key={client.id}
                     draggable
                     onDragStart={() => handleDragStart(client.id)}
-                    className={`kanban-card p-3 rounded-xl border border-border-light bg-background hover:bg-card-hover transition-all ${
+                    className={`kanban-card p-3 rounded-xl border border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.04] transition-all ${
                       draggedClient === client.id ? 'opacity-50 scale-95' : ''
                     }`}
                   >
                     <div className="flex items-start justify-between mb-2">
-                      <Link href={`/clients/${client.id}`} className="hover:text-primary">
+                      <Link href={`/clients/${client.id}`} className="hover:text-[#0a84ff]">
                         <p className="font-medium text-foreground text-sm">{client.prenom} {client.nom}</p>
                       </Link>
-                      <GripVertical size={14} className="text-muted flex-shrink-0 mt-0.5" />
+                      <GripVertical size={14} className="text-[#636366] flex-shrink-0 mt-0.5" />
                     </div>
-                    <div className="flex items-center gap-1.5 text-xs text-muted mb-2">
+                    <div className="flex items-center gap-1.5 text-xs text-[#8e8e93] mb-2">
                       <Building2 size={12} />
                       <span className="truncate">{client.entreprise}</span>
                     </div>
                     {client.servicesSouscrits.length > 0 && (
                       <div className="flex flex-wrap gap-1 mb-2">
                         {client.servicesSouscrits.map(s => (
-                          <span key={s} className="px-1.5 py-0.5 rounded text-[10px] bg-primary/10 text-primary">
+                          <span key={s} className="px-1.5 py-0.5 rounded text-[10px] bg-[rgba(10,132,255,0.1)] text-[#0a84ff]">
                             {SERVICE_LABELS[s]}
                           </span>
                         ))}
                       </div>
                     )}
                     {client.montantMensuel > 0 && (
-                      <div className="flex items-center gap-1 text-xs font-medium text-success">
+                      <div className="flex items-center gap-1 text-xs font-medium text-[#30d158]">
                         <DollarSign size={12} />
                         {client.montantMensuel} €/mois
                       </div>
@@ -160,7 +161,7 @@ export default function PipelinePage() {
                   </div>
                 ))}
                 {stageClients.length === 0 && (
-                  <div className="text-center py-8 text-muted/50">
+                  <div className="text-center py-8 text-[#636366]/50">
                     <Users size={24} className="mx-auto mb-2" />
                     <p className="text-xs">Aucun contact</p>
                   </div>

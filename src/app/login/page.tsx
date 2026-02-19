@@ -35,39 +35,39 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#080810] flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Ambient glow */}
-      <div className="absolute top-1/4 left-1/3 w-[500px] h-[500px] bg-[rgba(124,92,252,0.06)] rounded-full blur-[130px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/3 w-[400px] h-[400px] bg-[rgba(91,138,245,0.04)] rounded-full blur-[110px] pointer-events-none" />
+    <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Ambient glow orbs — Apple style subtle */}
+      <div className="absolute top-1/3 left-1/4 w-[600px] h-[600px] bg-[rgba(10,132,255,0.04)] rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute bottom-1/3 right-1/4 w-[500px] h-[500px] bg-[rgba(94,92,230,0.03)] rounded-full blur-[130px] pointer-events-none" />
 
       <div className="w-full max-w-sm relative z-10">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-[#12121e] border border-white/[0.06] mb-4 shadow-lg shadow-[rgba(124,92,252,0.08)]">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-[22px] bg-[rgba(255,255,255,0.04)] backdrop-blur-2xl border border-white/[0.08] mb-4 shadow-lg">
             <span className="text-3xl font-bold tracking-tight">
               <span className="text-white/90">O</span>
-              <span className="bg-gradient-to-r from-[#7c5cfc] to-[#5b8af5] bg-clip-text text-transparent">IA</span>
+              <span className="bg-gradient-to-r from-[#0a84ff] to-[#5e5ce6] bg-clip-text text-transparent">IA</span>
             </span>
           </div>
-          <h1 className="text-2xl font-bold text-foreground">OpexIA CRM</h1>
-          <p className="text-sm text-[#50506b] mt-1">Acc&egrave;s s&eacute;curis&eacute;</p>
+          <h1 className="text-2xl font-bold text-[#f5f5f7]">OpexIA CRM</h1>
+          <p className="text-sm text-[#636366] mt-1">Acc&egrave;s s&eacute;curis&eacute;</p>
         </div>
 
-        {/* Login Card */}
-        <div className="relative bg-[#12121e] border border-white/[0.06] rounded-2xl p-6 space-y-5 shadow-2xl">
-          {/* Top shine */}
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[rgba(124,92,252,0.3)] to-transparent rounded-t-2xl" />
+        {/* Login Card — Apple glass */}
+        <div className="relative bg-[rgba(255,255,255,0.03)] backdrop-blur-2xl border border-white/[0.08] rounded-2xl p-6 space-y-5 shadow-2xl">
+          {/* Subtle top shine */}
+          <div className="absolute top-0 left-[15%] right-[15%] h-px bg-gradient-to-r from-transparent via-white/[0.1] to-transparent rounded-t-2xl" />
 
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-[rgba(124,92,252,0.06)] border border-[rgba(124,92,252,0.12)]">
-            <Lock size={18} className="text-[#7c5cfc] flex-shrink-0" />
-            <p className="text-xs text-[#50506b]">
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-[rgba(10,132,255,0.06)] border border-[rgba(10,132,255,0.12)]">
+            <Lock size={18} className="text-[#0a84ff] flex-shrink-0" />
+            <p className="text-xs text-[#8e8e93]">
               Entrez votre mot de passe pour acc&eacute;der au CRM
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs text-[#50506b] mb-1.5 font-medium">Mot de passe</label>
+              <label className="block text-xs text-[#8e8e93] mb-1.5 font-medium">Mot de passe</label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -75,7 +75,7 @@ export default function LoginPage() {
                   onChange={(e) => { setPassword(e.target.value); setError(''); }}
                   placeholder="Entrez votre mot de passe"
                   autoFocus
-                  className="w-full px-4 py-3 pr-10 rounded-xl bg-white/[0.03] border border-white/[0.06] text-[#e2e2ef] text-sm placeholder:text-white/15 focus:outline-none focus:border-[rgba(124,92,252,0.45)]"
+                  className="w-full px-4 py-3 pr-10 rounded-xl bg-white/[0.04] border border-white/[0.08] text-[#f5f5f7] text-sm placeholder:text-white/15 focus:outline-none focus:border-[rgba(10,132,255,0.5)]"
                 />
                 <button
                   type="button"
@@ -88,7 +88,7 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <div className="flex items-center gap-2 p-3 rounded-xl bg-[rgba(239,68,68,0.08)] border border-[rgba(239,68,68,0.2)] text-[#ef4444] text-sm">
+              <div className="flex items-center gap-2 p-3 rounded-xl bg-[rgba(255,69,58,0.08)] border border-[rgba(255,69,58,0.2)] text-[#ff453a] text-sm">
                 <AlertCircle size={16} className="flex-shrink-0" />
                 {error}
               </div>
@@ -97,7 +97,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading || !password}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#7c5cfc] hover:bg-[#8e72ff] text-white text-sm font-medium transition-all disabled:opacity-50 btn-glow"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#0a84ff] hover:bg-[#409cff] text-white text-sm font-semibold transition-all disabled:opacity-50 btn-glow"
             >
               {loading ? (
                 <>
