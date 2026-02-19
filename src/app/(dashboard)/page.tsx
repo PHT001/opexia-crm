@@ -287,11 +287,11 @@ export default function DashboardPage() {
                       <stop offset="95%" stopColor="#6c5ce7" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#2a2e3d" />
                   <XAxis dataKey="mois" stroke="#6b7280" fontSize={12} />
                   <YAxis stroke="#6b7280" fontSize={12} />
                   <Tooltip
-                    contentStyle={{ background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '12px', color: '#1a1a2e', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                    contentStyle={{ background: '#1a1d28', border: '1px solid #2a2e3d', borderRadius: '12px', color: '#e8eaed', boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
                     formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €`, 'CA']}
                   />
                   <Area type="monotone" dataKey="montant" stroke="#6c5ce7" fill="url(#colorRevenue)" strokeWidth={2} />
@@ -331,7 +331,7 @@ export default function DashboardPage() {
                       ))}
                     </Pie>
                     <Tooltip
-                      contentStyle={{ background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '12px', color: '#1a1a2e', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                      contentStyle={{ background: '#1a1d28', border: '1px solid #2a2e3d', borderRadius: '12px', color: '#e8eaed', boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
                     />
                   </PieChart>
                 </ResponsiveContainer>
@@ -511,7 +511,7 @@ export default function DashboardPage() {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '12px', color: '#1a1a2e', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                    contentStyle={{ background: '#1a1d28', border: '1px solid #2a2e3d', borderRadius: '12px', color: '#e8eaed', boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
                     formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €/mois`, '']}
                   />
                 </PieChart>
@@ -554,11 +554,11 @@ export default function DashboardPage() {
             <>
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={pipelineData} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" horizontal={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#2a2e3d" horizontal={false} />
                   <XAxis type="number" stroke="#6b7280" fontSize={12} />
                   <YAxis type="category" dataKey="stage" stroke="#6b7280" fontSize={11} width={70} />
                   <Tooltip
-                    contentStyle={{ background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '12px', color: '#1a1a2e', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                    contentStyle={{ background: '#1a1d28', border: '1px solid #2a2e3d', borderRadius: '12px', color: '#e8eaed', boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
                   />
                   <Bar dataKey="count" fill="#6c5ce7" radius={[0, 6, 6, 0]} />
                 </BarChart>

@@ -21,6 +21,7 @@ const PROVIDER_OPTIONS = [
   { value: 'elevenlabs', label: 'ElevenLabs' },
   { value: 'openai', label: 'OpenAI' },
   { value: 'twilio', label: 'Twilio' },
+  { value: 'supabase', label: 'Supabase' },
 ];
 
 export default function ParametresPage() {
@@ -278,7 +279,7 @@ export default function ParametresPage() {
                               Dernière vérification : {new Date(key.last_checked).toLocaleString('fr-FR')}
                               {key.last_usage_amount !== null && key.last_usage_amount > 0 && (
                                 <span className="ml-2 text-warning font-medium">
-                                  {key.last_usage_amount.toFixed(2)} USD
+                                  {key.last_usage_amount.toFixed(2)} €
                                 </span>
                               )}
                             </p>
@@ -438,13 +439,13 @@ export default function ParametresPage() {
           {activeSection === 'apparence' && (
             <div className="bg-card border border-border rounded-2xl p-6 animate-fade-in space-y-4">
               <h2 className="text-lg font-bold text-foreground">Apparence</h2>
-              <p className="text-sm text-muted">Le thème clair est activé par défaut.</p>
+              <p className="text-sm text-muted">Le thème sombre est activé.</p>
               <div className="flex gap-4">
-                <div className="p-4 rounded-xl border-2 border-primary bg-white w-24 h-16 flex items-center justify-center shadow-sm">
-                  <span className="text-xs text-gray-800 font-medium">Clair</span>
+                <div className="p-4 rounded-xl border border-border bg-card w-24 h-16 flex items-center justify-center opacity-50">
+                  <span className="text-xs text-muted font-medium">Clair</span>
                 </div>
-                <div className="p-4 rounded-xl border border-border bg-gray-900 w-24 h-16 flex items-center justify-center opacity-50">
-                  <span className="text-xs text-gray-400 font-medium">Sombre</span>
+                <div className="p-4 rounded-xl border-2 border-primary bg-background w-24 h-16 flex items-center justify-center active-glow">
+                  <span className="text-xs text-foreground font-medium">Sombre</span>
                 </div>
               </div>
             </div>

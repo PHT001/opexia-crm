@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
-import { fetchProviderUsage, SUPPORTED_PROVIDERS } from '@/lib/providers';
+import { fetchProviderUsage, SUPPORTED_PROVIDERS, ProviderKey } from '@/lib/providers';
 
 // POST - Fetch usage for all active providers and update charges
 export async function POST() {
@@ -14,13 +14,16 @@ export async function POST() {
 
   if (keysError) return NextResponse.json({ error: keysError.message }, { status: 500 });
   if (!apiKeys || apiKeys.length === 0) {
-    return NextResponse.json({ message: 'No active API keys configured', results: [] });
+    return NextResponse.json({ message: 'Aucune clé API active configurée', results: [] });
   }
 
   const results = [];
 
   for (const key of apiKeys) {
     const usage = await fetchProviderUsage(key.provider, key.api_key);
+    const providerConfig = SUPPORTED_PROVIDERS[key.provider as ProviderKey];
+    const providerName = providerConfig?.name || key.provider;
+    const providerCategory = providerConfig?.category || 'logiciel';
 
     // Log usage
     await supabase.from('usage_logs').insert({
@@ -41,30 +44,58 @@ export async function POST() {
       })
       .eq('provider', key.provider);
 
-    // Auto-update charge if linked
-    const { data: linkedCharge } = await supabase
+    // Find existing linked charge (by auto_provider OR by fournisseur name)
+    let { data: linkedCharge } = await supabase
       .from('charges')
       .select('*')
       .eq('auto_provider', key.provider)
       .single();
 
-    if (linkedCharge && usage.amount > 0) {
-      await supabase
+    // Also try matching by fournisseur name if no auto_provider link
+    if (!linkedCharge) {
+      const { data: manualCharge } = await supabase
         .from('charges')
-        .update({
-          montant: usage.amount,
-          last_auto_update: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', linkedCharge.id);
-    } else if (!linkedCharge && usage.amount > 0) {
-      // Auto-create charge for this provider
-      const providerName = SUPPORTED_PROVIDERS[key.provider as keyof typeof SUPPORTED_PROVIDERS]?.name || key.provider;
+        .select('*')
+        .ilike('fournisseur', `%${providerName.split(' ')[0]}%`)
+        .single();
+      if (manualCharge) {
+        linkedCharge = manualCharge;
+        // Link it for future auto-updates
+        await supabase
+          .from('charges')
+          .update({ auto_provider: key.provider, auto_api_key_id: key.id })
+          .eq('id', manualCharge.id);
+      }
+    }
+
+    if (linkedCharge) {
+      // Update existing charge if we have a real amount
+      if (usage.amount > 0) {
+        await supabase
+          .from('charges')
+          .update({
+            montant: usage.amount,
+            last_auto_update: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            notes: `Auto-actualisé le ${new Date().toLocaleDateString('fr-FR')} - ${usage.subscription?.plan || 'API'}`,
+          })
+          .eq('id', linkedCharge.id);
+      } else {
+        await supabase
+          .from('charges')
+          .update({
+            last_auto_update: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', linkedCharge.id);
+      }
+    } else if (usage.keyValid) {
+      // Auto-create a new charge for this valid provider
       await supabase.from('charges').insert({
-        id: Date.now().toString(36) + Math.random().toString(36).substr(2, 9),
+        id: crypto.randomUUID(),
         nom: providerName,
-        categorie: 'logiciel',
-        montant: usage.amount,
+        categorie: providerCategory,
+        montant: usage.amount > 0 ? usage.amount : 0,
         frequence: 'mensuel',
         date_debut: new Date().toISOString().split('T')[0],
         actif: true,
@@ -72,20 +103,26 @@ export async function POST() {
         auto_provider: key.provider,
         auto_api_key_id: key.id,
         last_auto_update: new Date().toISOString(),
+        notes: usage.amount > 0
+          ? `Auto-détecté: ${usage.amount} €/mois - ${usage.subscription?.plan || 'API'}`
+          : `Clé API valide (${usage.subscription?.plan || 'API'}) - montant à renseigner manuellement`,
       });
     }
 
     results.push({
       provider: key.provider,
+      name: providerName,
       amount: usage.amount,
       currency: usage.currency,
       period: usage.period,
+      keyValid: usage.keyValid,
+      subscription: usage.subscription,
       error: usage.error,
     });
   }
 
   return NextResponse.json({
-    message: `Fetched usage for ${results.length} provider(s)`,
+    message: `${results.length} provider(s) vérifiés. ${results.filter(r => r.amount > 0).length} avec coûts auto-détectés.`,
     results,
     timestamp: new Date().toISOString(),
   });

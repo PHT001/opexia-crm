@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 
-// GET - List all API keys (masked)
+// GET - List all API keys (with masked keys for display)
 export async function GET() {
   const supabase = getServiceSupabase();
   const { data, error } = await supabase
     .from('api_keys')
-    .select('id, provider, label, is_active, last_checked, last_usage_amount, created_at')
+    .select('id, provider, api_key, label, is_active, last_checked, last_usage_amount, created_at')
     .order('provider');
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json(data || []);
+  return NextResponse.json({ keys: data || [] });
 }
 
 // POST - Add or update an API key

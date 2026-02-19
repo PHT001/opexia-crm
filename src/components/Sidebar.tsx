@@ -48,42 +48,38 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
       {/* Mobile overlay */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 bg-black/20 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
           onClick={onMobileClose}
         />
       )}
 
       <aside
         className={clsx(
-          'fixed top-0 left-0 h-full bg-sidebar border-r border-border z-50 flex flex-col transition-all duration-300',
+          'fixed top-0 left-0 h-full bg-sidebar z-50 flex flex-col transition-all duration-300',
+          'border-r border-border/50',
           collapsed ? 'w-[72px]' : 'w-[260px]',
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
         {/* Logo */}
         <div className={clsx(
-          'flex items-center h-16 border-b border-border px-4',
-          collapsed ? 'justify-center' : 'justify-between'
+          'flex items-center border-b border-border/50',
+          collapsed ? 'justify-center h-[72px]' : 'justify-between h-[72px] px-5'
         )}>
           <Link href="/" className="flex items-center gap-3 min-w-0">
             <Image
               src="/logo.png"
               alt="OpexIA"
-              width={36}
-              height={36}
-              className="rounded-lg flex-shrink-0"
+              width={collapsed ? 40 : 44}
+              height={collapsed ? 40 : 44}
+              className="rounded-xl flex-shrink-0"
             />
-            {!collapsed && (
-              <span className="text-lg font-bold gradient-text truncate">
-                OpexIA CRM
-              </span>
-            )}
           </Link>
 
           {/* Mobile close */}
           <button
             onClick={onMobileClose}
-            className="lg:hidden p-1 rounded-lg hover:bg-card text-muted hover:text-foreground"
+            className="lg:hidden p-1.5 rounded-lg hover:bg-sidebar-hover text-muted hover:text-foreground transition-colors"
           >
             <X size={20} />
           </button>
@@ -102,7 +98,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
                 className={clsx(
                   'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200',
                   active
-                    ? 'bg-primary/15 text-primary shadow-sm'
+                    ? 'bg-primary/15 text-primary active-glow'
                     : 'text-muted hover:text-foreground hover:bg-sidebar-hover',
                   collapsed && 'justify-center px-0'
                 )}
@@ -111,7 +107,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
                 <Icon size={20} className="flex-shrink-0" />
                 {!collapsed && <span>{item.label}</span>}
                 {active && !collapsed && (
-                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />
+                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                 )}
               </Link>
             );
@@ -119,7 +115,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
         </nav>
 
         {/* Bottom section */}
-        <div className="border-t border-border p-3 space-y-2">
+        <div className="border-t border-border/50 p-3 space-y-1">
           {/* Collapse toggle - desktop only */}
           <button
             onClick={onToggle}
