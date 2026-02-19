@@ -24,7 +24,7 @@ export default function DashboardLayout({
       <main
         className={clsx(
           'min-h-screen transition-all duration-300',
-          sidebarCollapsed ? 'lg:ml-[72px]' : 'lg:ml-[260px]'
+          sidebarCollapsed ? 'lg:ml-[68px]' : 'lg:ml-[240px]'
         )}
       >
         {/* Mobile menu trigger is passed down via children header */}

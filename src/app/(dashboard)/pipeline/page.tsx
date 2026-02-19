@@ -9,12 +9,12 @@ import Link from 'next/link';
 const stages: PipelineStage[] = ['contact', 'demo', 'proposition', 'negociation', 'signe', 'perdu'];
 
 const stageColors: Record<PipelineStage, string> = {
-  contact: '#74b9ff',
-  demo: '#a29bfe',
-  proposition: '#6c5ce7',
-  negociation: '#fdcb6e',
-  signe: '#00b894',
-  perdu: '#e17055',
+  contact: '#60a5fa',
+  demo: '#a78bfa',
+  proposition: '#818cf8',
+  negociation: '#facc15',
+  signe: '#4ade80',
+  perdu: '#f87171',
 };
 
 export default function PipelinePage() {

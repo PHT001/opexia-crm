@@ -105,10 +105,10 @@ export default function DashboardPage() {
     }));
 
   const serviceDistribution = [
-    { name: 'Site Web', value: clients.filter(c => c.servicesSouscrits.includes('site-web')).length, color: '#6c5ce7' },
-    { name: 'Chatbot', value: clients.filter(c => c.servicesSouscrits.includes('chatbot')).length, color: '#00cec9' },
-    { name: 'Réceptionniste', value: clients.filter(c => c.servicesSouscrits.includes('receptionniste-ia')).length, color: '#00b894' },
-    { name: 'Automatisation', value: clients.filter(c => c.servicesSouscrits.includes('automatisation')).length, color: '#fdcb6e' },
+    { name: 'Site Web', value: clients.filter(c => c.servicesSouscrits.includes('site-web')).length, color: '#818cf8' },
+    { name: 'Chatbot', value: clients.filter(c => c.servicesSouscrits.includes('chatbot')).length, color: '#60a5fa' },
+    { name: 'Réceptionniste', value: clients.filter(c => c.servicesSouscrits.includes('receptionniste-ia')).length, color: '#4ade80' },
+    { name: 'Automatisation', value: clients.filter(c => c.servicesSouscrits.includes('automatisation')).length, color: '#a78bfa' },
   ].filter(s => s.value > 0);
 
   const pipelineData = [
@@ -121,15 +121,15 @@ export default function DashboardPage() {
 
   // Charges by category for pie chart
   const chargesByCategoryColors: Record<ChargeCategory, string> = {
-    'abonnement': '#6c5ce7',
-    'logiciel': '#00cec9',
-    'marketing': '#fdcb6e',
-    'hebergement': '#00b894',
-    'telephonie': '#e17055',
-    'freelance': '#0984e3',
-    'materiel': '#d63031',
-    'formation': '#a29bfe',
-    'autre': '#636e72',
+    'abonnement': '#818cf8',
+    'logiciel': '#60a5fa',
+    'marketing': '#facc15',
+    'hebergement': '#4ade80',
+    'telephonie': '#f97316',
+    'freelance': '#38bdf8',
+    'materiel': '#f87171',
+    'formation': '#a78bfa',
+    'autre': '#71717a',
   };
 
   const chargesByCategory = Object.entries(CHARGE_CATEGORY_LABELS)
@@ -283,18 +283,18 @@ export default function DashboardPage() {
                 <AreaChart data={revenueData}>
                   <defs>
                     <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#6c5ce7" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#6c5ce7" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#818cf8" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#818cf8" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#2a2e3d" />
-                  <XAxis dataKey="mois" stroke="#6b7280" fontSize={12} />
-                  <YAxis stroke="#6b7280" fontSize={12} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1e1e22" />
+                  <XAxis dataKey="mois" stroke="#52525b" fontSize={12} />
+                  <YAxis stroke="#52525b" fontSize={12} />
                   <Tooltip
-                    contentStyle={{ background: '#1a1d28', border: '1px solid #2a2e3d', borderRadius: '12px', color: '#e8eaed', boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
+                    contentStyle={{ background: '#111113', border: '1px solid #1e1e22', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
                     formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €`, 'CA']}
                   />
-                  <Area type="monotone" dataKey="montant" stroke="#6c5ce7" fill="url(#colorRevenue)" strokeWidth={2} />
+                  <Area type="monotone" dataKey="montant" stroke="#818cf8" fill="url(#colorRevenue)" strokeWidth={2} />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
@@ -331,7 +331,7 @@ export default function DashboardPage() {
                       ))}
                     </Pie>
                     <Tooltip
-                      contentStyle={{ background: '#1a1d28', border: '1px solid #2a2e3d', borderRadius: '12px', color: '#e8eaed', boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
+                      contentStyle={{ background: '#111113', border: '1px solid #1e1e22', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
                     />
                   </PieChart>
                 </ResponsiveContainer>
@@ -511,7 +511,7 @@ export default function DashboardPage() {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ background: '#1a1d28', border: '1px solid #2a2e3d', borderRadius: '12px', color: '#e8eaed', boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
+                    contentStyle={{ background: '#111113', border: '1px solid #1e1e22', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
                     formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €/mois`, '']}
                   />
                 </PieChart>
@@ -554,13 +554,13 @@ export default function DashboardPage() {
             <>
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={pipelineData} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#2a2e3d" horizontal={false} />
-                  <XAxis type="number" stroke="#6b7280" fontSize={12} />
-                  <YAxis type="category" dataKey="stage" stroke="#6b7280" fontSize={11} width={70} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1e1e22" horizontal={false} />
+                  <XAxis type="number" stroke="#52525b" fontSize={12} />
+                  <YAxis type="category" dataKey="stage" stroke="#52525b" fontSize={11} width={70} />
                   <Tooltip
-                    contentStyle={{ background: '#1a1d28', border: '1px solid #2a2e3d', borderRadius: '12px', color: '#e8eaed', boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
+                    contentStyle={{ background: '#111113', border: '1px solid #1e1e22', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
                   />
-                  <Bar dataKey="count" fill="#6c5ce7" radius={[0, 6, 6, 0]} />
+                  <Bar dataKey="count" fill="#818cf8" radius={[0, 6, 6, 0]} />
                 </BarChart>
               </ResponsiveContainer>
               <div className="mt-3 flex items-center justify-between text-sm">

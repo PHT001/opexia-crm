@@ -126,7 +126,7 @@ export default function ParametresPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Sidebar */}
-        <div className="bg-card border border-border rounded-2xl p-3">
+        <div className="bg-card border border-border rounded-xl p-3">
           <nav className="space-y-1">
             {sections.map((section) => {
               const Icon = section.icon;
@@ -151,7 +151,7 @@ export default function ParametresPage() {
         {/* Content */}
         <div className="lg:col-span-3 space-y-6">
           {activeSection === 'profil' && (
-            <div className="bg-card border border-border rounded-2xl p-6 animate-fade-in space-y-6">
+            <div className="bg-card border border-border rounded-xl p-6 animate-fade-in space-y-6">
               <h2 className="text-lg font-bold text-foreground">Profil de l&apos;agence</h2>
 
               <div className="flex items-center gap-4">
@@ -212,7 +212,7 @@ export default function ParametresPage() {
           {/* API KEYS SECTION */}
           {activeSection === 'api-keys' && (
             <div className="space-y-4 animate-fade-in">
-              <div className="bg-card border border-border rounded-2xl p-6 space-y-4">
+              <div className="bg-card border border-border rounded-xl p-6 space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-lg font-bold text-foreground">Clés API Providers</h2>
@@ -305,7 +305,7 @@ export default function ParametresPage() {
 
               {/* Add Key Form */}
               {addingKey && (
-                <div className="bg-card border border-border rounded-2xl p-6 space-y-4">
+                <div className="bg-card border border-border rounded-xl p-6 space-y-4">
                   <h3 className="font-semibold text-foreground">Nouvelle clé API</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
@@ -356,7 +356,7 @@ export default function ParametresPage() {
               )}
 
               {/* Info */}
-              <div className="bg-card border border-border rounded-2xl p-6 space-y-3">
+              <div className="bg-card border border-border rounded-xl p-6 space-y-3">
                 <h3 className="font-semibold text-foreground flex items-center gap-2">
                   <AlertCircle size={16} className="text-info" />
                   Comment ça marche ?
@@ -378,7 +378,7 @@ export default function ParametresPage() {
           )}
 
           {activeSection === 'notifications' && (
-            <div className="bg-card border border-border rounded-2xl p-6 animate-fade-in space-y-4">
+            <div className="bg-card border border-border rounded-xl p-6 animate-fade-in space-y-4">
               <h2 className="text-lg font-bold text-foreground">Notifications</h2>
               {[
                 { label: 'Nouvelles factures en retard', desc: 'Recevoir un rappel quand une facture est en retard' },
@@ -401,7 +401,7 @@ export default function ParametresPage() {
           )}
 
           {activeSection === 'securite' && (
-            <div className="bg-card border border-border rounded-2xl p-6 animate-fade-in space-y-4">
+            <div className="bg-card border border-border rounded-xl p-6 animate-fade-in space-y-4">
               <h2 className="text-lg font-bold text-foreground">Sécurité</h2>
               <div>
                 <label className="block text-xs text-muted mb-1">Mot de passe actuel</label>
@@ -437,14 +437,14 @@ export default function ParametresPage() {
           )}
 
           {activeSection === 'apparence' && (
-            <div className="bg-card border border-border rounded-2xl p-6 animate-fade-in space-y-4">
-              <h2 className="text-lg font-bold text-foreground">Apparence</h2>
-              <p className="text-sm text-muted">Le thème sombre est activé.</p>
+            <div className="bg-card border border-border rounded-xl p-6 animate-fade-in space-y-4">
+              <h2 className="text-lg font-semibold text-foreground">Apparence</h2>
+              <p className="text-sm text-muted">Thème sombre activé — inspiré de lpopexia.vercel.app</p>
               <div className="flex gap-4">
-                <div className="p-4 rounded-xl border border-border bg-card w-24 h-16 flex items-center justify-center opacity-50">
+                <div className="p-4 rounded-lg border border-border bg-card-hover w-24 h-16 flex items-center justify-center opacity-40">
                   <span className="text-xs text-muted font-medium">Clair</span>
                 </div>
-                <div className="p-4 rounded-xl border-2 border-primary bg-background w-24 h-16 flex items-center justify-center active-glow">
+                <div className="p-4 rounded-lg border border-primary/30 bg-background w-24 h-16 flex items-center justify-center">
                   <span className="text-xs text-foreground font-medium">Sombre</span>
                 </div>
               </div>
@@ -452,7 +452,7 @@ export default function ParametresPage() {
           )}
 
           {activeSection === 'donnees' && (
-            <div className="bg-card border border-border rounded-2xl p-6 animate-fade-in space-y-4">
+            <div className="bg-card border border-border rounded-xl p-6 animate-fade-in space-y-4">
               <h2 className="text-lg font-bold text-foreground">Données</h2>
               <div className="flex items-center gap-3 p-3 rounded-xl bg-success/10 border border-success/20">
                 <CheckCircle size={18} className="text-success flex-shrink-0" />

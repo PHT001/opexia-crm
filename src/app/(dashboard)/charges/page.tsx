@@ -22,15 +22,15 @@ import {
 } from 'recharts';
 
 const CATEGORY_COLORS: Record<ChargeCategory, string> = {
-  'abonnement': '#6c5ce7',
-  'logiciel': '#00cec9',
-  'marketing': '#fdcb6e',
-  'hebergement': '#00b894',
-  'telephonie': '#e17055',
-  'freelance': '#0984e3',
-  'materiel': '#d63031',
-  'formation': '#a29bfe',
-  'autre': '#636e72',
+  'abonnement': '#818cf8',
+  'logiciel': '#60a5fa',
+  'marketing': '#facc15',
+  'hebergement': '#4ade80',
+  'telephonie': '#f97316',
+  'freelance': '#38bdf8',
+  'materiel': '#f87171',
+  'formation': '#a78bfa',
+  'autre': '#71717a',
 };
 
 export default function ChargesPage() {
@@ -204,7 +204,7 @@ export default function ChargesPage() {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ background: '#1a1d28', border: '1px solid #2a2e3d', borderRadius: '12px', color: '#e8eaed', boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
+                    contentStyle={{ background: '#111113', border: '1px solid #1e1e22', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
                     formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €/mois`, '']}
                   />
                 </PieChart>
@@ -237,14 +237,14 @@ export default function ChargesPage() {
           {chargesByFrequency.length > 0 ? (
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={chargesByFrequency}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#2a2e3d" />
-                <XAxis dataKey="name" stroke="#6b7280" fontSize={12} />
-                <YAxis stroke="#6b7280" fontSize={12} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#1e1e22" />
+                <XAxis dataKey="name" stroke="#52525b" fontSize={12} />
+                <YAxis stroke="#52525b" fontSize={12} />
                 <Tooltip
-                  contentStyle={{ background: '#1a1d28', border: '1px solid #2a2e3d', borderRadius: '12px', color: '#e8eaed', boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
+                  contentStyle={{ background: '#111113', border: '1px solid #1e1e22', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
                   formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €`, 'Total']}
                 />
-                <Bar dataKey="total" fill="#6c5ce7" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="total" fill="#818cf8" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
