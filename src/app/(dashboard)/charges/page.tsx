@@ -22,14 +22,14 @@ import {
 } from 'recharts';
 
 const CATEGORY_COLORS: Record<ChargeCategory, string> = {
-  'abonnement': '#818cf8',
-  'logiciel': '#60a5fa',
+  'abonnement': '#10b981',
+  'logiciel': '#22d3ee',
   'marketing': '#facc15',
   'hebergement': '#4ade80',
   'telephonie': '#f97316',
   'freelance': '#38bdf8',
   'materiel': '#f87171',
-  'formation': '#a78bfa',
+  'formation': '#06b6d4',
   'autre': '#71717a',
 };
 
@@ -204,7 +204,7 @@ export default function ChargesPage() {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ background: '#111113', border: '1px solid #1e1e22', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
+                    contentStyle={{ background: '#0f0f14', border: '1px solid #1a1a24', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
                     formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €/mois`, '']}
                   />
                 </PieChart>
@@ -237,14 +237,14 @@ export default function ChargesPage() {
           {chargesByFrequency.length > 0 ? (
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={chargesByFrequency}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e1e22" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#1a1a24" />
                 <XAxis dataKey="name" stroke="#52525b" fontSize={12} />
                 <YAxis stroke="#52525b" fontSize={12} />
                 <Tooltip
-                  contentStyle={{ background: '#111113', border: '1px solid #1e1e22', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
+                  contentStyle={{ background: '#0f0f14', border: '1px solid #1a1a24', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
                   formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €`, 'Total']}
                 />
-                <Bar dataKey="total" fill="#818cf8" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="total" fill="#10b981" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : (

@@ -118,14 +118,14 @@ export default function FacturationPage() {
           <h3 className="font-semibold text-foreground mb-4">Revenus mensuels (payés)</h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e1e22" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#1a1a24" />
               <XAxis dataKey="mois" stroke="#52525b" fontSize={12} />
               <YAxis stroke="#52525b" fontSize={12} />
               <Tooltip
-                contentStyle={{ background: '#111113', border: '1px solid #1e1e22', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
+                contentStyle={{ background: '#0f0f14', border: '1px solid #1a1a24', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
                 formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €`, 'Revenu']}
               />
-              <Bar dataKey="montant" fill="#818cf8" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="montant" fill="#10b981" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

@@ -5,24 +5,24 @@
   --color-background-secondary: #0c0c0f;
   --color-foreground: #fafafa;
   --color-foreground-secondary: #a1a1aa;
-  --color-card: #0f0f12;
-  --color-card-hover: #16161a;
-  --color-card-elevated: #131316;
-  --color-border: #1c1c21;
-  --color-border-light: #27272a;
-  --color-primary: #818cf8;
-  --color-primary-hover: #6366f1;
-  --color-primary-light: rgba(129, 140, 248, 0.08);
-  --color-secondary: #a78bfa;
-  --color-success: #4ade80;
-  --color-warning: #facc15;
-  --color-danger: #f87171;
-  --color-info: #60a5fa;
+  --color-card: #0f0f14;
+  --color-card-hover: #15151c;
+  --color-card-elevated: #131318;
+  --color-border: #1a1a24;
+  --color-border-light: #25253a;
+  --color-primary: #10b981;
+  --color-primary-hover: #059669;
+  --color-primary-light: rgba(16, 185, 129, 0.08);
+  --color-secondary: #06b6d4;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #06b6d4;
   --color-muted: #52525b;
   --color-muted-foreground: #71717a;
   --color-sidebar: #09090b;
-  --color-sidebar-hover: #14141a;
-  --color-sidebar-active: #1a1a22;
+  --color-sidebar-hover: #111118;
+  --color-sidebar-active: #151520;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -61,87 +61,51 @@ body {
   to { opacity: 1; transform: scale(1); }
 }
 
-@keyframes glow-pulse {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
-}
-
 .animate-fade-in { animation: fadeIn 0.25s ease-out forwards; }
 .animate-slide-in { animation: slideIn 0.25s ease-out forwards; }
 .animate-scale-in { animation: scaleIn 0.2s ease-out forwards; }
 
-/* ===== GLOW EFFECTS — like lpopexia.vercel.app ===== */
+/* ===== CARD SYSTEM — inspired by lpopexia ===== */
 
-/* Card with subtle glow border on hover */
+/* Base card: visible gradient border at all times */
 .card-glow {
   position: relative;
   background: var(--color-card);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(16, 185, 129, 0.12);
+  border-radius: 12px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card-glow:hover {
-  border-color: rgba(129, 140, 248, 0.2);
+  border-color: rgba(16, 185, 129, 0.25);
   box-shadow:
-    0 0 20px rgba(129, 140, 248, 0.05),
-    0 0 40px rgba(129, 140, 248, 0.02),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    0 0 20px rgba(16, 185, 129, 0.06),
+    0 0 40px rgba(6, 182, 212, 0.03);
 }
 
-/* Stronger glow for KPI cards */
+/* KPI Cards: gradient background + emerald glow border always visible */
 .kpi-glow {
   position: relative;
-  background: linear-gradient(145deg, rgba(15, 15, 18, 1), rgba(20, 20, 25, 1));
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  background: linear-gradient(145deg, #0f0f14, #111119);
+  border: 1px solid rgba(16, 185, 129, 0.15);
+  border-radius: 12px;
+  box-shadow:
+    0 0 12px rgba(16, 185, 129, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.02);
   transition: all 0.3s ease;
 }
 
 .kpi-glow:hover {
-  border-color: rgba(129, 140, 248, 0.25);
+  border-color: rgba(16, 185, 129, 0.3);
   box-shadow:
-    0 0 24px rgba(129, 140, 248, 0.08),
-    0 0 48px rgba(129, 140, 248, 0.03),
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    0 0 24px rgba(16, 185, 129, 0.08),
+    0 0 48px rgba(6, 182, 212, 0.04),
+    0 4px 24px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
   transform: translateY(-1px);
 }
 
-/* Glass morphism with glow */
-.glass {
-  background: rgba(15, 15, 18, 0.8);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
-}
-
-/* Gradient border effect (like lpopexia cards) */
-.gradient-border {
-  position: relative;
-  background: var(--color-card);
-  border-radius: 12px;
-  border: 1px solid transparent;
-  background-clip: padding-box;
-}
-
-.gradient-border::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(
-    135deg,
-    rgba(129, 140, 248, 0.15),
-    rgba(255, 255, 255, 0.05) 40%,
-    rgba(167, 139, 250, 0.1)
-  );
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  pointer-events: none;
-}
-
-/* Top shine line on cards */
+/* Top shine line — emerald/cyan gradient */
 .shine-top {
   position: relative;
   overflow: hidden;
@@ -157,59 +121,58 @@ body {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(129, 140, 248, 0.3),
-    rgba(167, 139, 250, 0.2),
+    rgba(16, 185, 129, 0.4),
+    rgba(6, 182, 212, 0.3),
     transparent
   );
   pointer-events: none;
 }
 
-/* Gradient text — subtle indigo */
+/* Gradient text — emerald to cyan */
 .gradient-text {
-  background: linear-gradient(135deg, #818cf8, #a78bfa);
+  background: linear-gradient(135deg, #10b981, #06b6d4);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Section glow — background radial glow behind sections */
-.section-glow {
+/* Section title gradient border bottom */
+.section-title {
   position: relative;
+  padding-bottom: 12px;
 }
 
-.section-glow::before {
+.section-title::after {
   content: '';
   position: absolute;
-  top: -40px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60%;
-  height: 80px;
-  background: radial-gradient(ellipse, rgba(129, 140, 248, 0.06), transparent 70%);
-  pointer-events: none;
-  z-index: 0;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, #10b981, #06b6d4);
+  border-radius: 1px;
 }
 
 /* ===== STATUS BADGES ===== */
 .status-client {
-  background: rgba(74, 222, 128, 0.1);
-  color: #4ade80;
-  border: 1px solid rgba(74, 222, 128, 0.2);
-  box-shadow: 0 0 8px rgba(74, 222, 128, 0.06);
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.06);
 }
 
 .status-prospect {
-  background: rgba(96, 165, 250, 0.1);
-  color: #60a5fa;
-  border: 1px solid rgba(96, 165, 250, 0.2);
-  box-shadow: 0 0 8px rgba(96, 165, 250, 0.06);
+  background: rgba(6, 182, 212, 0.1);
+  color: #06b6d4;
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  box-shadow: 0 0 8px rgba(6, 182, 212, 0.06);
 }
 
 .status-perdu {
-  background: rgba(248, 113, 113, 0.1);
-  color: #f87171;
-  border: 1px solid rgba(248, 113, 113, 0.2);
-  box-shadow: 0 0 8px rgba(248, 113, 113, 0.06);
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.06);
 }
 
 /* Kanban */
@@ -223,53 +186,60 @@ input, select, textarea {
 
 input:focus, select:focus, textarea:focus {
   outline: none;
-  border-color: #818cf8 !important;
-  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.12), 0 0 16px rgba(129, 140, 248, 0.06);
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1), 0 0 12px rgba(16, 185, 129, 0.06);
 }
 
 /* Table rows */
 tr:hover td {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(16, 185, 129, 0.02);
 }
 
-/* Active nav item — glowing */
+/* Active nav item */
 .active-glow {
-  background: rgba(129, 140, 248, 0.08);
-  box-shadow: inset 0 0 12px rgba(129, 140, 248, 0.04);
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.15);
+  box-shadow: inset 0 0 12px rgba(16, 185, 129, 0.04);
 }
 
-/* Icon glow — for colored icon containers */
+/* Icon glow containers */
 .icon-glow-primary {
-  background: rgba(129, 140, 248, 0.12);
-  box-shadow: 0 0 12px rgba(129, 140, 248, 0.15);
+  background: rgba(16, 185, 129, 0.12);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.12);
 }
 
 .icon-glow-success {
-  background: rgba(74, 222, 128, 0.12);
-  box-shadow: 0 0 12px rgba(74, 222, 128, 0.12);
+  background: rgba(16, 185, 129, 0.12);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.12);
 }
 
 .icon-glow-warning {
-  background: rgba(250, 204, 21, 0.12);
-  box-shadow: 0 0 12px rgba(250, 204, 21, 0.1);
+  background: rgba(245, 158, 11, 0.12);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.1);
 }
 
 .icon-glow-danger {
-  background: rgba(248, 113, 113, 0.12);
-  box-shadow: 0 0 12px rgba(248, 113, 113, 0.12);
+  background: rgba(239, 68, 68, 0.12);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.1);
 }
 
 .icon-glow-info {
-  background: rgba(96, 165, 250, 0.12);
-  box-shadow: 0 0 12px rgba(96, 165, 250, 0.12);
+  background: rgba(6, 182, 212, 0.12);
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.1);
 }
 
-/* Button glow */
+/* Button glow — emerald */
 .btn-glow {
-  box-shadow: 0 0 16px rgba(129, 140, 248, 0.2), 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.2), 0 2px 8px rgba(0, 0, 0, 0.3);
   transition: all 0.2s ease;
 }
 
 .btn-glow:hover {
-  box-shadow: 0 0 24px rgba(129, 140, 248, 0.3), 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 24px rgba(16, 185, 129, 0.3), 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Table header */
+.table-header {
+  background: linear-gradient(180deg, #111118, #0f0f14);
+  border-bottom: 1px solid rgba(16, 185, 129, 0.1);
 }

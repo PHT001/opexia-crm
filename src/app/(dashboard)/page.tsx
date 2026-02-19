@@ -105,10 +105,10 @@ export default function DashboardPage() {
     }));
 
   const serviceDistribution = [
-    { name: 'Site Web', value: clients.filter(c => c.servicesSouscrits.includes('site-web')).length, color: '#818cf8' },
-    { name: 'Chatbot', value: clients.filter(c => c.servicesSouscrits.includes('chatbot')).length, color: '#60a5fa' },
+    { name: 'Site Web', value: clients.filter(c => c.servicesSouscrits.includes('site-web')).length, color: '#10b981' },
+    { name: 'Chatbot', value: clients.filter(c => c.servicesSouscrits.includes('chatbot')).length, color: '#22d3ee' },
     { name: 'Réceptionniste', value: clients.filter(c => c.servicesSouscrits.includes('receptionniste-ia')).length, color: '#4ade80' },
-    { name: 'Automatisation', value: clients.filter(c => c.servicesSouscrits.includes('automatisation')).length, color: '#a78bfa' },
+    { name: 'Automatisation', value: clients.filter(c => c.servicesSouscrits.includes('automatisation')).length, color: '#06b6d4' },
   ].filter(s => s.value > 0);
 
   const pipelineData = [
@@ -121,14 +121,14 @@ export default function DashboardPage() {
 
   // Charges by category for pie chart
   const chargesByCategoryColors: Record<ChargeCategory, string> = {
-    'abonnement': '#818cf8',
-    'logiciel': '#60a5fa',
+    'abonnement': '#10b981',
+    'logiciel': '#22d3ee',
     'marketing': '#facc15',
     'hebergement': '#4ade80',
     'telephonie': '#f97316',
     'freelance': '#38bdf8',
     'materiel': '#f87171',
-    'formation': '#a78bfa',
+    'formation': '#06b6d4',
     'autre': '#71717a',
   };
 
@@ -283,18 +283,18 @@ export default function DashboardPage() {
                 <AreaChart data={revenueData}>
                   <defs>
                     <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#818cf8" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#818cf8" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1e1e22" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1a1a24" />
                   <XAxis dataKey="mois" stroke="#52525b" fontSize={12} />
                   <YAxis stroke="#52525b" fontSize={12} />
                   <Tooltip
-                    contentStyle={{ background: '#111113', border: '1px solid #1e1e22', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
+                    contentStyle={{ background: '#0f0f14', border: '1px solid #1a1a24', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
                     formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €`, 'CA']}
                   />
-                  <Area type="monotone" dataKey="montant" stroke="#818cf8" fill="url(#colorRevenue)" strokeWidth={2} />
+                  <Area type="monotone" dataKey="montant" stroke="#10b981" fill="url(#colorRevenue)" strokeWidth={2} />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
@@ -331,7 +331,7 @@ export default function DashboardPage() {
                       ))}
                     </Pie>
                     <Tooltip
-                      contentStyle={{ background: '#111113', border: '1px solid #1e1e22', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
+                      contentStyle={{ background: '#0f0f14', border: '1px solid #1a1a24', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
                     />
                   </PieChart>
                 </ResponsiveContainer>
@@ -511,7 +511,7 @@ export default function DashboardPage() {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ background: '#111113', border: '1px solid #1e1e22', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
+                    contentStyle={{ background: '#0f0f14', border: '1px solid #1a1a24', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
                     formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €/mois`, '']}
                   />
                 </PieChart>
@@ -554,13 +554,13 @@ export default function DashboardPage() {
             <>
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={pipelineData} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1e1e22" horizontal={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1a1a24" horizontal={false} />
                   <XAxis type="number" stroke="#52525b" fontSize={12} />
                   <YAxis type="category" dataKey="stage" stroke="#52525b" fontSize={11} width={70} />
                   <Tooltip
-                    contentStyle={{ background: '#111113', border: '1px solid #1e1e22', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
+                    contentStyle={{ background: '#0f0f14', border: '1px solid #1a1a24', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
                   />
-                  <Bar dataKey="count" fill="#818cf8" radius={[0, 6, 6, 0]} />
+                  <Bar dataKey="count" fill="#10b981" radius={[0, 6, 6, 0]} />
                 </BarChart>
               </ResponsiveContainer>
               <div className="mt-3 flex items-center justify-between text-sm">
