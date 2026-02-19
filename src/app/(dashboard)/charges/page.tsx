@@ -22,15 +22,15 @@ import {
 } from 'recharts';
 
 const CATEGORY_COLORS: Record<ChargeCategory, string> = {
-  'abonnement': '#c850c0',
-  'logiciel': '#6c63ff',
-  'marketing': '#fbbf24',
+  'abonnement': '#7c5cfc',
+  'logiciel': '#5b8af5',
+  'marketing': '#f59e0b',
   'hebergement': '#818cf8',
-  'telephonie': '#d96dd2',
-  'freelance': '#4ade80',
-  'materiel': '#f87171',
-  'formation': '#a78bfa',
-  'autre': '#5b5b78',
+  'telephonie': '#a78bfa',
+  'freelance': '#34d399',
+  'materiel': '#ef4444',
+  'formation': '#6366f1',
+  'autre': '#50506b',
 };
 
 export default function ChargesPage() {
@@ -198,7 +198,7 @@ export default function ChargesPage() {
                     outerRadius={78}
                     paddingAngle={2}
                     dataKey="value"
-                    stroke="rgba(11,11,20,0.5)"
+                    stroke="rgba(11,11,15,0.6)"
                     strokeWidth={1}
                     cornerRadius={4}
                   >
@@ -207,8 +207,8 @@ export default function ChargesPage() {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ background: '#111118', border: '1px solid rgba(200,80,192,0.2)', borderRadius: '10px', color: '#e4e4ed', boxShadow: '0 8px 24px rgba(0,0,0,0.6), 0 0 15px rgba(200,80,192,0.1)', fontSize: '13px', padding: '10px 14px' }}
-                    itemStyle={{ color: '#e4e4ed' }}
+                    contentStyle={{ background: '#151521', border: '1px solid rgba(124,92,252,0.2)', borderRadius: '10px', color: '#e2e2ef', boxShadow: '0 8px 24px rgba(0,0,0,0.5), 0 0 12px rgba(124,92,252,0.08)', fontSize: '13px', padding: '10px 14px' }}
+                    itemStyle={{ color: '#e2e2ef' }}
                     formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €/mois`, '']}
                   />
                 </PieChart>
@@ -245,11 +245,11 @@ export default function ChargesPage() {
                 <XAxis dataKey="name" stroke="rgba(255,255,255,0.2)" fontSize={11} tickLine={false} axisLine={false} dy={8} />
                 <YAxis stroke="rgba(255,255,255,0.2)" fontSize={11} tickLine={false} axisLine={false} dx={-8} />
                 <Tooltip
-                  contentStyle={{ background: '#111118', border: '1px solid rgba(200,80,192,0.2)', borderRadius: '10px', color: '#e4e4ed', boxShadow: '0 8px 24px rgba(0,0,0,0.6), 0 0 15px rgba(200,80,192,0.1)', fontSize: '13px', padding: '10px 14px' }}
+                  contentStyle={{ background: '#151521', border: '1px solid rgba(124,92,252,0.2)', borderRadius: '10px', color: '#e2e2ef', boxShadow: '0 8px 24px rgba(0,0,0,0.5), 0 0 12px rgba(124,92,252,0.08)', fontSize: '13px', padding: '10px 14px' }}
                   formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €`, 'Total']}
                   cursor={{ fill: 'rgba(255,255,255,0.03)' }}
                 />
-                <Bar dataKey="total" fill="#c850c0" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="total" fill="#7c5cfc" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : (

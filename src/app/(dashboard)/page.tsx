@@ -32,6 +32,17 @@ import {
   PieChart, Pie, Cell, BarChart, Bar,
 } from 'recharts';
 
+// Tooltip style constant
+const TOOLTIP_STYLE = {
+  background: '#151521',
+  border: '1px solid rgba(124,92,252,0.2)',
+  borderRadius: '10px',
+  color: '#e2e2ef',
+  boxShadow: '0 8px 24px rgba(0,0,0,0.5), 0 0 12px rgba(124,92,252,0.08)',
+  fontSize: '13px',
+  padding: '10px 14px',
+};
+
 export default function DashboardPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -104,11 +115,12 @@ export default function DashboardPage() {
       montant,
     }));
 
+  // Violet/blue palette for charts
   const serviceDistribution = [
-    { name: 'Site Web', value: clients.filter(c => c.servicesSouscrits.includes('site-web')).length, color: '#c850c0' },
-    { name: 'Chatbot', value: clients.filter(c => c.servicesSouscrits.includes('chatbot')).length, color: '#6c63ff' },
+    { name: 'Site Web', value: clients.filter(c => c.servicesSouscrits.includes('site-web')).length, color: '#7c5cfc' },
+    { name: 'Chatbot', value: clients.filter(c => c.servicesSouscrits.includes('chatbot')).length, color: '#5b8af5' },
     { name: 'Réceptionniste', value: clients.filter(c => c.servicesSouscrits.includes('receptionniste-ia')).length, color: '#818cf8' },
-    { name: 'Automatisation', value: clients.filter(c => c.servicesSouscrits.includes('automatisation')).length, color: '#d96dd2' },
+    { name: 'Automatisation', value: clients.filter(c => c.servicesSouscrits.includes('automatisation')).length, color: '#a78bfa' },
   ].filter(s => s.value > 0);
 
   const pipelineData = [
@@ -119,17 +131,17 @@ export default function DashboardPage() {
     { stage: 'Perdu', count: clients.filter(c => c.pipelineStage === 'perdu').length },
   ];
 
-  // Charges by category — neon rose/violet palette
+  // Charges by category
   const chargesByCategoryColors: Record<ChargeCategory, string> = {
-    'abonnement': '#c850c0',
-    'logiciel': '#6c63ff',
-    'marketing': '#fbbf24',
+    'abonnement': '#7c5cfc',
+    'logiciel': '#5b8af5',
+    'marketing': '#f59e0b',
     'hebergement': '#818cf8',
-    'telephonie': '#d96dd2',
-    'freelance': '#4ade80',
-    'materiel': '#f87171',
-    'formation': '#a78bfa',
-    'autre': '#5b5b78',
+    'telephonie': '#a78bfa',
+    'freelance': '#34d399',
+    'materiel': '#ef4444',
+    'formation': '#6366f1',
+    'autre': '#50506b',
   };
 
   const chargesByCategory = Object.entries(CHARGE_CATEGORY_LABELS)
@@ -283,33 +295,41 @@ export default function DashboardPage() {
                 <AreaChart data={revenueData}>
                   <defs>
                     <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#c850c0" stopOpacity={0.5} />
-                      <stop offset="30%" stopColor="#9b59b6" stopOpacity={0.25} />
-                      <stop offset="60%" stopColor="#6c63ff" stopOpacity={0.1} />
-                      <stop offset="100%" stopColor="#6c63ff" stopOpacity={0} />
+                      <stop offset="0%" stopColor="#7c5cfc" stopOpacity={0.4} />
+                      <stop offset="40%" stopColor="#5b8af5" stopOpacity={0.15} />
+                      <stop offset="100%" stopColor="#5b8af5" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="strokeGrad" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="#c850c0" />
-                      <stop offset="50%" stopColor="#d96dd2" />
-                      <stop offset="100%" stopColor="#6c63ff" />
+                      <stop offset="0%" stopColor="#7c5cfc" />
+                      <stop offset="50%" stopColor="#8e72ff" />
+                      <stop offset="100%" stopColor="#5b8af5" />
                     </linearGradient>
                     <filter id="glow">
-                      <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+                      <feGaussianBlur stdDeviation="6" result="coloredBlur" />
                       <feMerge>
                         <feMergeNode in="coloredBlur" />
                         <feMergeNode in="SourceGraphic" />
                       </feMerge>
                     </filter>
                   </defs>
-                  <CartesianGrid strokeDasharray="0" stroke="rgba(255,255,255,0.025)" vertical={false} />
+                  <CartesianGrid strokeDasharray="0" stroke="rgba(255,255,255,0.03)" vertical={false} />
                   <XAxis dataKey="mois" stroke="rgba(255,255,255,0.15)" fontSize={11} tickLine={false} axisLine={false} dy={8} />
                   <YAxis stroke="rgba(255,255,255,0.15)" fontSize={11} tickLine={false} axisLine={false} dx={-8} />
                   <Tooltip
-                    contentStyle={{ background: '#111118', border: '1px solid rgba(200,80,192,0.2)', borderRadius: '10px', color: '#e4e4ed', boxShadow: '0 8px 24px rgba(0,0,0,0.6), 0 0 15px rgba(200,80,192,0.1)', fontSize: '13px', padding: '10px 14px' }}
+                    contentStyle={TOOLTIP_STYLE}
                     formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €`, 'CA']}
-                    cursor={{ stroke: 'rgba(200,80,192,0.12)' }}
+                    cursor={{ stroke: 'rgba(124,92,252,0.15)' }}
                   />
-                  <Area type="monotone" dataKey="montant" stroke="url(#strokeGrad)" fill="url(#colorRevenue)" strokeWidth={3} dot={false} activeDot={{ r: 5, fill: '#c850c0', stroke: '#05050a', strokeWidth: 2.5 }} filter="url(#glow)" />
+                  <Area
+                    type="monotone"
+                    dataKey="montant"
+                    stroke="url(#strokeGrad)"
+                    fill="url(#colorRevenue)"
+                    strokeWidth={3}
+                    dot={false}
+                    activeDot={{ r: 5, fill: '#7c5cfc', stroke: '#0b0b0f', strokeWidth: 2.5 }}
+                    filter="url(#glow)"
+                  />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
@@ -340,7 +360,7 @@ export default function DashboardPage() {
                       outerRadius={78}
                       paddingAngle={2}
                       dataKey="value"
-                      stroke="rgba(11,11,20,0.5)"
+                      stroke="rgba(11,11,15,0.6)"
                       strokeWidth={1}
                       cornerRadius={4}
                     >
@@ -349,8 +369,8 @@ export default function DashboardPage() {
                       ))}
                     </Pie>
                     <Tooltip
-                      contentStyle={{ background: '#111118', border: '1px solid rgba(200,80,192,0.2)', borderRadius: '10px', color: '#e4e4ed', boxShadow: '0 8px 24px rgba(0,0,0,0.6), 0 0 15px rgba(200,80,192,0.1)', fontSize: '13px', padding: '10px 14px' }}
-                      itemStyle={{ color: '#e4e4ed' }}
+                      contentStyle={TOOLTIP_STYLE}
+                      itemStyle={{ color: '#e2e2ef' }}
                     />
                   </PieChart>
                 </ResponsiveContainer>
@@ -359,7 +379,7 @@ export default function DashboardPage() {
                     <div key={item.name} className="flex items-center justify-between text-sm">
                       <div className="flex items-center gap-2.5">
                         <div className="w-2.5 h-2.5 rounded-[4px]" style={{ background: item.color }} />
-                        <span className="text-[rgba(255,255,255,0.55)] text-[13px]">{item.name}</span>
+                        <span className="text-[rgba(255,255,255,0.5)] text-[13px]">{item.name}</span>
                       </div>
                       <span className="font-semibold text-foreground tabular-nums">{item.value}</span>
                     </div>
@@ -524,7 +544,7 @@ export default function DashboardPage() {
                     outerRadius={78}
                     paddingAngle={2}
                     dataKey="value"
-                    stroke="rgba(11,11,20,0.5)"
+                    stroke="rgba(11,11,15,0.6)"
                     strokeWidth={1}
                     cornerRadius={4}
                   >
@@ -533,8 +553,8 @@ export default function DashboardPage() {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ background: '#111118', border: '1px solid rgba(200,80,192,0.2)', borderRadius: '10px', color: '#e4e4ed', boxShadow: '0 8px 24px rgba(0,0,0,0.6), 0 0 15px rgba(200,80,192,0.1)', fontSize: '13px', padding: '10px 14px' }}
-                    itemStyle={{ color: '#e4e4ed' }}
+                    contentStyle={TOOLTIP_STYLE}
+                    itemStyle={{ color: '#e2e2ef' }}
                     formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €/mois`, '']}
                   />
                 </PieChart>
@@ -544,7 +564,7 @@ export default function DashboardPage() {
                   <div key={item.name} className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-2.5">
                       <div className="w-2.5 h-2.5 rounded-[4px]" style={{ background: item.color }} />
-                      <span className="text-[rgba(255,255,255,0.55)] text-xs">{item.name}</span>
+                      <span className="text-[rgba(255,255,255,0.5)] text-xs">{item.name}</span>
                     </div>
                     <span className="font-semibold text-foreground text-xs tabular-nums">{item.value} €/mois</span>
                   </div>
@@ -581,10 +601,10 @@ export default function DashboardPage() {
                   <XAxis type="number" stroke="rgba(255,255,255,0.2)" fontSize={11} tickLine={false} axisLine={false} />
                   <YAxis type="category" dataKey="stage" stroke="rgba(255,255,255,0.4)" fontSize={11} tickLine={false} axisLine={false} width={75} />
                   <Tooltip
-                    contentStyle={{ background: '#111118', border: '1px solid rgba(200,80,192,0.2)', borderRadius: '10px', color: '#e4e4ed', boxShadow: '0 8px 24px rgba(0,0,0,0.6), 0 0 15px rgba(200,80,192,0.1)', fontSize: '13px', padding: '10px 14px' }}
+                    contentStyle={TOOLTIP_STYLE}
                     cursor={{ fill: 'rgba(255,255,255,0.03)' }}
                   />
-                  <Bar dataKey="count" fill="#c850c0" radius={[0, 8, 8, 0]} />
+                  <Bar dataKey="count" fill="#7c5cfc" radius={[0, 8, 8, 0]} />
                 </BarChart>
               </ResponsiveContainer>
               <div className="mt-3 flex items-center justify-between text-sm">

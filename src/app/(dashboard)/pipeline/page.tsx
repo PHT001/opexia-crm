@@ -10,10 +10,10 @@ const stages: PipelineStage[] = ['premier-contact', 'proposition', 'signe', 'ref
 
 const stageColors: Record<PipelineStage, string> = {
   'premier-contact': '#818cf8',
-  'proposition': '#c850c0',
-  'signe': '#4ade80',
-  'refuse': '#fbbf24',
-  'perdu': '#5b5b78',
+  'proposition': '#7c5cfc',
+  'signe': '#34d399',
+  'refuse': '#f59e0b',
+  'perdu': '#50506b',
 };
 
 export default function PipelinePage() {
