@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import {
   Receipt, Search, Plus, TrendingUp, Clock, AlertTriangle, CheckCircle,
-  Download, FileText, ArrowRightLeft, Trash2, X, ChevronDown,
+  Download, FileText, ArrowRightLeft, Trash2, X, ChevronDown, Package, Check,
 } from 'lucide-react';
 import {
   getInvoices, getClients, saveInvoice, deleteInvoice,
@@ -630,6 +630,109 @@ function DevisStatusDropdown({ devis, onUpdate }: {
   );
 }
 
+// ========== CATALOGUE PRESTATIONS PRÉDÉFINIES ==========
+interface PresetPrestation {
+  id: string;
+  nom: string;
+  description: string;
+  prixHT: number;
+  type: 'ponctuel' | 'mensuel';
+  details: string[];
+  emoji: string;
+}
+
+const PRESET_PRESTATIONS: PresetPrestation[] = [
+  {
+    id: 'site-web-chatbot',
+    nom: 'Site Web Vitrine + Chatbot IA',
+    description: 'Création d\'un site web vitrine professionnel avec chatbot IA intégré',
+    prixHT: 400,
+    type: 'ponctuel',
+    details: [
+      'Design responsive adapté à votre image',
+      'Chatbot intelligent intégré pour prise de commande en ligne',
+      'Suivi de commande en temps réel',
+      'Suggestions personnalisées selon la carte',
+      'Réponses aux questions fréquentes (horaires, adresse, allergènes)',
+      'Mises à jour et améliorations continues',
+    ],
+    emoji: '🌐',
+  },
+  {
+    id: 'maintenance-site',
+    nom: 'Maintenance Site Web',
+    description: 'Maintenance et hébergement du site web vitrine',
+    prixHT: 20,
+    type: 'mensuel',
+    details: [
+      'Hébergement et nom de domaine inclus',
+      'Mises à jour de sécurité',
+      'Support technique',
+      'Sauvegardes régulières',
+    ],
+    emoji: '🔧',
+  },
+  {
+    id: 'chatbot-ia',
+    nom: 'Chatbot IA',
+    description: 'Chatbot intelligent intégrable sur site web ou en standalone',
+    prixHT: 90,
+    type: 'mensuel',
+    details: [
+      'Prise de commande automatisée par conversation',
+      'Suivi de commande en temps réel',
+      'Suggestions personnalisées selon la carte',
+      'Réponses aux questions fréquentes (horaires, adresse, allergènes)',
+      'Mises à jour et améliorations continues',
+    ],
+    emoji: '🤖',
+  },
+  {
+    id: 'receptionniste-ia',
+    nom: 'Réceptionniste IA Vocale',
+    description: 'Standard téléphonique intelligent propulsé par IA',
+    prixHT: 140,
+    type: 'mensuel',
+    details: [
+      'Accueil téléphonique automatisé 24h/24',
+      'Prise de commande vocale complète',
+      'Vérification des stocks en temps réel',
+      'Envoi automatique de SMS de confirmation au client',
+      'Gestion des horaires et informations restaurant',
+    ],
+    emoji: '📞',
+  },
+  {
+    id: 'programme-fidelite',
+    nom: 'Programme de Fidélité',
+    description: 'Système de fidélisation client intégré au CRM',
+    prixHT: 80,
+    type: 'mensuel',
+    details: [
+      'Attribution automatique de points à chaque commande',
+      'Catalogue de récompenses personnalisable',
+      'Suivi des points et historique client',
+      'Tableau de bord statistiques fidélité',
+      'Notifications automatiques (seuils de récompense atteints)',
+    ],
+    emoji: '⭐',
+  },
+  {
+    id: 'automatisation-custom',
+    nom: 'Automatisation sur mesure',
+    description: 'Solution d\'automatisation personnalisée selon vos besoins',
+    prixHT: 200,
+    type: 'ponctuel',
+    details: [
+      'Analyse de vos processus existants',
+      'Développement de workflows automatisés',
+      'Intégration avec vos outils existants',
+      'Formation et documentation',
+    ],
+    emoji: '⚡',
+  },
+];
+
 // ========== DOCUMENT MODAL (Devis + Facture) ==========
 function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave }: {
   isOpen: boolean;
@@ -644,20 +747,47 @@ function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave
   const [notes, setNotes] = useState('');
   const [dateEnd, setDateEnd] = useState('');
   const [status, setStatus] = useState<string>(type === 'devis' ? 'brouillon' : 'en-attente');
+  const [selectedPresets, setSelectedPresets] = useState<Set<string>>(new Set());
+  const [showCatalog, setShowCatalog] = useState(true);
+  const [expandedPreset, setExpandedPreset] = useState<string | null>(null);
 
   // Reset form on open
   useEffect(() => {
     if (isOpen) {
       setClientId('');
-      setLignes([emptyLigne()]);
+      setLignes([]);
       setNotes('');
       setStatus(type === 'devis' ? 'brouillon' : 'en-attente');
+      setSelectedPresets(new Set());
+      setShowCatalog(true);
+      setExpandedPreset(null);
       // Default date: +30 days
       const d = new Date();
       d.setDate(d.getDate() + 30);
       setDateEnd(d.toISOString().split('T')[0]);
     }
   }, [isOpen, type]);
+
+  // Toggle a preset prestation
+  const togglePreset = (preset: PresetPrestation) => {
+    const newSelected = new Set(selectedPresets);
+    if (newSelected.has(preset.id)) {
+      // Remove preset
+      newSelected.delete(preset.id);
+      setLignes(prev => prev.filter(l => l.description !== `${preset.nom}\n${preset.description}`));
+    } else {
+      // Add preset
+      newSelected.add(preset.id);
+      const newLigne: DocumentLigne = {
+        description: `${preset.nom}\n${preset.description}`,
+        quantite: 1,
+        prixUnitaire: preset.prixHT,
+        tva: 0, // TVA non applicable, art. 293 B du CGI
+      };
+      setLignes(prev => [...prev, newLigne]);
+    }
+    setSelectedPresets(newSelected);
+  };
 
   const updateLigne = (index: number, field: keyof DocumentLigne, value: string | number) => {
     const updated = [...lignes];
@@ -668,7 +798,15 @@ function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave
 
   const addLigne = () => setLignes([...lignes, emptyLigne()]);
   const removeLigne = (index: number) => {
-    if (lignes.length > 1) setLignes(lignes.filter((_, i) => i !== index));
+    // Also un-check preset if removing a preset line
+    const ligne = lignes[index];
+    const matchingPreset = PRESET_PRESTATIONS.find(p => `${p.nom}\n${p.description}` === ligne.description);
+    if (matchingPreset) {
+      const newSelected = new Set(selectedPresets);
+      newSelected.delete(matchingPreset.id);
+      setSelectedPresets(newSelected);
+    }
+    setLignes(lignes.filter((_, i) => i !== index));
   };
 
   const totalHT = calcTotalHT(lignes);
@@ -677,6 +815,7 @@ function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (lignes.length === 0) return;
     const now = new Date();
     const prefix = type === 'devis' ? 'DEV' : 'FAC';
     const numero = nextNumero(prefix, existingNumeros);
@@ -704,7 +843,7 @@ function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave
         status: status as InvoiceStatus,
         dateEmission: now.toISOString().split('T')[0],
         dateEcheance: dateEnd,
-        description: notes || lignes.map(l => l.description).filter(Boolean).join(', '),
+        description: notes || lignes.map(l => l.description.split('\n')[0]).filter(Boolean).join(', '),
         mois: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`,
         lignes,
         montantHT: totalHT,
@@ -726,81 +865,205 @@ function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave
             onChange={(e) => setClientId(e.target.value)}
             className="w-full px-3 py-2 rounded-xl bg-background border border-border text-foreground text-sm"
           >
-            <option value="">S&eacute;lectionner un client</option>
+            <option value="">Sélectionner un client</option>
             {clients.map(c => (
               <option key={c.id} value={c.id}>{c.entreprise} - {c.prenom} {c.nom}</option>
             ))}
           </select>
         </div>
 
+        {/* Catalogue de prestations prédéfinies */}
+        <div>
+          <button
+            type="button"
+            onClick={() => setShowCatalog(!showCatalog)}
+            className="flex items-center gap-2 text-xs font-medium text-primary hover:text-primary-hover transition-colors mb-2"
+          >
+            <Package size={14} />
+            Catalogue de prestations
+            <ChevronDown size={12} className={`transition-transform ${showCatalog ? 'rotate-180' : ''}`} />
+          </button>
+
+          {showCatalog && (
+            <div className="grid grid-cols-1 gap-2">
+              {PRESET_PRESTATIONS.map((preset) => {
+                const isSelected = selectedPresets.has(preset.id);
+                const isExpanded = expandedPreset === preset.id;
+                return (
+                  <div key={preset.id} className="rounded-xl border border-border/50 overflow-hidden transition-all">
+                    <div
+                      className={`flex items-center gap-3 p-3 cursor-pointer transition-all ${
+                        isSelected
+                          ? 'bg-primary/5 border-primary/20'
+                          : 'bg-background hover:bg-card-hover'
+                      }`}
+                      onClick={() => togglePreset(preset)}
+                    >
+                      {/* Checkbox */}
+                      <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+                        isSelected
+                          ? 'bg-primary border-primary'
+                          : 'border-border hover:border-primary/50'
+                      }`}>
+                        {isSelected && <Check size={12} className="text-white" />}
+                      </div>
+
+                      {/* Emoji */}
+                      <span className="text-lg flex-shrink-0">{preset.emoji}</span>
+
+                      {/* Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-foreground truncate">{preset.nom}</span>
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium flex-shrink-0 ${
+                            preset.type === 'mensuel'
+                              ? 'bg-info/10 text-info'
+                              : 'bg-success/10 text-success'
+                          }`}>
+                            {preset.type === 'mensuel' ? '/mois' : 'unique'}
+                          </span>
+                        </div>
+                        <p className="text-xs text-muted truncate">{preset.description}</p>
+                      </div>
+
+                      {/* Price */}
+                      <div className="text-right flex-shrink-0">
+                        <p className="text-sm font-bold text-foreground">{preset.prixHT} €</p>
+                        <p className="text-[10px] text-muted">HT</p>
+                      </div>
+
+                      {/* Expand details */}
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); setExpandedPreset(isExpanded ? null : preset.id); }}
+                        className="p-1 rounded-lg hover:bg-white/10 text-muted hover:text-foreground transition-colors flex-shrink-0"
+                      >
+                        <ChevronDown size={14} className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                      </button>
+                    </div>
+
+                    {/* Expanded details */}
+                    {isExpanded && (
+                      <div className="px-4 pb-3 pt-1 bg-background-secondary border-t border-border/30">
+                        <ul className="space-y-1">
+                          {preset.details.map((detail, i) => (
+                            <li key={i} className="text-xs text-muted flex items-start gap-1.5">
+                              <span className="text-primary mt-0.5">•</span>
+                              {detail}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {selectedPresets.size > 0 && (
+            <div className="mt-2 flex items-center gap-2 text-xs text-success">
+              <Check size={12} />
+              {selectedPresets.size} prestation{selectedPresets.size > 1 ? 's' : ''} sélectionnée{selectedPresets.size > 1 ? 's' : ''}
+            </div>
+          )}
+        </div>
+
+        {/* Séparateur */}
+        <div className="flex items-center gap-3">
+          <div className="flex-1 h-px bg-border" />
+          <span className="text-[10px] text-muted uppercase tracking-wider">Lignes du document</span>
+          <div className="flex-1 h-px bg-border" />
+        </div>
+
         {/* Lignes */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="text-xs text-muted font-medium">Prestations</label>
+            <label className="text-xs text-muted font-medium">
+              Prestations ({lignes.length} ligne{lignes.length > 1 ? 's' : ''})
+            </label>
             <button
               type="button"
               onClick={addLigne}
               className="text-xs text-primary hover:text-primary-hover font-medium flex items-center gap-1"
             >
-              <Plus size={12} /> Ajouter une ligne
+              <Plus size={12} /> Ajouter une ligne libre
             </button>
           </div>
 
+          {lignes.length === 0 && (
+            <div className="text-center py-6 bg-background rounded-xl border border-dashed border-border">
+              <Package size={24} className="mx-auto mb-2 text-muted/50" />
+              <p className="text-xs text-muted">Sélectionnez des prestations dans le catalogue</p>
+              <p className="text-xs text-muted">ou ajoutez une ligne libre</p>
+            </div>
+          )}
+
           <div className="space-y-2">
-            {lignes.map((ligne, i) => (
-              <div key={i} className="flex gap-2 items-start p-3 bg-background rounded-xl border border-border/50">
-                <div className="flex-1 space-y-2">
-                  <input
-                    type="text"
-                    required
-                    placeholder="Description de la prestation"
-                    value={ligne.description}
-                    onChange={(e) => updateLigne(i, 'description', e.target.value)}
-                    className="w-full px-3 py-1.5 rounded-lg bg-card border border-border text-foreground text-sm"
-                  />
-                  <div className="flex gap-2">
-                    <div className="w-20">
-                      <label className="text-[10px] text-muted">Qt&eacute;</label>
+            {lignes.map((ligne, i) => {
+              const isPresetLine = PRESET_PRESTATIONS.some(p => `${p.nom}\n${p.description}` === ligne.description);
+              return (
+                <div key={i} className={`flex gap-2 items-start p-3 rounded-xl border ${
+                  isPresetLine ? 'bg-primary/3 border-primary/15' : 'bg-background border-border/50'
+                }`}>
+                  <div className="flex-1 space-y-2">
+                    {isPresetLine ? (
+                      <div className="flex items-center gap-2">
+                        <Package size={12} className="text-primary flex-shrink-0" />
+                        <span className="text-sm font-medium text-foreground">{ligne.description.split('\n')[0]}</span>
+                      </div>
+                    ) : (
                       <input
-                        type="number"
-                        min={1}
+                        type="text"
                         required
-                        value={ligne.quantite}
-                        onChange={(e) => updateLigne(i, 'quantite', Number(e.target.value))}
-                        className="w-full px-2 py-1 rounded-lg bg-card border border-border text-foreground text-sm"
+                        placeholder="Description de la prestation"
+                        value={ligne.description}
+                        onChange={(e) => updateLigne(i, 'description', e.target.value)}
+                        className="w-full px-3 py-1.5 rounded-lg bg-card border border-border text-foreground text-sm"
                       />
-                    </div>
-                    <div className="flex-1">
-                      <label className="text-[10px] text-muted">Prix unitaire HT</label>
-                      <input
-                        type="number"
-                        min={0}
-                        step={0.01}
-                        required
-                        value={ligne.prixUnitaire || ''}
-                        onChange={(e) => updateLigne(i, 'prixUnitaire', Number(e.target.value))}
-                        className="w-full px-2 py-1 rounded-lg bg-card border border-border text-foreground text-sm"
-                      />
-                    </div>
-                    <div className="w-20">
-                      <label className="text-[10px] text-muted">TVA %</label>
-                      <input
-                        type="number"
-                        min={0}
-                        max={100}
-                        value={ligne.tva}
-                        onChange={(e) => updateLigne(i, 'tva', Number(e.target.value))}
-                        className="w-full px-2 py-1 rounded-lg bg-card border border-border text-foreground text-sm"
-                      />
-                    </div>
-                    <div className="w-24 text-right pt-3">
-                      <p className="text-sm font-bold text-foreground">
-                        {calcLigneTotal(ligne).toLocaleString('fr-FR')} &euro;
-                      </p>
+                    )}
+                    <div className="flex gap-2">
+                      <div className="w-20">
+                        <label className="text-[10px] text-muted">Qté</label>
+                        <input
+                          type="number"
+                          min={1}
+                          required
+                          value={ligne.quantite}
+                          onChange={(e) => updateLigne(i, 'quantite', Number(e.target.value))}
+                          className="w-full px-2 py-1 rounded-lg bg-card border border-border text-foreground text-sm"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <label className="text-[10px] text-muted">Prix unitaire HT</label>
+                        <input
+                          type="number"
+                          min={0}
+                          step={0.01}
+                          required
+                          value={ligne.prixUnitaire || ''}
+                          onChange={(e) => updateLigne(i, 'prixUnitaire', Number(e.target.value))}
+                          className="w-full px-2 py-1 rounded-lg bg-card border border-border text-foreground text-sm"
+                        />
+                      </div>
+                      <div className="w-20">
+                        <label className="text-[10px] text-muted">TVA %</label>
+                        <input
+                          type="number"
+                          min={0}
+                          max={100}
+                          value={ligne.tva}
+                          onChange={(e) => updateLigne(i, 'tva', Number(e.target.value))}
+                          className="w-full px-2 py-1 rounded-lg bg-card border border-border text-foreground text-sm"
+                        />
+                      </div>
+                      <div className="w-24 text-right pt-3">
+                        <p className="text-sm font-bold text-foreground">
+                          {calcLigneTotal(ligne).toLocaleString('fr-FR')} €
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-                {lignes.length > 1 && (
                   <button
                     type="button"
                     onClick={() => removeLigne(i)}
@@ -808,33 +1071,42 @@ function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave
                   >
                     <X size={14} />
                   </button>
-                )}
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
         </div>
 
         {/* Totals */}
-        <div className="bg-background-secondary rounded-xl p-4 space-y-2">
-          <div className="flex justify-between text-sm">
-            <span className="text-muted">Sous-total HT</span>
-            <span className="font-medium">{totalHT.toLocaleString('fr-FR')} &euro;</span>
+        {lignes.length > 0 && (
+          <div className="bg-background-secondary rounded-xl p-4 space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-muted">Sous-total HT</span>
+              <span className="font-medium">{totalHT.toLocaleString('fr-FR')} €</span>
+            </div>
+            {totalTVA > 0 ? (
+              <div className="flex justify-between text-sm">
+                <span className="text-muted">TVA</span>
+                <span className="font-medium">{totalTVA.toLocaleString('fr-FR')} €</span>
+              </div>
+            ) : (
+              <div className="flex justify-between text-sm">
+                <span className="text-muted">TVA</span>
+                <span className="text-xs text-muted italic">Non applicable, art. 293 B du CGI</span>
+              </div>
+            )}
+            <div className="flex justify-between text-base font-bold border-t border-border pt-2">
+              <span className="text-foreground">Total TTC</span>
+              <span className="gradient-text">{totalTTC.toLocaleString('fr-FR')} €</span>
+            </div>
           </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-muted">TVA</span>
-            <span className="font-medium">{totalTVA.toLocaleString('fr-FR')} &euro;</span>
-          </div>
-          <div className="flex justify-between text-base font-bold border-t border-border pt-2">
-            <span className="text-foreground">Total TTC</span>
-            <span className="gradient-text">{totalTTC.toLocaleString('fr-FR')} &euro;</span>
-          </div>
-        </div>
+        )}
 
         {/* Date */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-xs text-muted mb-1">
-              {type === 'devis' ? 'Date de validit\u00e9' : 'Date d\'\u00e9ch\u00e9ance'}
+              {type === 'devis' ? 'Date de validité' : 'Date d\'échéance'}
             </label>
             <input
               type="date"
@@ -854,12 +1126,12 @@ function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave
               {type === 'devis' ? (
                 <>
                   <option value="brouillon">Brouillon</option>
-                  <option value="envoye">Envoy&eacute;</option>
+                  <option value="envoye">Envoyé</option>
                 </>
               ) : (
                 <>
                   <option value="en-attente">En attente</option>
-                  <option value="payee">Pay&eacute;e</option>
+                  <option value="payee">Payée</option>
                 </>
               )}
             </select>
@@ -875,7 +1147,7 @@ function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
-            placeholder={type === 'devis' ? 'Conditions particuli\u00e8res, notes...' : 'Description de la facture...'}
+            placeholder={type === 'devis' ? 'Conditions particulières, notes...' : 'Description de la facture...'}
             className="w-full px-3 py-2 rounded-xl bg-background border border-border text-foreground text-sm resize-none"
           />
         </div>
@@ -891,9 +1163,10 @@ function DocumentModal({ isOpen, onClose, type, clients, existingNumeros, onSave
           </button>
           <button
             type="submit"
-            className="flex-1 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-white text-sm font-medium transition-colors"
+            disabled={lignes.length === 0}
+            className="flex-1 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-white text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {type === 'devis' ? 'Cr\u00e9er le devis' : 'Cr\u00e9er la facture'}
+            {type === 'devis' ? 'Créer le devis' : 'Créer la facture'}
           </button>
         </div>
       </form>
