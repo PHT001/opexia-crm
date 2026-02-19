@@ -34,7 +34,7 @@ import {
 
 // Tooltip style constant
 const TOOLTIP_STYLE = {
-  background: '#151521',
+  background: '#12121e',
   border: '1px solid rgba(124,92,252,0.2)',
   borderRadius: '10px',
   color: '#e2e2ef',
@@ -240,39 +240,50 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* KPI Cards */}
+      {/* KPI Cards — Apexify style */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <KPICard
-          title="CA Mensuel"
-          value={`${caMensuel.toLocaleString('fr-FR')} €`}
-          change={totalClients > 0 ? `${totalClients} client${totalClients > 1 ? 's' : ''} actif${totalClients > 1 ? 's' : ''}` : 'Aucun client'}
-          positive={caMensuel > 0}
-          icon={<TrendingUp size={20} />}
-          color="primary"
-        />
+        {/* Hero card — gradient violet */}
+        <div className="relative rounded-2xl p-5 overflow-hidden animate-fade-in bg-gradient-to-br from-[#7c5cfc] to-[#5b4cd4]">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-8 translate-x-8" />
+          <div className="absolute bottom-0 left-0 w-20 h-20 bg-white/5 rounded-full translate-y-6 -translate-x-6" />
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs text-white/70 font-medium uppercase tracking-wide">CA Mensuel</span>
+              <div className="p-2 rounded-xl bg-white/15">
+                <TrendingUp size={18} className="text-white" />
+              </div>
+            </div>
+            <p className="text-3xl font-bold text-white">{caMensuel.toLocaleString('fr-FR')} €</p>
+            <div className="flex items-center gap-1 mt-2">
+              <ArrowUpRight size={14} className="text-white/80" />
+              <span className="text-xs text-white/70">{totalClients > 0 ? `${totalClients} client${totalClients > 1 ? 's' : ''} actif${totalClients > 1 ? 's' : ''}` : 'Aucun client'}</span>
+            </div>
+          </div>
+        </div>
+
         <KPICard
           title="Charges /mois"
           value={`${Math.round(chargesMensuelles).toLocaleString('fr-FR')} €`}
           change={`${totalChargesCount} charge${totalChargesCount > 1 ? 's' : ''} active${totalChargesCount > 1 ? 's' : ''}`}
           positive={chargesMensuelles === 0}
-          icon={<Wallet size={20} />}
-          color="warning"
+          icon={<Wallet size={18} />}
+          iconColor="#a78bfa"
         />
         <KPICard
           title="Bénéfice /mois"
           value={`${Math.round(beneficeMensuel).toLocaleString('fr-FR')} €`}
           change={beneficeMensuel > 0 ? 'Rentable' : beneficeMensuel === 0 ? 'Équilibre' : 'Déficitaire'}
           positive={beneficeMensuel >= 0}
-          icon={<CreditCard size={20} />}
-          color={beneficeMensuel >= 0 ? 'success' : 'danger'}
+          icon={<CreditCard size={18} />}
+          iconColor="#5b8af5"
         />
         <KPICard
           title="Factures en retard"
           value={facturesEnRetard.toString()}
           change={`${facturesEnAttente} en attente`}
           positive={facturesEnRetard === 0}
-          icon={<AlertCircle size={20} />}
-          color="danger"
+          icon={<AlertCircle size={18} />}
+          iconColor="#ef4444"
         />
       </div>
 
@@ -291,43 +302,51 @@ export default function DashboardPage() {
               </div>
             </div>
             {revenueData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={240}>
-                <AreaChart data={revenueData}>
+              <ResponsiveContainer width="100%" height={260}>
+                <AreaChart data={revenueData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#7c5cfc" stopOpacity={0.4} />
-                      <stop offset="40%" stopColor="#5b8af5" stopOpacity={0.15} />
-                      <stop offset="100%" stopColor="#5b8af5" stopOpacity={0} />
+                      <stop offset="0%" stopColor="#7c5cfc" stopOpacity={0.65} />
+                      <stop offset="25%" stopColor="#7c5cfc" stopOpacity={0.4} />
+                      <stop offset="60%" stopColor="#5b4cd4" stopOpacity={0.15} />
+                      <stop offset="100%" stopColor="#5b4cd4" stopOpacity={0.02} />
                     </linearGradient>
                     <linearGradient id="strokeGrad" x1="0" y1="0" x2="1" y2="0">
                       <stop offset="0%" stopColor="#7c5cfc" />
-                      <stop offset="50%" stopColor="#8e72ff" />
-                      <stop offset="100%" stopColor="#5b8af5" />
+                      <stop offset="50%" stopColor="#9b7dff" />
+                      <stop offset="100%" stopColor="#7c5cfc" />
                     </linearGradient>
                     <filter id="glow">
-                      <feGaussianBlur stdDeviation="6" result="coloredBlur" />
+                      <feGaussianBlur stdDeviation="8" result="coloredBlur" />
                       <feMerge>
                         <feMergeNode in="coloredBlur" />
                         <feMergeNode in="SourceGraphic" />
                       </feMerge>
                     </filter>
+                    <filter id="areaGlow">
+                      <feGaussianBlur stdDeviation="12" result="blurred" />
+                      <feMerge>
+                        <feMergeNode in="blurred" />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
+                    </filter>
                   </defs>
-                  <CartesianGrid strokeDasharray="0" stroke="rgba(255,255,255,0.03)" vertical={false} />
-                  <XAxis dataKey="mois" stroke="rgba(255,255,255,0.15)" fontSize={11} tickLine={false} axisLine={false} dy={8} />
-                  <YAxis stroke="rgba(255,255,255,0.15)" fontSize={11} tickLine={false} axisLine={false} dx={-8} />
+                  <CartesianGrid strokeDasharray="0" stroke="rgba(255,255,255,0.025)" vertical={false} />
+                  <XAxis dataKey="mois" stroke="rgba(255,255,255,0.2)" fontSize={12} tickLine={false} axisLine={false} dy={10} />
+                  <YAxis stroke="rgba(255,255,255,0.12)" fontSize={11} tickLine={false} axisLine={false} dx={-5} />
                   <Tooltip
                     contentStyle={TOOLTIP_STYLE}
                     formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €`, 'CA']}
-                    cursor={{ stroke: 'rgba(124,92,252,0.15)' }}
+                    cursor={{ stroke: 'rgba(124,92,252,0.2)', strokeWidth: 1 }}
                   />
                   <Area
                     type="monotone"
                     dataKey="montant"
                     stroke="url(#strokeGrad)"
                     fill="url(#colorRevenue)"
-                    strokeWidth={3}
+                    strokeWidth={3.5}
                     dot={false}
-                    activeDot={{ r: 5, fill: '#7c5cfc', stroke: '#0b0b0f', strokeWidth: 2.5 }}
+                    activeDot={{ r: 6, fill: '#7c5cfc', stroke: '#080810', strokeWidth: 3 }}
                     filter="url(#glow)"
                   />
                 </AreaChart>
@@ -949,38 +968,33 @@ function ChargeFormModal({ isOpen, onClose, onSave, charge }: {
   );
 }
 
-function KPICard({ title, value, change, positive, icon, color }: {
+function KPICard({ title, value, change, positive, icon, iconColor }: {
   title: string;
   value: string;
   change: string;
   positive: boolean;
   icon: React.ReactNode;
-  color: string;
+  iconColor: string;
 }) {
-  const colorMap: Record<string, string> = {
-    primary: 'bg-primary/10 text-primary',
-    success: 'bg-success/10 text-success',
-    info: 'bg-info/10 text-info',
-    danger: 'bg-danger/10 text-danger',
-    warning: 'bg-warning/10 text-warning',
-  };
-
   return (
-    <div className="kpi-glow rounded-xl p-4 animate-fade-in shine-top">
+    <div className="kpi-glow rounded-2xl p-5 animate-fade-in">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs text-muted font-medium uppercase tracking-wide">{title}</span>
-        <div className={`p-2 rounded-lg icon-glow-${color}`}>
+        <span className="text-xs text-muted-foreground font-medium uppercase tracking-wide">{title}</span>
+        <div
+          className="w-10 h-10 rounded-xl flex items-center justify-center"
+          style={{ background: `${iconColor}15`, color: iconColor }}
+        >
           {icon}
         </div>
       </div>
       <p className="text-2xl font-bold text-foreground">{value}</p>
-      <div className="flex items-center gap-1 mt-1">
+      <div className="flex items-center gap-1 mt-2">
         {positive ? (
-          <ArrowUpRight size={14} className="text-success" />
+          <ArrowUpRight size={14} className="text-[#5b8af5]" />
         ) : (
-          <ArrowDownRight size={14} className="text-danger" />
+          <ArrowDownRight size={14} className="text-[#ef4444]" />
         )}
-        <span className={`text-xs ${positive ? 'text-success' : 'text-danger'}`}>{change}</span>
+        <span className={`text-xs ${positive ? 'text-[#5b8af5]' : 'text-[#ef4444]'}`}>{change}</span>
       </div>
     </div>
   );

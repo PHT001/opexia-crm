@@ -207,7 +207,7 @@ export default function ChargesPage() {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ background: '#151521', border: '1px solid rgba(124,92,252,0.2)', borderRadius: '10px', color: '#e2e2ef', boxShadow: '0 8px 24px rgba(0,0,0,0.5), 0 0 12px rgba(124,92,252,0.08)', fontSize: '13px', padding: '10px 14px' }}
+                    contentStyle={{ background: '#12121e', border: '1px solid rgba(124,92,252,0.2)', borderRadius: '10px', color: '#e2e2ef', boxShadow: '0 8px 24px rgba(0,0,0,0.5), 0 0 12px rgba(124,92,252,0.08)', fontSize: '13px', padding: '10px 14px' }}
                     itemStyle={{ color: '#e2e2ef' }}
                     formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €/mois`, '']}
                   />
@@ -245,7 +245,7 @@ export default function ChargesPage() {
                 <XAxis dataKey="name" stroke="rgba(255,255,255,0.2)" fontSize={11} tickLine={false} axisLine={false} dy={8} />
                 <YAxis stroke="rgba(255,255,255,0.2)" fontSize={11} tickLine={false} axisLine={false} dx={-8} />
                 <Tooltip
-                  contentStyle={{ background: '#151521', border: '1px solid rgba(124,92,252,0.2)', borderRadius: '10px', color: '#e2e2ef', boxShadow: '0 8px 24px rgba(0,0,0,0.5), 0 0 12px rgba(124,92,252,0.08)', fontSize: '13px', padding: '10px 14px' }}
+                  contentStyle={{ background: '#12121e', border: '1px solid rgba(124,92,252,0.2)', borderRadius: '10px', color: '#e2e2ef', boxShadow: '0 8px 24px rgba(0,0,0,0.5), 0 0 12px rgba(124,92,252,0.08)', fontSize: '13px', padding: '10px 14px' }}
                   formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €`, 'Total']}
                   cursor={{ fill: 'rgba(255,255,255,0.03)' }}
                 />

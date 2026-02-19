@@ -2,13 +2,13 @@
 
 @theme inline {
   /* ===== APEXIFY DARK THEME — violet/bleu only ===== */
-  --color-background: #0b0b0f;
-  --color-background-secondary: #101016;
+  --color-background: #080810;
+  --color-background-secondary: #0c0c14;
   --color-foreground: #e2e2ef;
   --color-foreground-secondary: #9898b0;
-  --color-card: #151521;
-  --color-card-hover: #1a1a28;
-  --color-card-elevated: #1e1e2e;
+  --color-card: #12121e;
+  --color-card-hover: #181828;
+  --color-card-elevated: #1c1c2e;
   --color-border: rgba(255, 255, 255, 0.06);
   --color-border-light: rgba(255, 255, 255, 0.1);
   --color-primary: #7c5cfc;
@@ -40,7 +40,7 @@
 
 /* ===== BODY ===== */
 body {
-  background: #0b0b0f;
+  background: #080810;
   color: var(--color-foreground);
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -70,7 +70,7 @@ body {
 /* ===== CARDS ===== */
 .card-glow {
   position: relative;
-  background: #151521;
+  background: #12121e;
   border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -85,7 +85,7 @@ body {
 /* KPI Cards */
 .kpi-glow {
   position: relative;
-  background: #151521;
+  background: #12121e;
   border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);

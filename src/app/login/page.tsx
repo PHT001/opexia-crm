@@ -35,7 +35,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0b0b0f] flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-[#080810] flex items-center justify-center p-4 relative overflow-hidden">
       {/* Ambient glow */}
       <div className="absolute top-1/4 left-1/3 w-[500px] h-[500px] bg-[rgba(124,92,252,0.06)] rounded-full blur-[130px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/3 w-[400px] h-[400px] bg-[rgba(91,138,245,0.04)] rounded-full blur-[110px] pointer-events-none" />
@@ -43,7 +43,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm relative z-10">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-[#151521] border border-white/[0.06] mb-4 shadow-lg shadow-[rgba(124,92,252,0.08)]">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-[#12121e] border border-white/[0.06] mb-4 shadow-lg shadow-[rgba(124,92,252,0.08)]">
             <span className="text-3xl font-bold tracking-tight">
               <span className="text-white/90">O</span>
               <span className="bg-gradient-to-r from-[#7c5cfc] to-[#5b8af5] bg-clip-text text-transparent">IA</span>
@@ -54,7 +54,7 @@ export default function LoginPage() {
         </div>
 
         {/* Login Card */}
-        <div className="relative bg-[#151521] border border-white/[0.06] rounded-2xl p-6 space-y-5 shadow-2xl">
+        <div className="relative bg-[#12121e] border border-white/[0.06] rounded-2xl p-6 space-y-5 shadow-2xl">
           {/* Top shine */}
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[rgba(124,92,252,0.3)] to-transparent rounded-t-2xl" />
 

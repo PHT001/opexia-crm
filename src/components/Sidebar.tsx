@@ -63,7 +63,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
       <aside
         className={clsx(
           'fixed top-0 left-0 h-full z-50 flex flex-col transition-all duration-300',
-          'bg-[#0d0d13]',
+          'bg-[#0a0a12]',
           'border-r border-white/[0.05]',
           collapsed ? 'w-[68px]' : 'w-[240px]',
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
@@ -109,13 +109,13 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
                 className={clsx(
                   'flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200',
                   active
-                    ? 'active-glow text-white/95'
-                    : 'text-white/35 hover:text-white/70 hover:bg-white/[0.03]',
+                    ? 'bg-[#7c5cfc] text-white shadow-lg shadow-[#7c5cfc]/20'
+                    : 'text-white/35 hover:text-white/70 hover:bg-white/[0.04]',
                   collapsed && 'justify-center px-0'
                 )}
                 title={collapsed ? item.label : undefined}
               >
-                <Icon size={18} className={clsx('flex-shrink-0', active && 'text-[#7c5cfc]')} />
+                <Icon size={18} className={clsx('flex-shrink-0', active && 'text-white')} />
                 {!collapsed && <span>{item.label}</span>}
               </Link>
             );
@@ -130,13 +130,13 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
             className={clsx(
               'flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200',
               isActive('/parametres')
-                ? 'active-glow text-white/95'
-                : 'text-white/35 hover:text-white/70 hover:bg-white/[0.03]',
+                ? 'bg-[#7c5cfc] text-white shadow-lg shadow-[#7c5cfc]/20'
+                : 'text-white/35 hover:text-white/70 hover:bg-white/[0.04]',
               collapsed && 'justify-center px-0'
             )}
             title={collapsed ? 'Paramètres' : undefined}
           >
-            <Settings size={18} className={clsx('flex-shrink-0', isActive('/parametres') && 'text-[#7c5cfc]')} />
+            <Settings size={18} className={clsx('flex-shrink-0', isActive('/parametres') && 'text-white')} />
             {!collapsed && <span>Param&egrave;tres</span>}
           </Link>
 
