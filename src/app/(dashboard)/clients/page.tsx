@@ -133,7 +133,7 @@ export default function ClientsPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-muted border-b border-border bg-sidebar">
+              <tr className="text-left text-muted border-b border-border bg-background-secondary">
                 <th className="px-4 py-3 font-medium">Contact</th>
                 <th className="px-4 py-3 font-medium hidden md:table-cell">Entreprise</th>
                 <th className="px-4 py-3 font-medium hidden lg:table-cell">Services</th>

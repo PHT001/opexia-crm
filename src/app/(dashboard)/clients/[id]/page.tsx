@@ -270,7 +270,7 @@ export default function ClientDetailPage() {
         <div className="bg-card border border-border rounded-2xl overflow-hidden animate-fade-in">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-muted border-b border-border bg-sidebar">
+              <tr className="text-left text-muted border-b border-border bg-background-secondary">
                 <th className="px-4 py-3 font-medium">N°</th>
                 <th className="px-4 py-3 font-medium hidden sm:table-cell">Description</th>
                 <th className="px-4 py-3 font-medium">Montant</th>

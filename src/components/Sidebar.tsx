@@ -47,7 +47,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
     <>
       {mobileOpen && (
         <div
-          className="fixed inset-0 bg-black/60 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/40 z-40 lg:hidden"
           onClick={onMobileClose}
         />
       )}
@@ -55,14 +55,14 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
       <aside
         className={clsx(
           'fixed top-0 left-0 h-full bg-sidebar z-50 flex flex-col transition-all duration-300',
-          'border-r border-border',
+          'border-r border-white/5',
           collapsed ? 'w-[68px]' : 'w-[240px]',
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
         {/* Logo */}
         <div className={clsx(
-          'flex items-center border-b border-border',
+          'flex items-center border-b border-white/5',
           collapsed ? 'justify-center h-16' : 'justify-between h-16 px-4'
         )}>
           <Link href="/" className="flex items-center gap-3 min-w-0">
@@ -77,7 +77,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
 
           <button
             onClick={onMobileClose}
-            className="lg:hidden p-1.5 rounded-lg hover:bg-sidebar-hover text-muted hover:text-foreground transition-colors"
+            className="lg:hidden p-1.5 rounded-lg hover:bg-white/10 text-white/50 hover:text-white transition-colors"
           >
             <X size={18} />
           </button>
@@ -96,13 +96,13 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
                 className={clsx(
                   'flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150',
                   active
-                    ? 'active-glow text-foreground'
-                    : 'text-muted hover:text-foreground-secondary hover:bg-sidebar-hover',
+                    ? 'active-glow text-white'
+                    : 'text-white/50 hover:text-white/80 hover:bg-white/5',
                   collapsed && 'justify-center px-0'
                 )}
                 title={collapsed ? item.label : undefined}
               >
-                <Icon size={18} className={clsx('flex-shrink-0', active && 'text-primary')} />
+                <Icon size={18} className={clsx('flex-shrink-0', active && 'text-secondary')} />
                 {!collapsed && <span>{item.label}</span>}
               </Link>
             );
@@ -110,10 +110,10 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
         </nav>
 
         {/* Bottom */}
-        <div className="border-t border-border p-2 space-y-0.5">
+        <div className="border-t border-white/5 p-2 space-y-0.5">
           <button
             onClick={onToggle}
-            className="hidden lg:flex items-center gap-3 w-full px-3 py-2 rounded-lg text-[13px] text-muted hover:text-foreground hover:bg-sidebar-hover transition-all duration-150"
+            className="hidden lg:flex items-center gap-3 w-full px-3 py-2 rounded-lg text-[13px] text-white/50 hover:text-white/80 hover:bg-white/5 transition-all duration-150"
           >
             {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
             {!collapsed && <span>Réduire</span>}
@@ -121,7 +121,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
 
           <button
             className={clsx(
-              'flex items-center gap-3 w-full px-3 py-2 rounded-lg text-[13px] text-muted hover:text-danger hover:bg-danger/5 transition-all duration-150',
+              'flex items-center gap-3 w-full px-3 py-2 rounded-lg text-[13px] text-white/50 hover:text-red-400 hover:bg-red-500/10 transition-all duration-150',
               collapsed && 'justify-center px-0'
             )}
           >

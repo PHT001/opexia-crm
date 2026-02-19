@@ -118,14 +118,14 @@ export default function FacturationPage() {
           <h3 className="font-semibold text-foreground mb-4">Revenus mensuels (payés)</h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1a1a24" />
-              <XAxis dataKey="mois" stroke="#52525b" fontSize={12} />
-              <YAxis stroke="#52525b" fontSize={12} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e8e5f0" />
+              <XAxis dataKey="mois" stroke="#9490a6" fontSize={12} />
+              <YAxis stroke="#9490a6" fontSize={12} />
               <Tooltip
-                contentStyle={{ background: '#0f0f14', border: '1px solid #1a1a24', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
+                contentStyle={{ background: '#ffffff', border: '1px solid #e8e5f0', borderRadius: '8px', color: '#1a1625', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
                 formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €`, 'Revenu']}
               />
-              <Bar dataKey="montant" fill="#10b981" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="montant" fill="#7c3aed" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -161,7 +161,7 @@ export default function FacturationPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-muted border-b border-border bg-sidebar">
+              <tr className="text-left text-muted border-b border-border bg-background-secondary">
                 <th className="px-4 py-3 font-medium">N° Facture</th>
                 <th className="px-4 py-3 font-medium">Client</th>
                 <th className="px-4 py-3 font-medium hidden sm:table-cell">Description</th>

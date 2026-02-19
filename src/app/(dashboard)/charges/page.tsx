@@ -22,14 +22,14 @@ import {
 } from 'recharts';
 
 const CATEGORY_COLORS: Record<ChargeCategory, string> = {
-  'abonnement': '#10b981',
-  'logiciel': '#22d3ee',
+  'abonnement': '#7c3aed',
+  'logiciel': '#8b5cf6',
   'marketing': '#facc15',
-  'hebergement': '#4ade80',
+  'hebergement': '#22c55e',
   'telephonie': '#f97316',
   'freelance': '#38bdf8',
-  'materiel': '#f87171',
-  'formation': '#06b6d4',
+  'materiel': '#ef4444',
+  'formation': '#a78bfa',
   'autre': '#71717a',
 };
 
@@ -204,7 +204,7 @@ export default function ChargesPage() {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ background: '#0f0f14', border: '1px solid #1a1a24', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
+                    contentStyle={{ background: '#ffffff', border: '1px solid #e8e5f0', borderRadius: '8px', color: '#1a1625', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
                     formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €/mois`, '']}
                   />
                 </PieChart>
@@ -237,14 +237,14 @@ export default function ChargesPage() {
           {chargesByFrequency.length > 0 ? (
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={chargesByFrequency}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1a1a24" />
-                <XAxis dataKey="name" stroke="#52525b" fontSize={12} />
-                <YAxis stroke="#52525b" fontSize={12} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e8e5f0" />
+                <XAxis dataKey="name" stroke="#9490a6" fontSize={12} />
+                <YAxis stroke="#9490a6" fontSize={12} />
                 <Tooltip
-                  contentStyle={{ background: '#0f0f14', border: '1px solid #1a1a24', borderRadius: '8px', color: '#fafafa', boxShadow: '0 4px 16px rgba(0,0,0,0.5)' }}
+                  contentStyle={{ background: '#ffffff', border: '1px solid #e8e5f0', borderRadius: '8px', color: '#1a1625', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
                   formatter={(value: unknown) => [`${Number(value).toLocaleString('fr-FR')} €`, 'Total']}
                 />
-                <Bar dataKey="total" fill="#10b981" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="total" fill="#7c3aed" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
@@ -293,7 +293,7 @@ export default function ChargesPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-muted border-b border-border bg-sidebar">
+              <tr className="text-left text-muted border-b border-border bg-background-secondary">
                 <th className="px-4 py-3 font-medium">Charge</th>
                 <th className="px-4 py-3 font-medium hidden md:table-cell">Catégorie</th>
                 <th className="px-4 py-3 font-medium hidden lg:table-cell">Fournisseur</th>
